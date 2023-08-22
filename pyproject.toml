@@ -1,0 +1,44 @@
+[build-system]
+requires = ["flit_core >=3.4"]
+build-backend = "flit_core.buildapi"
+
+
+[project]
+name = "pytest-selenium-auto"
+version = "0.0.1rc0"
+description = "pytest plugin to automatically capture screenshots upon selenium webdriver events"
+readme = "README.md"
+#license = "MIT"
+authors = [
+    {name = "Harmin Parra Rueda", email="harmin.rueda@gmail.com"},
+]
+requires-python = ">=3.8"
+dependencies = [
+    'pytest >= 7.0.0',
+    'pytest-html >= 3.2.0',
+    'pytest-metadata >= 3.0.0',
+    'pyyaml >= 5.3.1',
+    'selenium >= 4.11.0',
+]
+classifiers = [
+    "Framework :: Pytest",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+keywords = [
+    "pytest",
+    "selenium",
+    "webtest",
+    "webtesting",
+]
+
+
+[project.entry-points.pytest11]
+selenium_screenshot = "pytest_selenium_auto.plugin"
+
+
+[project.urls]
+Homepage = "https://pypi.org/project/pytest-selenium-auto"
+Documentation = "https://pytest-selenium-auto.readthedocs.io/en/1.1.x/"
+Source = "https://github.com/harmin-parra/pytest-selenium-auto"
