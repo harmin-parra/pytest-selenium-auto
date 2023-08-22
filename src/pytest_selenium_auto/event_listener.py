@@ -1,8 +1,5 @@
 from selenium.webdriver.support.events import AbstractEventListener
-from . import (
-    logger,
-    utils,
-)
+from . import utils
 
 
 #

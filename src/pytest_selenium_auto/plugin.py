@@ -14,7 +14,7 @@ from . import (
     logger,
     utils,
 )
-from . import CustomEventListener
+from .event_listener import CustomEventListener
 
 
 #
