@@ -201,7 +201,7 @@ Example
 
 The plugin provides a function scoped ``webdriver`` fixture.
 
-**pytest-selenium-screenshot** needs to be executed in conjunction of **pytest-html** plugin. Therefore, the ``--html`` option also needs to be provided.
+**pytest-selenium-auto** needs to be executed in conjunction of **pytest-html** plugin. Therefore, the ``--html`` option also needs to be provided.
 
 Command-line invocation
 -----------------------

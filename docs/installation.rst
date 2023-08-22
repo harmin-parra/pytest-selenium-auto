@@ -11,8 +11,8 @@ Requirements
 * ``selenium >= 4.11.0``
 
 
-Installing pytest-selenium-screenshot
--------------------------------------
+Installing pytest-selenium-auto
+-------------------------------
 
 .. code-block:: bash
 
