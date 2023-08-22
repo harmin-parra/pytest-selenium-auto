@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'pytest-selenium-screenshot'
+project = 'pytest-selenium-auto'
 copyright = '2023, Harmin Parra Rueda'
 author = 'Harmin Parra Rueda'
 
@@ -101,7 +101,7 @@ html_static_path = ['.']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pytest-selenium-screenshotdoc'
+htmlhelp_basename = 'pytest-selenium-autodoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -128,7 +128,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pytest-selenium-screenshot.tex', 'pytest-selenium-screenshot Documentation',
+    (master_doc, 'pytest-selenium-auto.tex', 'pytest-selenium-auto Documentation',
      'Harmin Parra Rueda', 'manual'),
 ]
 
@@ -138,7 +138,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pytest-selenium-screenshot', 'pytest-selenium-screenshot Documentation',
+    (master_doc, 'pytest-selenium-auto', 'pytest-selenium-auto Documentation',
      [author], 1)
 ]
 
@@ -149,8 +149,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pytest-selenium-screenshot', 'pytest-selenium-screenshot Documentation',
-     author, 'pytest-selenium-screenshot', 'One line description of project.',
+    (master_doc, 'pytest-selenium-auto', 'pytest-selenium-auto Documentation',
+     author, 'pytest-selenium-auto', 'One line description of project.',
      'Miscellaneous'),
 ]
 
