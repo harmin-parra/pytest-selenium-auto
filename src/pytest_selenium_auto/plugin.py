@@ -40,7 +40,7 @@ def pytest_addoption(parser):
     parser.addini(
         "maximize_window",
         type="bool",
-        default=True,
+        default=False,
         help="Whether to maximize the browser window",
     )
     parser.addini(
