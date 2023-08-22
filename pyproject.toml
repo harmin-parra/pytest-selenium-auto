@@ -39,4 +39,5 @@ selenium_screenshot = "pytest_selenium_screenshot.plugin"
 
 [project.urls]
 Home = "https://github.com/harmin-parra/pytest-selenium-auto"
-
+Documentation = "https://pytest-selenium-auto.readthedocs.io/en/1.0.x/"
+Source = "https://github.com/harmin-parra/pytest-selenium-auto"
