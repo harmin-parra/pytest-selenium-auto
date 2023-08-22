@@ -23,14 +23,14 @@ description_tag = "h2"
 #
 def check_browser_option(browser):
     if browser is None:
-        msg = "The usage of 'webdriver' fixture requires the pytest-selenium-screenshot plugin.\n'--browser' option is missing.\n"
+        msg = "The usage of 'webdriver' fixture requires the pytest-selenium-auto plugin.\n'--browser' option is missing.\n"
         print(msg, file=sys.stderr)
         sys.exit(pytest.ExitCode.USAGE_ERROR)
 
 
 def check_html_option(htmlpath):
     if htmlpath is None:
-        msg = "It seems you are using pytest-selenium-screenshot plugin.\npytest-html plugin is required.\n'--html' option is missing.\n"
+        msg = "It seems you are using pytest-selenium-auto plugin.\npytest-html plugin is required.\n'--html' option is missing.\n"
         print(msg, file=sys.stderr)
         sys.exit(pytest.ExitCode.USAGE_ERROR)
 
