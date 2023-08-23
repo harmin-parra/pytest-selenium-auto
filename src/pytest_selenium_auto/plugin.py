@@ -87,7 +87,7 @@ def pytest_addoption(parser):
         "driver_config",
         type="string",
         default=None,
-        help="driver json configuration file path.",
+        help="driver json or yaml configuration file path.",
     )
     parser.addini(
         "description_tag",
