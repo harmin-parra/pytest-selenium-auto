@@ -26,104 +26,104 @@ from .webdrivers import (
 # Definition of test parameters
 #
 def pytest_addoption(parser):
-    group = parser.getgroup("selenium-screenshot", "pytest-selenium-screenshot")
+    group = parser.getgroup("pytest-selenium-auto")
     group.addoption(
         "--browser",
         action="store",
         default=None,
-        help="Accepted values: firefox, chrome, chromium, edge or safari",
+        help="The driver to use.",
         choices=("firefox", "chrome", "chromium", "edge", "safari"),
     )
     group.addoption(
         "--headless",
         action="store_true",
         default=False,
-        help="Whether to run the browser in headless mode",
+        help="Whether to run the browser in headless mode.",
     )
     group.addoption(
         "--screenshots",
         action="store",
         default="all",
-        help="Accepted values: all, last, failed, manual or none",
+        help="The screenshot gathering strategy.",
         choices=("all", "last", "failed", "manual", "none"),
     )
     parser.addini(
         "maximize_window",
         type="bool",
         default=False,
-        help="Whether to maximize the browser window",
+        help="Whether to maximize the browser window.",
     )
     parser.addini(
         "driver_firefox",
         type="string",
         default=None,
-        help="Firefox driver path",
+        help="Firefox driver path.",
     )
     parser.addini(
         "driver_chrome",
         type="string",
         default=None,
-        help="Chrome driver path",
+        help="Chrome driver path.",
     )
     parser.addini(
         "driver_chromium",
         type="string",
         default=None,
-        help="Chromium driver path",
+        help="Chromium driver path.",
     )
     parser.addini(
         "driver_edge",
         type="string",
         default=None,
-        help="Edge driver path",
+        help="Edge driver path.",
     )
     parser.addini(
         "driver_safari",
         type="string",
         default=None,
-        help="Safari driver path",
+        help="Safari driver path.",
     )
     parser.addini(
         "driver_config",
         type="string",
         default=None,
-        help="driver json configuration file path",
+        help="driver json or yaml configuration file path.",
     )
     parser.addini(
         "description_tag",
         type="string",
         default="h2",
-        help="HTML tag for test descriptions. Accepted values: h1, h2, h3, p or pre",
+        help="HTML tag for the test description. Choices={h1, h2, h3, p, pre}",
     )
     parser.addini(
         "separator_display",
         type="bool",
         default=False,
-        help="Whether to separate screenshots by a horizontal line",
+        help="Whether to separate screenshots by a horizontal line.",
     )
     parser.addini(
         "separator_color",
         type="string",
         default="gray",
-        help="The color of the horizontal line",
+        help="The color of the horizontal line.",
     )
     parser.addini(
         "separator_height",
         type="string",
         default="5px",
-        help="The height of the horizontal line",
+        help="The height of the horizontal line.",
     )
     parser.addini(
         "thumbnail_width",
         type="string",
         default="300px",
-        help="The width of the screenshot thumbnail",
+        help="The width of the screenshot thumbnail.",
     )
     parser.addini(
         "thumbnail_height",
         type="string",
         default="200px",
-        help="The height of the screenshot thumbnail",
+        help="The height of the screenshot thumbnail.",
     )
 
 #
