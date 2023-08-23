@@ -130,28 +130,34 @@ def append_header(call, report, extra, pytest_html,
         extra.append(pytest_html.extras.html(f"<{description_tag}>{description}</{description_tag}>"))
 
     # Append exception
+    exception_logged = False
     # Catch explicit pytest.fail and pytest.skip calls
     if hasattr(call, 'excinfo') \
             and call.excinfo is not None \
-            and call.excinfo.typename in ('Failed', 'Skipped') \
+            and call.excinfo.typename in ('Failed','Skipped') \
+            and hasattr(call.excinfo, "value") \
             and hasattr(call.excinfo.value, "msg"):
-        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">{call.excinfo.typename}</span> reason = {call.excinfo.value.msg}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> reason = {call.excinfo.value.msg}</pre>"))
+        exception_logged = True
     # Catch XFailed tests
     if report.skipped and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">XFailed</span> reason = {report.wasxfail}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XFailed</span> reason = {report.wasxfail}</pre>"))
+        exception_logged = True
     # Catch XPassed tests
     if report.passed and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">XPassed</span> reason = {report.wasxfail}</pre>"))
-    # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {report.wasxfail}</pre>"))
+        exception_logged = True
+    #Catch explicit pytest.xfail calls and runtime exceptions in failed tests
     if hasattr(call, 'excinfo') \
             and call.excinfo is not None \
-            and call.excinfo.typename not in ('Failed', 'Skipped') \
+            and call.excinfo.typename not in ('Failed', 'Skipped')\
             and hasattr(call.excinfo, '_excinfo') \
             and call.excinfo._excinfo is not None \
-            and isinstance(call.excinfo._excinfo, tuple) \
-            and len(call.excinfo._excinfo) > 1:
-        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
+            and isinstance(call.excinfo._excinfo, tuple) and len(call.excinfo._excinfo) > 1:
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
+        exception_logged = True
     #extra.append(pytest_html.extras.html("<br>"))
+    return exception_logged
 
 
 def get_anchor_tag(image, div=True):
