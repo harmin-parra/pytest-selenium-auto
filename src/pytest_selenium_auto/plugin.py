@@ -26,7 +26,7 @@ from .webdrivers import (
 # Definition of test parameters
 #
 def pytest_addoption(parser):
-    group = parser.getgroup("selenium-screenshot", "pytest-selenium-screenshot")
+    group = parser.getgroup("pytest-selenium-auto")
     group.addoption(
         "--browser",
         action="store",

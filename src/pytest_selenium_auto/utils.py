@@ -145,7 +145,7 @@ def append_header(call, report, extra, pytest_html, description):
     if report.passed and hasattr(report, 'wasxfail'):
         extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {report.wasxfail}</pre>"))
         exception_logged = True
-    #Catch explicit pytest.xfail calls and runtime exceptions in failed tests
+    # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
     if hasattr(call, 'excinfo') \
             and call.excinfo is not None \
             and call.excinfo.typename not in ('Failed', 'Skipped')\
@@ -154,7 +154,7 @@ def append_header(call, report, extra, pytest_html, description):
             and isinstance(call.excinfo._excinfo, tuple) and len(call.excinfo._excinfo) > 1:
         extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
         exception_logged = True
-    #extra.append(pytest_html.extras.html("<br>"))
+    # extra.append(pytest_html.extras.html("<br>"))
     return exception_logged
 
 
