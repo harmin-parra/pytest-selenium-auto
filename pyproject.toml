@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "pytest-selenium-auto"
-version = "1.0.0rc"
+version = "1.2.0rc"
 description = "pytest plugin to automatically capture screenshots upon selenium webdriver events"
 readme = "README.md"
 #license = "MIT"
@@ -40,5 +40,5 @@ selenium_screenshot = "pytest_selenium_auto.plugin"
 
 [project.urls]
 Homepage = "https://pypi.org/project/pytest-selenium-auto"
-Documentation = "https://pytest-selenium-auto.readthedocs.io/en/1.1.x/"
+Documentation = "https://pytest-selenium-auto.readthedocs.io/en/1.2.x/"
 Source = "https://github.com/harmin-parra/pytest-selenium-auto"
