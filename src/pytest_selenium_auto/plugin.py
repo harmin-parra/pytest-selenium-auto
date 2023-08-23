@@ -372,15 +372,16 @@ def pytest_runtest_makereport(item, call):
         separator_color = feature_request.getfixturevalue("separator_color")
         separator_height = feature_request.getfixturevalue("separator_height")
 
-        utils.append_header(call, report, extra, pytest_html, description)
+        exception_logged = utils.append_header(call, report, extra, pytest_html, description)
 
         if screenshots == "none":
             report.extra = extra
             return
 
-        if description is not None and separator_display:
+        if (description is not None or exception_logged is True) \
+                and separator_display:
             extra.append(pytest_html.extras.html(f"<hr style='height:{separator_height};background-color:{separator_color}'>"))
-        
+
         anchors = ""
         if screenshots in ('all', 'manual'):
             for image in images:
@@ -398,7 +399,7 @@ def pytest_runtest_makereport(item, call):
                     extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if anchors != "":
             extra.append(pytest_html.extras.html(anchors))
-        
+
         report.extra = extra
         #logger.append_screenshot_error(item.location[0], item.location[2])
 
