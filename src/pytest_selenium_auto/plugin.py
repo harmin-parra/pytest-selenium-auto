@@ -388,7 +388,7 @@ def pytest_runtest_makereport(item, call):
         if (description is not None or exception_logged is True) \
                 and separator_display:
             extra.append(pytest_html.extras.html(f"<hr style='height:{separator_height};background-color:{separator_color}'>"))
-        
+
         links = ""
         rows = ""
         if screenshots == 'all':
@@ -414,7 +414,7 @@ def pytest_runtest_makereport(item, call):
             rows = "<table style=\"width: 100%;\"><thead><tr><td style=\"width: 50%\"/><td/></tr></thead>" + rows + "</table>"
             extra.append(pytest_html.extras.html(rows))
         report.extra = extra
-        #logger.append_screenshot_error(item.location[0], item.location[2])
+        # logger.append_screenshot_error(item.location[0], item.location[2])
 
     # Let's deal with exit status
     global skipped, failed, xfailed, passed, xpassed, errors

@@ -121,7 +121,7 @@ def save_screenshot(driver, folder_report):
 #
 # Auxiliary functions for the report generation
 #
-def append_header(call, report, extra, pytest_html, 
+def append_header(call, report, extra, pytest_html,
                        description, description_tag):
     """ Append description and exception trace """
     # Append description
@@ -147,7 +147,7 @@ def append_header(call, report, extra, pytest_html,
     if report.passed and hasattr(report, 'wasxfail'):
         extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {report.wasxfail}</pre>"))
         exception_logged = True
-    #Catch explicit pytest.xfail calls and runtime exceptions in failed tests
+    # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
     if hasattr(call, 'excinfo') \
             and call.excinfo is not None \
             and call.excinfo.typename not in ('Failed', 'Skipped')\
@@ -156,7 +156,7 @@ def append_header(call, report, extra, pytest_html,
             and isinstance(call.excinfo._excinfo, tuple) and len(call.excinfo._excinfo) > 1:
         extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
         exception_logged = True
-    #extra.append(pytest_html.extras.html("<br>"))
+    # extra.append(pytest_html.extras.html("<br>"))
     return exception_logged
 
 
@@ -177,7 +177,7 @@ def get_table_row_tag(comment, image):
     style_img = "border: 1px solid black; width: 300px;"
     style_td_img = "text-align: right;"
     style_comment = "color: black;"
-    #style_warning = "color: red;"
+    # style_warning = "color: red;"
     link = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style_img}\"></a>"
     htmlcode = ""
     if comment is not None:
