@@ -153,7 +153,11 @@ def folder_report(request):
 
 @pytest.fixture(scope='session')
 def description_tag(request):
-    return request.config.getini("description_tag")
+    tag = request.config.getini("description_tag")
+    if tag in ("h1", "h2", "h3", "p", "pre"):
+        return tag
+    else:
+        return 'h2'
 
 @pytest.fixture(scope='session')
 def maximize_window(request):
@@ -375,7 +379,7 @@ def pytest_runtest_makereport(item, call):
             return
 
         if (description is not None or exception_logged is True) \
-                and separator_display \
+                and separator_display is True \
                 and screenshots in ('all', 'manual'):
             extra.append(pytest_html.extras.html(f"<hr style='height:{separator_height};background-color:{separator_color}'>"))
 
