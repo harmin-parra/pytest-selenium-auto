@@ -51,7 +51,7 @@ class CustomEventListener(AbstractEventListener):
 # WedDriver subclasses
 #
 class _Extras():
-    
+
     images = None
     folder_report = None
     screenshots = None

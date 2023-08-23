@@ -42,7 +42,7 @@ def browser_options(request, browser, config_data, headless):
 def browser_service(request, browser, config_data, driver_paths):
     config_service = {}
     if 'browsers' in config_data and browser in config_data['browsers'] and 'service' in config_data['browsers'][browser]:
-        config_service = config_data['browsers'][browser]['service']    
+        config_service = config_data['browsers'][browser]['service']
     if browser is None:
         return None
     # When driver configuration provided in pytest.ini file

@@ -61,7 +61,7 @@ def get_service(browser, config):
             )
         if browser == "chromium":
             service = Service_Chromium(
-                executable_path=config.get('driver_path'), 
+                executable_path=config.get('driver_path'),
                 port=config.get('port', 0),
                 service_args=config.get('args', None),
                 log_output=config.get('log_output', None),
@@ -136,7 +136,7 @@ def _set_timeouts(driver, config):
         driver.set_script_timeout(config['script'])
     if 'pageLoad' in config:
         driver.set_page_load_timeout(config['pageLoad'])
-    
+
 
 def _set_window(driver, config):
     if 'maximize' in config and config['maximize'] is True:
@@ -170,7 +170,7 @@ def _install_addons(driver, addons):
             driver.install_addon(addon)
         except:
             raise
-    
+
 
 def _set_general_options(options, config):
     if 'proxy' in config:
