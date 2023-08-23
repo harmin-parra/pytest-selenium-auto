@@ -375,7 +375,8 @@ def pytest_runtest_makereport(item, call):
             return
 
         if (description is not None or exception_logged is True) \
-                and separator_display:
+                and separator_display \
+                and screenshots in ('all', 'manual'):
             extra.append(pytest_html.extras.html(f"<hr style='height:{separator_height};background-color:{separator_color}'>"))
 
         anchors = ""
