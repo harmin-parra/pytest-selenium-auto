@@ -118,13 +118,13 @@ def pytest_addoption(parser):
         "thumbnail_width",
         type="string",
         default="300px",
-        help="The width of the screenshot thumbnail",
+        help="The width of the screenshot thumbnail.",
     )
     parser.addini(
         "thumbnail_height",
         type="string",
         default="200px",
-        help="The height of the screenshot thumbnail",
+        help="The height of the screenshot thumbnail.",
     )
 
 #
