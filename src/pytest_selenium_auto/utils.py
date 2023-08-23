@@ -98,13 +98,13 @@ def counter():
 
 
 def save_screenshot(driver, folder_report):
-    """ Save the image in the specifie folder and return the filename """
+    """ Save the image in the specified folder and return the href attribute of the anchor link """
     index = counter()
-    linkname = f"screenshots{os.sep}image-{index}.png"
+    link = f"screenshots{os.sep}image-{index}.png"
     folder = ""
     if folder_report is not None and folder_report != '':
         folder = f"{folder_report}{os.sep}"
-    filename = folder + linkname
+    filename = folder + link
     try:
         if isinstance(driver, WebDriverFirefox):
             driver.save_full_page_screenshot(filename)
@@ -112,16 +112,18 @@ def save_screenshot(driver, folder_report):
             driver.save_screenshot(filename)
     except Exception as e:
         trace = traceback.format_exc()
-        linkname = f"screenshots{os.sep}error.png"
+        link = f"screenshots{os.sep}error.png"
         print(f"{str(e)}\n\n{trace}", file=sys.stderr)
     finally:
-        return linkname
+        return link
 
 
 #
 # Auxiliary functions for the report generation
 #
-def append_header(call, report, extra, pytest_html, description):
+def append_header(call, report, extra, pytest_html, 
+                       description, description_tag):
+    """ Append description and exception trace """
     # Append description
     if description is not None:
         description = description.strip().replace('\n', '<br>')
@@ -131,29 +133,29 @@ def append_header(call, report, extra, pytest_html, description):
     # Catch explicit pytest.fail and pytest.skip calls
     if hasattr(call, 'excinfo') \
             and call.excinfo is not None \
-            and call.excinfo.typename in ('Failed','Skipped') \
-            and hasattr(call.excinfo, "value") \
+            and call.excinfo.typename in ('Failed', 'Skipped') \
             and hasattr(call.excinfo.value, "msg"):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> reason = {call.excinfo.value.msg}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">{call.excinfo.typename}</span> reason = {call.excinfo.value.msg}</pre>"))
     # Catch XFailed tests
     if report.skipped and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XFailed</span> reason = {report.wasxfail}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">XFailed</span> reason = {report.wasxfail}</pre>"))
     # Catch XPassed tests
     if report.passed and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {report.wasxfail}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">XPassed</span> reason = {report.wasxfail}</pre>"))
     # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
     if hasattr(call, 'excinfo') \
             and call.excinfo is not None \
-            and call.excinfo.typename not in ('Failed', 'Skipped')\
+            and call.excinfo.typename not in ('Failed', 'Skipped') \
             and hasattr(call.excinfo, '_excinfo') \
             and call.excinfo._excinfo is not None \
-            and isinstance(call.excinfo._excinfo, tuple) and len(call.excinfo._excinfo) > 1:
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
+            and isinstance(call.excinfo._excinfo, tuple) \
+            and len(call.excinfo._excinfo) > 1:
+        extra.append(pytest_html.extras.html(f"<pre><span style=\"color: black;\">{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
     #extra.append(pytest_html.extras.html("<br>"))
 
 
 def get_anchor_tag(image, div=True):
-    style = f"border: 1px solid black;"
+    style = "border: 1px solid black;"
     if div:
         style += " width: 300px; float: right;"
         anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
@@ -162,6 +164,29 @@ def get_anchor_tag(image, div=True):
         style += f" width: {img_width};"
         anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
         return anchor
+
+
+def get_table_row_tag(comment, image):
+    """ Return HTML table row with event label and screenshot anchor link """
+    style_img = "border: 1px solid black; width: 300px;"
+    style_td_img = "text-align: right;"
+    style_comment = "color: black;"
+    #style_warning = "color: red;"
+    link = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style_img}\"></a>"
+    htmlcode = ""
+    if comment is not None:
+        '''
+        if "WARNING" in comment:    # Is this a failed save_screenshot warning ?
+            label = f"<pre style=\"{style_warning}\">{comment}</pre>"
+            htmlcode = f"<tr><td>{label}</td><td></td></tr>"
+            #logger.append_screenshot_error(item.location[0], item.location[2])
+        else:
+        '''
+        label = f"<pre style=\"{style_comment}\">{comment}</pre>"
+        htmlcode = f"<tr><td>{label}</td><td style=\"{style_td_img}\">{link}</td></tr>"
+    else:
+        htmlcode = f"<tr><td></td><td style=\"{style_td_img}\">{link}</td></tr>"
+    return htmlcode
 
 
 def append_image(extra, pytest_html, item, linkname):

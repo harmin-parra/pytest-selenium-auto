@@ -237,6 +237,11 @@ def images(request):
 
 
 @pytest.fixture(scope='function')
+def comments(request):
+    return []
+
+
+@pytest.fixture(scope='function')
 def _driver(request, check_options, browser, folder_report,
             maximize_window, images, screenshots,
             config_data, browser_options, browser_service):
@@ -262,6 +267,7 @@ def _driver(request, check_options, browser, folder_report,
         raise
 
     driver.images = images
+    driver.comments = comments
     driver.screenshots = screenshots
     driver.folder_report = folder_report
     try:
@@ -367,6 +373,7 @@ def pytest_runtest_makereport(item, call):
         screenshots = feature_request.getfixturevalue('screenshots')
         driver = feature_request.getfixturevalue('webdriver')
         images = feature_request.getfixturevalue('images')
+        comments = feature_request.getfixturevalue('comments')
         description_tag = feature_request.getfixturevalue("description_tag")
         separator_display = feature_request.getfixturevalue("separator_display")
         separator_color = feature_request.getfixturevalue("separator_color")
@@ -381,10 +388,14 @@ def pytest_runtest_makereport(item, call):
         if description is not None and separator_display:
             extra.append(pytest_html.extras.html(f"<hr style='height:{separator_height};background-color:{separator_color}'>"))
         
-        anchors = ""
-        if screenshots in ('all', 'manual'):
+        links = ""
+        rows = ""
+        if screenshots == 'all':
             for image in images:
-                anchors += utils.get_anchor_tag(image, div=False)
+                links += utils.get_anchor_tag(image, div=False)
+        elif screenshots == 'manual':
+            for i in range(len(images)):
+                rows += utils.get_table_row_tag(comments[i], images[i])
         elif screenshots == "last":
             image = utils.save_screenshot(driver, driver.folder_report)
             extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
@@ -393,12 +404,14 @@ def pytest_runtest_makereport(item, call):
             if xfail or report.outcome in ('failed', 'skipped'):
                 image = utils.save_screenshot(driver, driver.folder_report)
                 if screenshots == "manual":
-                    anchors += utils.get_anchor_tag(image, div=False)
+                    rows += utils.get_table_row_tag("Last screenshot before", image)
                 else:
                     extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
-        if anchors != "":
-            extra.append(pytest_html.extras.html(anchors))
-        
+        if links != "":
+            extra.append(pytest_html.extras.html(links))
+        if rows != "":
+            rows = "<table style=\"width: 100%;\"><thead><tr><td style=\"width: 50%\"/><td/></tr></thead>" + rows + "</table>"
+            extra.append(pytest_html.extras.html(rows))
         report.extra = extra
         #logger.append_screenshot_error(item.location[0], item.location[2])
 
