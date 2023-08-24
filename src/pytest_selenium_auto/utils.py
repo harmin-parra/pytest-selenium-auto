@@ -43,19 +43,21 @@ def getini(config, name):
     return value
 
 
-def recreate_assets(folder_report):
+def create_assets(folder_report, driver_config):
     """ Recreate screenshots and log folders and files """
     # Recreate screenshots_folder
     folder = ""
     if folder_report is not None and folder_report != '':
         folder = f"{folder_report}{os.sep}"
-    folder = f"{folder}screenshots"
-    shutil.rmtree(folder, ignore_errors=True)
-    pathlib.Path(folder).mkdir(parents=True)
+    # Create Screenshots folders
+    shutil.rmtree(f"{folder}screenshots", ignore_errors=True)
+    pathlib.Path(f"{folder}screenshots").mkdir(parents=True)
     # Save error.png in screenshots folder
     resources_path = Path(__file__).parent.joinpath("resources")
     error_img = Path(resources_path, "error.png")
-    shutil.copy(str(error_img), folder)
+    shutil.copy(str(error_img), f"{folder}screenshots")
+    # Copy config file
+    shutil.copy(driver_config, f"{folder}{driver_config}")
     # Recreate logs folder and file
     logger.init()
 
