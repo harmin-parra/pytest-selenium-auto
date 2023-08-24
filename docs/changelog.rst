@@ -2,6 +2,11 @@
 Changelog
 =========
 
+1.0.1
+-----
+
+* Rename option group and plugin entry point name
+
 1.0.0
 -----
 
