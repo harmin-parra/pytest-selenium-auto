@@ -21,19 +21,19 @@ from .event_listener import CustomEventListener
 # Definition of test parameters
 #
 def pytest_addoption(parser):
-    group = parser.getgroup("selenium-screenshot", "pytest-selenium-screenshot")
+    group = parser.getgroup("pytest-selenium-auto")
     group.addoption(
         "--browser",
         action="store",
         default=None,
-        help="Accepted values: firefox, chrome, edge or safari",
+        help="The driver to use.",
         choices=("firefox", "chrome", "edge", "safari"),
     )
     group.addoption(
         "--screenshots",
         action="store",
         default="all",
-        help="Accepted values: all, last, failed, or none",
+        help="The screenshot gathering strategy.",
         choices=("all", "last", "failed", "none"),
     )
 
