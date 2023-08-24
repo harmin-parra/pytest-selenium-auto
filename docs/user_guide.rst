@@ -262,28 +262,28 @@ Sample YAML file configurations
   browsers:
       firefox:
           options:
-              binary: /usr/bin/firefox
+              binary: /path/to/browser  or  c:\path\to\browser
           service:
-              driver_path: /usr/local/bin/geckodriver
-              log_output: logs/geckodriver.log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
       chrome:
           options:
-              binary_location: /usr/bin/google-chrome
+              binary_location: /path/to/browser  or  c:\path\to\browser
           service:
-              driver_path: /usr/local/bin/chromedriver
-              log_output: logs/chromedriver.log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
       chromium:
           options:
-              binary_location: /usr/bin/chromium
+              binary_location: /path/to/browser  or  c:\path\to\browser
           service:
-              driver_path: /usr/local/bin/chromedriver
-              log_output: logs/chromiumdriver.log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
       edge:
           options:
-              binary_location: /opt/microsoft/msedge/msedge
+              binary_location: /path/to/browser  or  c:\path\to\browser
           service:
-              driver_path: /usr/local/bin/msedgedriver
-              log_output: logs/edgedriver.log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
 
 * Complete YAML configuration:
 
@@ -321,7 +321,7 @@ Sample YAML file configurations
   browsers:
       firefox:
           options:
-              binary: /path/to/browser
+              binary: /path/to/browser  or  c:\path\to\browser
               arguments:
                  -  arg1
                  -  arg2
@@ -329,51 +329,51 @@ Sample YAML file configurations
                   pref1: value1
                   pref2: value2
           addons:
-             -  /path/to/addon1
-             -  /path/to/addon2
+             -  /path/to/addon1  or  c:\path\to\addon1
+             -  /path/to/addon2  or  c:\path\to\addon2
           profile:
               directory: /path/to/profile/directory or empty for null value
               preferences:
                   pref1: value1
                   pref2: value2
               extensions:
-                 -  /path/to/extension1
-                 -  /path/to/extension2
+                 -  /path/to/extension1  or  c:\path\to\extension1
+                 -  /path/to/extension2  or  c:\path\to\extension2
           service:
-              driver_path: /path/to/driver
-              log_output: /path/to/log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
               port: 0
               args:
                  -  arg1
                  -  arg2
       chrome:
           options:
-              binary_location: /path/to/browser
+              binary_location: /path/to/browser  or  c:\path\to\browser
               arguments:
                  -  arg1
                  -  arg2
               extensions:
-                 -  /path/to/extension1
-                 -  /path/to/extension2
+                 -  /path/to/extension1  or  c:\path\to\extension1
+                 -  /path/to/extension2  or  c:\path\to\extension2
           service:
-              driver_path: /path/to/driver
-              log_output: /path/to/log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
               port: 0
               args:
                  -  arg1
                  -  arg2
       edge:
           options:
-              binary_location: /path/to/browser
+              binary_location: /path/to/browser  or  c:\path\to\browser
               arguments:
                  -  arg1
                  -  arg2
               extensions:
-                 -  /path/to/extension1
-                 -  /path/to/extension2
+                 -  /path/to/extension1  or  c:\path\to\extension1
+                 -  /path/to/extension2  or  c:\path\to\extension2
           service:
-              driver_path: /path/to/driver
-              log_output: /path/to/log
+              driver_path: /path/to/driver  or  c:\path\to\driver
+              log_output: /path/to/log  or  c:\path\to\log
               port: 0
               args:
                  -  arg1
@@ -411,38 +411,38 @@ Sample JSON file configurations
       "browsers": {    
           "firefox": {
               "options": {
-                  "binary": "/usr/bin/firefox"
+                  "binary": "/path/to/browser"  or  "c:\path\to\browser"
               },
               "service":{
-                  "driver_path": "/usr/local/bin/geckodriver",
-                  "log_output": "logs/geckodriver.log"
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log"
               }
           },
           "chrome": {
               "options": {
-                  "binary_location": "/usr/bin/google-chrome"
+                  "binary_location": "/path/to/browser"  or  "c:\path\to\browser"
               },
               "service": {
-                  "driver_path": "/usr/local/bin/chromedriver",
-                  "log_output": "logs/chromedriver.log"
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log"
               }  
           },
           "chromium": {
               "options": {
-                  "binary_location": "/usr/bin/chromium"
+                  "binary_location": "/path/to/browser"  or  "c:\path\to\browser"
               },
               "service": {
-                  "driver_path": "/usr/local/bin/chromedriver",
-                  "log_output": "logs/chromiumdriver.log"
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log"
               }
           },
           "edge": {
               "options": {
-                  "binary_location": "/opt/microsoft/msedge/msedge"
+                  "binary_location": "/path/to/browser"  or  "c:\path\to\browser"
               },
               "service": {
-                  "driver_path": "/usr/local/bin/msedgedriver",
-                  "log_output": "logs/edgedriver.log"
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log"
               }
           }
       }
@@ -492,7 +492,7 @@ Sample JSON file configurations
       "browsers": {
           "firefox": {
               "options": {
-                  "binary": "/path/to/browser",
+                  "binary": "/path/to/browser"  or  "c:\path\to\browser",
                   "arguments": [
                       "arg1",
                       "arg2"
@@ -503,8 +503,8 @@ Sample JSON file configurations
                   }
               },
               "addons": [
-                "/path/to/addon1",
-                "/path/to/addon2"
+                "/path/to/addon1"  or  "c:\path\to\addon1",
+                "/path/to/addon2"  or  "c:\path\to\addon2"
               ],
               "profile":{
                   "directory": "/path/to/profile/directory" or null,
@@ -513,13 +513,13 @@ Sample JSON file configurations
                       "pref2": "value2"
                   },
                   "extensions": [
-                      "/path/to/extension1",
-                      "/path/to/extension2"
+                      "/path/to/extension1"  or  "c:\path\to\extension1",
+                      "/path/to/extension2"  or  "c:\path\to\extension2"
                   ]
               },
               "service":{
-                  "driver_path": "/path/to/driver",
-                  "log_output": "/path/to/log",
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log",
                   "port": 0,
                   "args": [
                       "arg1",
@@ -529,19 +529,19 @@ Sample JSON file configurations
           },
           "chrome": {
               "options": {
-                  "binary_location": "/path/to/browser",
+                  "binary_location": "/path/to/browser"  or  "c:\path\to\browser",
                   "arguments": [
                       "arg1",
                       "arg2"
                   ],
                   "extensions": [
-                      "/path/to/extension1",
-                      "/path/to/extension2"
+                      "/path/to/extension1"  or  "c:\path\to\extension1",
+                      "/path/to/extension2"  or  "c:\path\to\extension2"
                   ]
               },
               "service": {
-                  "driver_path": "/path/to/driver",
-                  "log_output": "/path/to/log",
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log",
                   "port": 0,
                   "args": [
                       "arg1",
@@ -551,19 +551,19 @@ Sample JSON file configurations
           },
           "edge": {
               "options": {
-                  "binary_location": "/path/to/browser",
+                  "binary_location": "/path/to/browser"  or  "c:\path\to\browser",
                   "arguments": [
                       "arg1",
                       "arg2"
                   ],
                   "extensions": [
-                      "/path/to/extension1",
-                      "/path/to/extension2"
+                      "/path/to/extension1"  or  "c:\path\to\extension1",
+                      "/path/to/extension2"  or  "c:\path\to\extension2"
                   ]
               },
               "service": {
-                  "driver_path": "/path/to/driver",
-                  "log_output": "/path/to/log",
+                  "driver_path": "/path/to/driver"  or  "c:\path\to\driver",
+                  "log_output": "/path/to/log"  or  "c:\path\to\log",
                   "port": 0,
                   "args": [
                       "arg1",
