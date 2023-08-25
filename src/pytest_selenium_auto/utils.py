@@ -57,7 +57,8 @@ def create_assets(folder_report, driver_config):
     error_img = Path(resources_path, "error.png")
     shutil.copy(str(error_img), f"{folder}screenshots")
     # Copy config file
-    shutil.copy(driver_config, f"{folder}{driver_config}")
+    if driver_config is not None and folder != "":
+        shutil.copy(driver_config, f"{folder}{driver_config}")
     # Recreate logs folder and file
     logger.init()
 
