@@ -43,21 +43,24 @@ def getini(config, name):
     return value
 
 
-def recreate_assets(folder_report):
+def create_assets(folder_report, driver_config):
     """ Recreate screenshots and log folders and files """
     # Recreate screenshots_folder
     folder = ""
     if folder_report is not None and folder_report != '':
         folder = f"{folder_report}{os.sep}"
-    folder = f"{folder}screenshots"
-    shutil.rmtree(folder, ignore_errors=True)
-    pathlib.Path(folder).mkdir(parents=True)
-    # Save error.png in screenshots folder
+    # Create screenshots folders
+    shutil.rmtree(f"{folder}screenshots", ignore_errors=True)
+    pathlib.Path(f"{folder}screenshots").mkdir(parents=True)
+    # Copy error.png to screenshots folder
     resources_path = Path(__file__).parent.joinpath("resources")
     error_img = Path(resources_path, "error.png")
-    shutil.copy(str(error_img), folder)
+    shutil.copy(str(error_img), f"{folder}screenshots")
+    # Copy driver config file to report folder
+    shutil.copy(driver_config, f"{folder}{driver_config}")
     # Recreate logs folder and file
     logger.init()
+
 
 
 def load_json_yaml_file(filename):
@@ -98,7 +101,7 @@ def counter():
 
 
 def save_screenshot(driver, folder_report):
-    """ Save the image in the specified folder and return the href attribute of the anchor link """
+    """ Save the image in the specified folder and return the filename for the anchor link """
     index = counter()
     link = f"screenshots{os.sep}image-{index}.png"
     folder = ""
