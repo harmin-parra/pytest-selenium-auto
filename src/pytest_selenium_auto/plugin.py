@@ -1,7 +1,6 @@
 import importlib
 import os
 import pytest
-import shutil
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
 from selenium.webdriver.support.events import EventFiringWebDriver
