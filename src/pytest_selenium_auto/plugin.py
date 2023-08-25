@@ -220,11 +220,11 @@ def driver_paths(request, driver_firefox, driver_chrome, driver_chromium, driver
 
 
 @pytest.fixture(scope='session')
-def check_options(request, browser, folder_report, description_tag, thumbnail_width):
+def check_options(request, browser, folder_report, driver_config, description_tag, thumbnail_width):
     utils.img_width = thumbnail_width
     utils.description_tag = description_tag
     utils.check_browser_option(browser)
-    utils.recreate_assets(folder_report)
+    utils.create_assets(folder_report, driver_config)
 
 
 #
@@ -243,7 +243,7 @@ def comments(request):
 
 @pytest.fixture(scope='function')
 def _driver(request, check_options, browser, folder_report,
-            maximize_window, images, screenshots,
+            images, comments, screenshots, maximize_window,
             config_data, browser_options, browser_service):
     """ Instantiates the webdriver """
     driver = None
@@ -462,11 +462,7 @@ def pytest_configure(config):
         headless = config.getoption("headless")
         screenshots = config.getoption("screenshots")
         folder_report = os.path.dirname(config.getoption("htmlpath"))
-        config_file = None
-        try:
-            config_file = utils.getini(config, "driver_config")
-        except:
-            pass
+        driver_config = utils.getini(config, "driver_config")
         metadata['Browser'] = browser.capitalize()
         metadata['Headless'] = str(headless).lower()
         metadata['Screenshots'] = screenshots
@@ -474,13 +470,11 @@ def pytest_configure(config):
             metadata['Selenium'] = version("selenium")
         except:
             metadata['Selenium'] = "unknown"
-        if config_file is not None and os.path.isfile(config_file):
-            if folder_report is not None and folder_report != '':
-                shutil.copy(config_file, f"{folder_report}{os.sep}{config_file}")
-            if utils.load_json_yaml_file(config_file) != {}:
-                metadata["Driver configuration"] = f"<a href='{config_file}'>{config_file}</a><span style=\"color:green;\"> (valid)</span>"
+        if driver_config is not None and os.path.isfile(driver_config):
+            if utils.load_json_yaml_file(driver_config) != {}:
+                metadata["Driver configuration"] = f"<a href='{driver_config}'>{driver_config}</a><span style=\"color:green;\"> (valid)</span>"
             else:
-                metadata["Driver configuration"] = f"<a href='{config_file}'>{config_file}</a><span style=\"color:red;\"> (invalid)</span>"
+                metadata["Driver configuration"] = f"<a href='{driver_config}'>{driver_config}</a><span style=\"color:red;\"> (invalid)</span>"
     except:
         pass
     finally:
