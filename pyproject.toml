@@ -34,7 +34,7 @@ keywords = [
 
 
 [project.entry-points.pytest11]
-selenium_screenshot = "pytest_selenium_auto.plugin"
+selenium_auto = "pytest_selenium_auto.plugin"
 
 
 [project.urls]
