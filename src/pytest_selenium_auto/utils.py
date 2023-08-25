@@ -126,7 +126,7 @@ def save_screenshot(driver, folder_report):
 # Auxiliary functions for the report generation
 #
 def append_header(call, report, extra, pytest_html,
-                       description, description_tag):
+                  description, description_tag):
     """ Append description and exception trace """
     # Append description
     if description is not None:
