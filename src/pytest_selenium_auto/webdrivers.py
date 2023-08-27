@@ -56,7 +56,7 @@ class _Extras():
     folder_report = None
     screenshots = None
 
-    def manual_screenshot(self):
+    def log_screenshot(self):
         if self.screenshots == 'manual':
             self.images.append(utils.save_screenshot(self, self.folder_report))
 
