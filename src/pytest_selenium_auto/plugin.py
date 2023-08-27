@@ -345,7 +345,7 @@ def pytest_runtest_makereport(item, call):
         index = pkg.rfind('.')
         module = importlib.import_module(package = pkg[:index], name = pkg[index + 1:])
         # Is the called test a function ?
-        match_cls = re.search("^[^\[]*\.", item.location[2])
+        match_cls = re.search(r"^[^\[]*\.", item.location[2])
         if match_cls is None:
             func = getattr(module, item.originalname)
         else:
