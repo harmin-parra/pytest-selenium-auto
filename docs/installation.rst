@@ -27,4 +27,4 @@ If ``selenium < 4.11.0``
 
 .. code-block:: bash
 
-  $ pip install pytest-selenium-auto==1.0.0
+  $ pip install pytest-selenium-auto==1.0.1
