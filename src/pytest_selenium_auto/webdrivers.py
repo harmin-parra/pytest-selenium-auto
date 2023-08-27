@@ -44,7 +44,7 @@ class CustomEventListener(AbstractEventListener):
 
     def _log(self, driver):
         if driver.screenshots == 'all':
-            driver.images.append(utils.save_screenshot(driver, driver.folder_report))
+            driver.images.append(utils.save_screenshot(driver, driver.report_folder))
 
 
 #
@@ -53,12 +53,12 @@ class CustomEventListener(AbstractEventListener):
 class _Extras():
 
     images = None
-    folder_report = None
+    report_folder = None
     screenshots = None
 
     def log_screenshot(self):
         if self.screenshots == 'manual':
-            self.images.append(utils.save_screenshot(self, self.folder_report))
+            self.images.append(utils.save_screenshot(self, self.report_folder))
 
 
 class WebDriver_Firefox(WebDriverFirefox, _Extras):

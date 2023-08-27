@@ -13,9 +13,9 @@ from . import logger
 
 # Counter used for image files naming
 count = 0
+# Size for image thumbnails
 img_width = "300px"
 img_height = "200px"
-description_tag = "h2"
 
 
 #
@@ -43,12 +43,12 @@ def getini(config, name):
     return value
 
 
-def create_assets(folder_report, driver_config):
+def create_assets(report_folder, driver_config):
     """ Recreate screenshots and log folders and files """
     # Recreate screenshots_folder
     folder = ""
-    if folder_report is not None and folder_report != '':
-        folder = f"{folder_report}{os.sep}"
+    if report_folder is not None and report_folder != '':
+        folder = f"{report_folder}{os.sep}"
     # Create Screenshots folders
     shutil.rmtree(f"{folder}screenshots", ignore_errors=True)
     pathlib.Path(f"{folder}screenshots").mkdir(parents=True)
@@ -100,13 +100,13 @@ def counter():
     return count
 
 
-def save_screenshot(driver, folder_report):
+def save_screenshot(driver, report_folder):
     """ Save the image in the specifie folder and return the filename """
     index = counter()
     linkname = f"screenshots{os.sep}image-{index}.png"
     folder = ""
-    if folder_report is not None and folder_report != '':
-        folder = f"{folder_report}{os.sep}"
+    if report_folder is not None and report_folder != '':
+        folder = f"{report_folder}{os.sep}"
     filename = folder + linkname
     try:
         if isinstance(driver, WebDriverFirefox):
@@ -124,7 +124,7 @@ def save_screenshot(driver, folder_report):
 #
 # Auxiliary functions for the report generation
 #
-def append_header(call, report, extra, pytest_html, description):
+def append_header(call, report, extra, pytest_html, description, description_tag):
     # Append description
     if description is not None:
         description = description.strip().replace('\n', '<br>')

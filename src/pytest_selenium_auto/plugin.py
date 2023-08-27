@@ -145,7 +145,7 @@ def headless(request):
     return request.config.getoption("--headless")
 
 @pytest.fixture(scope='session')
-def folder_report(request):
+def report_folder(request):
     folder = request.config.getoption("--html")
     utils.check_html_option(folder)
     folder = os.path.dirname(request.config.getoption("--html"))
@@ -220,11 +220,11 @@ def driver_paths(request, driver_firefox, driver_chrome, driver_chromium, driver
 
 
 @pytest.fixture(scope='session')
-def check_options(request, browser, driver_config, folder_report, description_tag, thumbnail_width):
+def check_options(request, browser, driver_config, report_folder, description_tag, thumbnail_width):
     utils.img_width = thumbnail_width
     utils.description_tag = description_tag
     utils.check_browser_option(browser)
-    utils.create_assets(folder_report, driver_config)
+    utils.create_assets(report_folder, driver_config)
 
 
 #
@@ -237,7 +237,7 @@ def images(request):
 
 
 @pytest.fixture(scope='function')
-def _driver(request, check_options, browser, folder_report,
+def _driver(request, check_options, browser, report_folder,
             maximize_window, images, screenshots,
             config_data, browser_options, browser_service):
     """ Instantiates the webdriver """
@@ -263,7 +263,7 @@ def _driver(request, check_options, browser, folder_report,
 
     driver.images = images
     driver.screenshots = screenshots
-    driver.folder_report = folder_report
+    driver.report_folder = report_folder
     try:
         set_driver_capabilities(driver, browser, config_data)
     except:
@@ -371,7 +371,7 @@ def pytest_runtest_makereport(item, call):
         separator_color = feature_request.getfixturevalue("separator_color")
         separator_height = feature_request.getfixturevalue("separator_height")
 
-        exception_logged = utils.append_header(call, report, extra, pytest_html, description)
+        exception_logged = utils.append_header(call, report, extra, pytest_html, description, description_tag)
 
         if screenshots == "none":
             report.extra = extra
@@ -387,12 +387,12 @@ def pytest_runtest_makereport(item, call):
             for image in images:
                 anchors += utils.get_anchor_tag(image, div=False)
         elif screenshots == "last":
-            image = utils.save_screenshot(driver, driver.folder_report)
+            image = utils.save_screenshot(driver, driver.report_folder)
             extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ('failed', 'skipped'):
-                image = utils.save_screenshot(driver, driver.folder_report)
+                image = utils.save_screenshot(driver, driver.report_folder)
                 if screenshots == "manual":
                     anchors += utils.get_anchor_tag(image, div=False)
                 else:
@@ -447,7 +447,7 @@ def pytest_configure(config):
         browser = config.getoption("browser")
         headless = config.getoption("headless")
         screenshots = config.getoption("screenshots")
-        folder_report = os.path.dirname(config.getoption("htmlpath"))
+        report_folder = os.path.dirname(config.getoption("htmlpath"))
         driver_config = utils.getini(config, "driver_config")
         metadata['Browser'] = browser.capitalize()
         metadata['Headless'] = str(headless).lower()
