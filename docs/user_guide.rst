@@ -48,7 +48,7 @@ Accepted values:
 
 * ``failed``: Screenshot of the last step of each ``failed``, ``xfailed`` and ``xpassed`` test.
 
-* ``manual``: Screenshots aren't logged automatically. They can still be logged manually.
+* ``manual``: Screenshots aren't logged automatically. They can be logged manually.
 
 * ``none``:   Screenshots are completely disabled.
 
@@ -185,11 +185,11 @@ The screenshot gathering strategies are:
 
 * ``failed``: Screenshot of the last step of each ``failed``, ``xfailed`` and ``xpassed`` test.
 
-* ``manual``: Screenshot aren't logged automatically. They can still be logged manually.
+* ``manual``: Screenshot aren't logged automatically. They can be logged manually.
 
 * ``none``:   Screenshots are completely disabled.
 
-The function scoped ``webdriver`` fixture provides a method named ``manual_screenshot`` that allows logging screenshots manually (``webdriver.manual_screenshot()``).
+The function scoped ``webdriver`` fixture provides a method named ``log_screenshot`` that allows logging screenshots manually (``webdriver.manual_screenshot()``).
 
 Manual logs will only appear in the HTML report when the screenshot gathering strategy is ``manual``.
 
