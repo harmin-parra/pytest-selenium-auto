@@ -1,6 +1,7 @@
 import importlib
 import os
 import pytest
+import re
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
 from selenium.webdriver.support.events import EventFiringWebDriver
@@ -344,13 +345,12 @@ def pytest_runtest_makereport(item, call):
         index = pkg.rfind('.')
         module = importlib.import_module(package = pkg[:index], name = pkg[index + 1:])
         # Is the called test a function ?
-        if item.location[2].find('.') == -1:
-            func = getattr(module, item.location[2])
-        # Is the called test a class method ?
+        match_cls = re.search("^[^\[]*\.", item.location[2])
+        if match_cls is None:
+            func = getattr(module, item.originalname)
         else:
-            index = item.location[2].find('.')
-            cls = getattr(module, item.location[2][:index])
-            func = getattr(cls, item.location[2][index + 1:])
+            cls = getattr(module, match_cls[0][:-1])
+            func = getattr(cls, item.originalname)
         description = getattr(func, '__doc__')
 
         try:
