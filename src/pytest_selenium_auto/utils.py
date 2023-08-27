@@ -43,12 +43,12 @@ def getini(config, name):
     return value
 
 
-def create_assets(folder_report, driver_config):
+def create_assets(report_folder, report_css, driver_config):
     """ Recreate screenshots and log folders and files """
     # Recreate screenshots_folder
     folder = ""
-    if folder_report is not None and folder_report != '':
-        folder = f"{folder_report}{os.sep}"
+    if report_folder is not None and report_folder != '':
+        folder = f"{report_folder}{os.sep}"
     # Create screenshots folders
     shutil.rmtree(f"{folder}screenshots", ignore_errors=True)
     pathlib.Path(f"{folder}screenshots").mkdir(parents=True)
@@ -56,12 +56,14 @@ def create_assets(folder_report, driver_config):
     resources_path = Path(__file__).parent.joinpath("resources")
     error_img = Path(resources_path, "error.png")
     shutil.copy(str(error_img), f"{folder}screenshots")
-    # Copy config file
+    # Add custom CSS file to pytest-html --css option
+    style_css = Path(resources_path, "style.css")
+    report_css.insert(0, style_css)
+    # Copy config file to report folder
     if driver_config is not None and folder != "":
         shutil.copy(driver_config, f"{folder}{driver_config}")
     # Recreate logs folder and file
     logger.init()
-
 
 
 def load_json_yaml_file(filename):
@@ -101,13 +103,13 @@ def counter():
     return count
 
 
-def save_screenshot(driver, folder_report):
+def save_screenshot(driver, report_folder):
     """ Save the image in the specified folder and return the filename for the anchor link """
     index = counter()
     link = f"screenshots{os.sep}image-{index}.png"
     folder = ""
-    if folder_report is not None and folder_report != '':
-        folder = f"{folder_report}{os.sep}"
+    if report_folder is not None and report_folder != '':
+        folder = f"{report_folder}{os.sep}"
     filename = folder + link
     try:
         if isinstance(driver, WebDriverFirefox):
@@ -126,7 +128,7 @@ def save_screenshot(driver, folder_report):
 # Auxiliary functions for the report generation
 #
 def append_header(call, report, extra, pytest_html,
-                  description, description_tag):
+                  description):
     """ Append description and exception trace """
     # Append description
     if description is not None:
@@ -179,7 +181,7 @@ def get_anchor_tag(image, div=True):
 def get_table_row_tag(comment, image):
     """ Return HTML table row with event label and screenshot anchor link """
     style_img = "border: 1px solid black; width: 300px;"
-    style_td_img = "text-align: right;"
+    style_td_img = "width: 320px; text-align: center;"
     style_comment = "color: black;"
     # style_warning = "color: red;"
     link = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style_img}\"></a>"
@@ -206,3 +208,10 @@ def append_image(extra, pytest_html, item, linkname):
     else:
         extra.append(pytest_html.extras.html(f"<img src ='{linkname}'>"))
 
+
+def decorate_label(label, clazz):
+    return f"<span class=\"{clazz}\">{label}</span>"
+
+
+def decorate_quotation():
+    return decorate_label("\"", "quotation")

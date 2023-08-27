@@ -145,11 +145,15 @@ def headless(request):
     return request.config.getoption("--headless")
 
 @pytest.fixture(scope='session')
-def folder_report(request):
+def report_folder(request):
     folder = request.config.getoption("--html")
     utils.check_html_option(folder)
     folder = os.path.dirname(request.config.getoption("--html"))
     return folder
+
+@pytest.fixture(scope='session')
+def report_css(request):
+    return request.config.getoption("--css")
 
 @pytest.fixture(scope='session')
 def description_tag(request):
@@ -220,11 +224,11 @@ def driver_paths(request, driver_firefox, driver_chrome, driver_chromium, driver
 
 
 @pytest.fixture(scope='session')
-def check_options(request, browser, folder_report, driver_config, description_tag, thumbnail_width):
+def check_options(request, browser, report_folder, driver_config, description_tag, thumbnail_width, report_css):
     utils.img_width = thumbnail_width
     utils.description_tag = description_tag
     utils.check_browser_option(browser)
-    utils.create_assets(folder_report, driver_config)
+    utils.create_assets(report_folder, report_css, driver_config)
 
 
 #
@@ -242,7 +246,7 @@ def comments(request):
 
 
 @pytest.fixture(scope='function')
-def _driver(request, check_options, browser, folder_report,
+def _driver(request, check_options, browser, report_folder,
             images, comments, screenshots, maximize_window,
             config_data, browser_options, browser_service):
     """ Instantiates the webdriver """
@@ -269,7 +273,7 @@ def _driver(request, check_options, browser, folder_report,
     driver.images = images
     driver.comments = comments
     driver.screenshots = screenshots
-    driver.folder_report = folder_report
+    driver.report_folder = report_folder
     try:
         set_driver_capabilities(driver, browser, config_data)
     except:
@@ -398,20 +402,24 @@ def pytest_runtest_makereport(item, call):
             for i in range(len(images)):
                 rows += utils.get_table_row_tag(comments[i], images[i])
         elif screenshots == "last":
-            image = utils.save_screenshot(driver, driver.folder_report)
+            image = utils.save_screenshot(driver, driver.report_folder)
             extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ('failed', 'skipped'):
-                image = utils.save_screenshot(driver, driver.folder_report)
+                image = utils.save_screenshot(driver, driver.report_folder)
                 if screenshots == "manual":
-                    rows += utils.get_table_row_tag("Last screenshot before", image)
+                    if report.outcome == "skipped":
+                        event = "skip"
+                    else:
+                        event = "failure"
+                    rows += utils.get_table_row_tag(f"Last screenshot before {event}", image)
                 else:
                     extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if links != "":
             extra.append(pytest_html.extras.html(links))
         if rows != "":
-            rows = "<table style=\"width: 100%;\"><thead><tr><td style=\"width: 50%\"/><td/></tr></thead>" + rows + "</table>"
+            rows = "<table style=\"width: 100%;\"><thead><tr><td/><td style=\"width: 320px;\"/></tr></thead>" + rows + "</table>"
             extra.append(pytest_html.extras.html(rows))
         report.extra = extra
         # logger.append_screenshot_error(item.location[0], item.location[2])
@@ -460,7 +468,7 @@ def pytest_configure(config):
         browser = config.getoption("browser")
         headless = config.getoption("headless")
         screenshots = config.getoption("screenshots")
-        folder_report = os.path.dirname(config.getoption("htmlpath"))
+        report_folder = os.path.dirname(config.getoption("htmlpath"))
         driver_config = utils.getini(config, "driver_config")
         metadata['Browser'] = browser.capitalize()
         metadata['Headless'] = str(headless).lower()
