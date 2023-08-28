@@ -2,6 +2,11 @@
 Changelog
 =========
 
+1.0.1
+-----
+* Bugfix: The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
+
+
 1.0.0
 -----
 
