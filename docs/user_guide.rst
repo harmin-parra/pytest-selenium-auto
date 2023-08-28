@@ -207,8 +207,6 @@ Sample code
       """
       My first awesome test
       We do a lot of awesome stuff here
-    
-      check it out
       """
 
       webdriver.get("https://www.selenium.dev/selenium/web/web-form.html")
@@ -218,14 +216,9 @@ Sample code
 
 * With manual screenshot logging
 
-  def test_sample(webdriver):
-      """
-      My first awesome test
-      We do a lot of awesome stuff here
-    
-      check it out
-      """
+.. code-block:: python
 
+  def test_sample(webdriver):
       webdriver.get("https://www.selenium.dev/selenium/web/web-form.html")
       webdriver.find_element(By.NAME, 'my-text').send_keys('login')
       webdriver.find_element(By.NAME, 'my-password').send_keys('password')
