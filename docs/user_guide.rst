@@ -145,7 +145,7 @@ Default value: ``h2``
 
 Whether to log WebElement attributes alongside screenshots.
 
-Only applicable when ``--screenshots``=all.
+Only applicable when ``--screenshots`` = all.
 
 
 Screenshot gathering
