@@ -48,7 +48,7 @@ def pytest_addoption(parser):
         "description_tag",
         type="string",
         default="h2",
-        help="HTML tag for test descriptions. Choices={h1, h2, h3, p, pre}",
+        help="HTML tag for test descriptions. Accepted values: h1, h2, h3, p or pre",
     )
     parser.addini(
         "separator_display",
