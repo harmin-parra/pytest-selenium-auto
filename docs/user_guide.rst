@@ -141,37 +141,11 @@ Default value: ``h2``
 
 ----
 
-* **separator_display**
+* **detailed**
 
-Whether to display a horizontal line between the description and the screenshots.
+Whether to log WebElement attributes alongside screenshots.
 
-Accepted values: ``True`` or ``False``
-
-Default value: ``False``
-
-----
-
-* **separator_color**
-
-The color of the horizontal line. Value can be set in any valid format accepted by CSS (Hexadecimal, RGB or predefined color name). 
-
-Default value: ``gray``
-
-----
-
-* **separator_height**
-
-The height of the horizontal line.
-
-Default value: ``5px``
-
-----
-
-* **thumbnail_width**
-
-The width of screenshot thumbnails. Value can be set in any valid format accepted by CSS (px, %, etc).
-
-Default value: ``300px``
+Only applicable when --screenshots=all.
 
 
 Screenshot gathering
@@ -203,12 +177,15 @@ The plugin provides a function scoped ``webdriver`` fixture.
 
 **pytest-selenium-auto** needs to be executed in conjunction of **pytest-html** plugin. Therefore, the ``--html`` option also needs to be provided.
 
+An external CSS file can be provided by using the **pytest-html** ``--css`` option.
+
+
 Command-line invocation
 -----------------------
 
 .. code-block:: bash
 
-  pytest --html=report/report.html --browser=chrome --screenshots=all --headless
+  pytest --html=report/report.html --css=/path/to/css --browser=chrome --headless --screenshots=all --detailed
 
 Sample ``pytest.ini`` file
 --------------------------
@@ -221,6 +198,8 @@ Sample ``pytest.ini`` file
 
 Sample code
 -----------
+
+* With automatic screenshot logging
 
 .. code-block:: python
 
@@ -235,6 +214,22 @@ Sample code
       webdriver.get("https://www.selenium.dev/selenium/web/web-form.html")
       webdriver.find_element(By.NAME, 'my-text').send_keys('login')
       webdriver.find_element(By.NAME, 'my-password').send_keys('password')
+
+
+* With manual screenshot logging
+
+  def test_sample(webdriver):
+      """
+      My first awesome test
+      We do a lot of awesome stuff here
+    
+      check it out
+      """
+
+      webdriver.get("https://www.selenium.dev/selenium/web/web-form.html")
+      webdriver.find_element(By.NAME, 'my-text').send_keys('login')
+      webdriver.find_element(By.NAME, 'my-password').send_keys('password')
+      webdriver.log_screenshot("Fill in authentication form")
 
 
 Sample YAML file configurations

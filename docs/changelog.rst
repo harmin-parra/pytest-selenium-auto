@@ -2,6 +2,14 @@
 Changelog
 =========
 
+1.2.0
+-----
+
+* Possibility to log WebElement attributes alongside screenshots.
+* External CSS file can be added to the report.
+* Comments can be added to manually logged screenshots. 
+
+
 1.1.0
 -----
 
