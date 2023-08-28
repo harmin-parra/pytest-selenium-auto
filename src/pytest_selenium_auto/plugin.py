@@ -47,6 +47,12 @@ def pytest_addoption(parser):
         help="The screenshot gathering strategy.",
         choices=("all", "last", "failed", "manual", "none"),
     )
+    group.addoption(
+        "--detailed",
+        action="store_true",
+        default=False,
+        help="Whether to log WebElement attributes. Only applicable when --screenshots=all",
+    )
     parser.addini(
         "maximize_window",
         type="bool",
@@ -95,36 +101,6 @@ def pytest_addoption(parser):
         default="h2",
         help="HTML tag for the test description. Choices={h1, h2, h3, p, pre}",
     )
-    parser.addini(
-        "separator_display",
-        type="bool",
-        default=False,
-        help="Whether to separate screenshots by a horizontal line.",
-    )
-    parser.addini(
-        "separator_color",
-        type="string",
-        default="gray",
-        help="The color of the horizontal line.",
-    )
-    parser.addini(
-        "separator_height",
-        type="string",
-        default="5px",
-        help="The height of the horizontal line.",
-    )
-    parser.addini(
-        "thumbnail_width",
-        type="string",
-        default="300px",
-        help="The width of the screenshot thumbnail.",
-    )
-    parser.addini(
-        "thumbnail_height",
-        type="string",
-        default="200px",
-        help="The height of the screenshot thumbnail.",
-    )
 
 #
 # Read test parameters
@@ -143,6 +119,10 @@ def screenshots(request):
 @pytest.fixture(scope='session')
 def headless(request):
     return request.config.getoption("--headless")
+
+@pytest.fixture(scope='session')
+def detailed(request):
+    return request.config.getoption("--detailed")
 
 @pytest.fixture(scope='session')
 def report_folder(request):
@@ -166,22 +146,6 @@ def description_tag(request):
 @pytest.fixture(scope='session')
 def maximize_window(request):
     return request.config.getini("maximize_window")
-
-@pytest.fixture(scope='session')
-def separator_display(request):
-    return request.config.getini("separator_display")
-
-@pytest.fixture(scope='session')
-def separator_color(request):
-    return request.config.getini("separator_color")
-
-@pytest.fixture(scope='session')
-def separator_height(request):
-    return request.config.getini("separator_height")
-
-@pytest.fixture(scope='session')
-def thumbnail_width(request):
-    return request.config.getini("thumbnail_width")
 
 @pytest.fixture(scope='session')
 def driver_firefox(request):
@@ -224,9 +188,7 @@ def driver_paths(request, driver_firefox, driver_chrome, driver_chromium, driver
 
 
 @pytest.fixture(scope='session')
-def check_options(request, browser, report_folder, driver_config, description_tag, thumbnail_width, report_css):
-    utils.img_width = thumbnail_width
-    utils.description_tag = description_tag
+def check_options(request, browser, report_folder, report_css, driver_config):
     utils.check_browser_option(browser)
     utils.create_assets(report_folder, report_css, driver_config)
 
@@ -247,7 +209,7 @@ def comments(request):
 
 @pytest.fixture(scope='function')
 def _driver(request, check_options, browser, report_folder,
-            images, comments, screenshots, maximize_window,
+            images, comments, screenshots, detailed, maximize_window,
             config_data, browser_options, browser_service):
     """ Instantiates the webdriver """
     driver = None
@@ -273,6 +235,7 @@ def _driver(request, check_options, browser, report_folder,
     driver.images = images
     driver.comments = comments
     driver.screenshots = screenshots
+    driver.verbose = detailed
     driver.report_folder = report_folder
     try:
         set_driver_capabilities(driver, browser, config_data)
@@ -355,7 +318,7 @@ def pytest_runtest_makereport(item, call):
         index = pkg.rfind('.')
         module = importlib.import_module(package = pkg[:index], name = pkg[index + 1:])
         # Is the called test a function ?
-        match_cls = re.search("^[^\[]*\.", item.location[2])
+        match_cls = re.search(r"^[^\[]*\.", item.location[2])
         if match_cls is None:
             func = getattr(module, item.originalname)
         else:
@@ -377,28 +340,26 @@ def pytest_runtest_makereport(item, call):
         driver = feature_request.getfixturevalue('webdriver')
         images = feature_request.getfixturevalue('images')
         comments = feature_request.getfixturevalue('comments')
+        detailed = feature_request.getfixturevalue('detailed')
         description_tag = feature_request.getfixturevalue("description_tag")
-        separator_display = feature_request.getfixturevalue("separator_display")
-        separator_color = feature_request.getfixturevalue("separator_color")
-        separator_height = feature_request.getfixturevalue("separator_height")
 
-        exception_logged = utils.append_header(call, report, extra, pytest_html, description)
+        exception_logged = utils.append_header(call, report, extra, pytest_html, description, description_tag)
 
         if screenshots == "none":
             report.extra = extra
             return
 
         if (description is not None or exception_logged is True) \
-                and separator_display is True \
                 and screenshots in ('all', 'manual'):
-            extra.append(pytest_html.extras.html(f"<hr style='height:{separator_height};background-color:{separator_color}'>"))
+            extra.append(pytest_html.extras.html(f"<hr class=\"selenium_separator\">"))
 
         links = ""
         rows = ""
-        if screenshots == 'all':
+        if screenshots == 'all' and not detailed:
             for image in images:
                 links += utils.get_anchor_tag(image, div=False)
-        elif screenshots == 'manual':
+        elif screenshots == 'manual'\
+                or (screenshots == 'all' and detailed):
             for i in range(len(images)):
                 rows += utils.get_table_row_tag(comments[i], images[i])
         elif screenshots == "last":
@@ -409,17 +370,17 @@ def pytest_runtest_makereport(item, call):
             if xfail or report.outcome in ('failed', 'skipped'):
                 image = utils.save_screenshot(driver, driver.report_folder)
                 if screenshots == "manual":
-                    if report.outcome == "skipped":
-                        event = "skip"
-                    else:
+                    if xfail or report.outcome == "failed":
                         event = "failure"
+                    else:
+                        event = "skip"
                     rows += utils.get_table_row_tag(f"Last screenshot before {event}", image)
                 else:
                     extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if links != "":
             extra.append(pytest_html.extras.html(links))
         if rows != "":
-            rows = "<table style=\"width: 100%;\"><thead><tr><td/><td style=\"width: 320px;\"/></tr></thead>" + rows + "</table>"
+            rows = "<table style=\"width: 100%;\"><thead><tr><td/><td class=\"selenium_log_td_img\"/></tr></thead>" + rows + "</table>"
             extra.append(pytest_html.extras.html(rows))
         report.extra = extra
         # logger.append_screenshot_error(item.location[0], item.location[2])

@@ -13,9 +13,6 @@ from . import logger
 
 # Counter used for image files naming
 count = 0
-img_width = "300px"
-img_height = "200px"
-description_tag = "h2"
 
 
 #
@@ -128,7 +125,7 @@ def save_screenshot(driver, report_folder):
 # Auxiliary functions for the report generation
 #
 def append_header(call, report, extra, pytest_html,
-                  description):
+                  description, description_tag):
     """ Append description and exception trace """
     # Append description
     if description is not None:
@@ -167,38 +164,22 @@ def append_header(call, report, extra, pytest_html,
 
 
 def get_anchor_tag(image, div=True):
-    style = "border: 1px solid black;"
     if div:
-        style += " width: 300px; float: right;"
-        anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
+        anchor = decorate_href(image, "selenium_log_div_img")
         return "<div class=\"image\">" + anchor + "</div>"
     else:
-        style += f" width: {img_width};"
-        anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
+        anchor = decorate_href(image, "selenium_log_img")
         return anchor
 
 
 def get_table_row_tag(comment, image):
     """ Return HTML table row with event label and screenshot anchor link """
-    style_img = "border: 1px solid black; width: 300px;"
-    style_td_img = "width: 320px; text-align: center;"
-    style_comment = "color: black;"
-    # style_warning = "color: red;"
-    link = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style_img}\"></a>"
-    htmlcode = ""
+    link = decorate_href(image, "selenium_log_img")
     if comment is not None:
-        '''
-        if "WARNING" in comment:    # Is this a failed save_screenshot warning ?
-            label = f"<pre style=\"{style_warning}\">{comment}</pre>"
-            htmlcode = f"<tr><td>{label}</td><td></td></tr>"
-            #logger.append_screenshot_error(item.location[0], item.location[2])
-        else:
-        '''
-        label = f"<pre style=\"{style_comment}\">{comment}</pre>"
-        htmlcode = f"<tr><td>{label}</td><td style=\"{style_td_img}\">{link}</td></tr>"
+        label = decorate_label(comment, "selenium_log_comment")
     else:
-        htmlcode = f"<tr><td></td><td style=\"{style_td_img}\">{link}</td></tr>"
-    return htmlcode
+        label = ""
+    return f"<tr><td>{label}</td><td class=\"selenium_table_td_img\">{link}</td></tr>"
 
 
 def append_image(extra, pytest_html, item, linkname):
@@ -212,6 +193,8 @@ def append_image(extra, pytest_html, item, linkname):
 def decorate_label(label, clazz):
     return f"<span class=\"{clazz}\">{label}</span>"
 
+def decorate_href(link, clazz):
+    return f"<a href=\"{link}\" target=\"_blank\"><img src =\"{link}\" class=\"{clazz}\"></a>"
 
 def decorate_quotation():
     return decorate_label("\"", "quotation")
