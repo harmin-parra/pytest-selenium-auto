@@ -4,9 +4,14 @@
     display: none;
 }
 
-.selenium_thumbnail {
-    width: 300px;
-    /* height: 200px; */
+.selenium_table_td_img {
+    width: 320px;
+    text-align: center;
+}
+
+.selenium_log_comment{
+    font-family: monospace;
+    color: black;
 }
 
 .selenium_log_action {
@@ -19,22 +24,23 @@
     color: blue;
 }
 
-.selenium_quotation {
+.selenium_log_quotation {
     font-family: monospace;
     font-weight: bold;
     color: black;
 }
 
-.selenium_log_comment{
-    color: black;
-}
-
-.selenium_log_td_img {
-    width: 320px;
-    text-align: center;
+.selenium_log_fatal {
+    font-family: monospace;
+    color: red;
 }
 
 .selenium_log_img {
     border: 1px solid black;
     width: 300px;
+}
+
+.selenium_log_div_img {
+    width: 300px;
+    /* height: 200px; */
 }
