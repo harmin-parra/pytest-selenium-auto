@@ -5,19 +5,20 @@ Changelog
 1.1.0
 -----
 
-New features
+**New features**
 
 * Support for user-provided browser options and capabilities.
 * The report displays screenshot thumbnails.
 
-Improvement
+**Improvement**
 
 * Support for Chromium browser.
 
 
 1.0.1
 -----
-Bugfix
+
+**Bugfix**
 
 * The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
 
@@ -27,7 +28,7 @@ Bugfix
 
 **Initial release**
 
-Limitations
+**Limitations**
 
 * No support for user-provided browser options or capabilities.
 * No support for Chromium browser.
