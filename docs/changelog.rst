@@ -4,7 +4,8 @@ Changelog
 
 1.0.1
 -----
-Bugfix
+
+**Bugfix**
 
 * The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
 
@@ -14,7 +15,7 @@ Bugfix
 
 **Initial release**
 
-Limitations
+**Limitations**
 
 * No support for user-provided browser options or capabilities.
 * No support for Chromium browser.
