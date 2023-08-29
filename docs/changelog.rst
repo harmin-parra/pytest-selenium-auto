@@ -5,6 +5,8 @@ Changelog
 1.2.0
 -----
 
+New features
+
 * Possibility to log WebElement attributes alongside screenshots.
 * External CSS file can be added to the report.
 * Comments can be added to manually logged screenshots. 
@@ -13,21 +15,34 @@ Changelog
 1.1.0
 -----
 
+New features
+
 * Support for user-provided browser options and capabilities.
-* Support for Chromium browser.
 * The report displays screenshot thumbnails.
+
+Improvement
+
+* Support for Chromium browser.
 
 
 1.0.1
 -----
-* Bugfix: The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
+Bugfix
+
+* The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
 
 
 1.0.0
 -----
 
+**Initial release**
+
+Limitations
+
+* No support for user-provided browser options or capabilities.
+* No support for Chromium browser.
+
 * Initial release
 
   * No support for user-provided browser options or capabilities.
   * No support for Chromium browser.
-
