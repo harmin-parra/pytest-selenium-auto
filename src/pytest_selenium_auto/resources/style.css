@@ -50,6 +50,9 @@ div.image img {
 .selenium_log_img {
     border: 1px solid black;
     width: 300px;
+    height: 200px;
+    object-fit: cover;
+    object-position: top;
 }
 
 .selenium_extras_img {
