@@ -15,7 +15,7 @@ from . import logger
 count = 0
 # Size for image thumbnails
 img_width = "300px"
-img_height = "200px"
+img_height = "170px"
 
 
 #
@@ -168,7 +168,7 @@ def get_anchor_tag(image, div=True):
         anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
         return "<div class=\"image\">" + anchor + "</div>"
     else:
-        style += f" width: {img_width};"
+        style += f" width: {img_width}; height: {img_height}; object-fit: cover; object-position: top;"
         anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
         return anchor
 
