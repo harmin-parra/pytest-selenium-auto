@@ -109,7 +109,7 @@ def save_screenshot(driver, report_folder):
         folder = f"{report_folder}{os.sep}"
     filename = folder + link
     try:
-        if isinstance(driver, WebDriverFirefox):
+        if hasattr(driver, "save_full_page_screenshot"):
             driver.save_full_page_screenshot(filename)
         else:
             driver.save_screenshot(filename)
