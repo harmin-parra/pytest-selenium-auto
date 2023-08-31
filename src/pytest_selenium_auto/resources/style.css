@@ -1,12 +1,20 @@
+div.image {
+    text-align: center;
+}
+
+div.image img {
+    width: 300px;
+}
+
 .selenium_separator {
     height:5px;
     background-color: gray;
     display: none;
 }
 
-.selenium_table_td_img {
+.selenium_td_img {
     width: 320px;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .selenium_log_comment{
@@ -35,12 +43,17 @@
     color: red;
 }
 
+.selenium_div_img {
+    text-align: center;
+}
+
 .selenium_log_img {
     border: 1px solid black;
     width: 300px;
 }
 
-.selenium_log_div_img {
+.selenium_extras_img {
+    border: 1px solid black;
     width: 300px;
     /* height: 200px; */
 }

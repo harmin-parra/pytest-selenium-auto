@@ -165,7 +165,7 @@ def append_header(call, report, extra, pytest_html,
 
 def get_anchor_tag(image, div=True):
     if div:
-        anchor = decorate_href(image, "selenium_log_div_img")
+        anchor = decorate_href(image, "selenium_extras_img")
         return "<div class=\"image\">" + anchor + "</div>"
     else:
         anchor = decorate_href(image, "selenium_log_img")
@@ -179,7 +179,7 @@ def get_table_row_tag(comment, image):
         label = decorate_label(comment, "selenium_log_comment")
     else:
         label = ""
-    return f"<tr><td>{label}</td><td class=\"selenium_table_td_img\">{link}</td></tr>"
+    return f"<tr><td>{label}</td><td class=\"selenium_td_img\"><div class=\"selenium_div_img\">{link}</div></td></tr>"
 
 
 def append_image(extra, pytest_html, item, linkname):
