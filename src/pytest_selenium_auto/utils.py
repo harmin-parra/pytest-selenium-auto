@@ -7,7 +7,6 @@ import sys
 import traceback
 import yaml
 from pathlib import Path
-from selenium.webdriver.firefox.webdriver import WebDriver as WebDriverFirefox
 from . import logger
 
 
