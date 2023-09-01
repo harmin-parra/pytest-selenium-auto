@@ -169,7 +169,7 @@ Manual logs will only appear in the HTML report when the screenshot gathering st
 
 In ``manual`` mode, screenshot of the last step of ``failed``, ``xfailed`` and ``xpassed`` tests are automatically logged as well.
 
-Screenshots are stored in the parent folder of the HTML report, provided by the **pytest-html** ``html`` command-line option.
+Screenshots are stored in the parent folder of the HTML report, provided by the **pytest-html** ``--html`` command-line option.
 
 Example
 =======
