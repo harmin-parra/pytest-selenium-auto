@@ -169,6 +169,7 @@ Manual logs will only appear in the HTML report when the screenshot gathering st
 
 In ``manual`` mode, screenshot of the last step of ``failed``, ``xfailed`` and ``xpassed`` tests are automatically logged as well.
 
+Screenshots are stored in the parent folder of the HTML report, provided by the **pytest-html** ``html`` command-line option.
 
 Example
 =======
@@ -177,7 +178,7 @@ The plugin provides a function scoped ``webdriver`` fixture.
 
 **pytest-selenium-auto** needs to be executed in conjunction of **pytest-html** plugin. Therefore, the ``--html`` option also needs to be provided.
 
-An external CSS file can be provided by using the **pytest-html** ``--css`` option.
+An external CSS file can be provided by using the **pytest-html** ``--css`` command-line option.
 
 
 Command-line invocation
@@ -185,7 +186,7 @@ Command-line invocation
 
 .. code-block:: bash
 
-  pytest --html=report/report.html --css=/path/to/css --browser=chrome --headless --screenshots=all --detailed
+  pytest --html=/path/to/report --css=/path/to/css --browser=firefox --headless --screenshots=all --detailed
 
 Sample ``pytest.ini`` file
 --------------------------
@@ -250,28 +251,28 @@ Sample YAML file configurations
   browsers:
       firefox:
           options:
-              binary: /usr/bin/firefox
+              binary: /path/to/browser
           service:
-              driver_path: /usr/local/bin/geckodriver
-              log_output: logs/geckodriver.log
+              driver_path: /path/to/driver
+              log_output: /path/to/log
       chrome:
           options:
-              binary_location: /usr/bin/google-chrome
+              binary_location: /path/to/browser
           service:
-              driver_path: /usr/local/bin/chromedriver
-              log_output: logs/chromedriver.log
+              driver_path: /path/to/driver
+              log_output: /path/to/log
       chromium:
           options:
-              binary_location: /usr/bin/chromium
+              binary_location: /path/to/browser
           service:
-              driver_path: /usr/local/bin/chromedriver
-              log_output: logs/chromiumdriver.log
+              driver_path: /path/to/driver
+              log_output: /path/to/log
       edge:
           options:
-              binary_location: /opt/microsoft/msedge/msedge
+              binary_location: /path/to/browser
           service:
-              driver_path: /usr/local/bin/msedgedriver
-              log_output: logs/edgedriver.log
+              driver_path: /path/to/driver
+              log_output: /path/to/log
 
 * Complete YAML configuration:
 
@@ -399,38 +400,38 @@ Sample JSON file configurations
       "browsers": {    
           "firefox": {
               "options": {
-                  "binary": "/usr/bin/firefox"
+                  "binary": "/path/to/browser"
               },
               "service":{
-                  "driver_path": "/usr/local/bin/geckodriver",
-                  "log_output": "logs/geckodriver.log"
+                  "driver_path": "/path/to/driver",
+                  "log_output": "/path/to/log"
               }
           },
           "chrome": {
               "options": {
-                  "binary_location": "/usr/bin/google-chrome"
+                  "binary_location": "/path/to/browser"
               },
               "service": {
-                  "driver_path": "/usr/local/bin/chromedriver",
-                  "log_output": "logs/chromedriver.log"
+                  "driver_path": "/path/to/driver",
+                  "log_output": "/path/to/log"
               }  
           },
           "chromium": {
               "options": {
-                  "binary_location": "/usr/bin/chromium"
+                  "binary_location": "/path/to/browser"
               },
               "service": {
-                  "driver_path": "/usr/local/bin/chromedriver",
-                  "log_output": "logs/chromiumdriver.log"
+                  "driver_path": "/path/to/driver",
+                  "log_output": "/path/to/log"
               }
           },
           "edge": {
               "options": {
-                  "binary_location": "/opt/microsoft/msedge/msedge"
+                  "binary_location": "/path/to/browser"
               },
               "service": {
-                  "driver_path": "/usr/local/bin/msedgedriver",
-                  "log_output": "logs/edgedriver.log"
+                  "driver_path": "/path/to/driver",
+                  "log_output": "/path/to/log"
               }
           }
       }
