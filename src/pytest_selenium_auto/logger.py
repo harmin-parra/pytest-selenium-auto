@@ -27,28 +27,6 @@ def init():
     '''
 
 
-'''
-def dump_options(browser, headless, maximize_window, screenshots, driver_config, config_data, driver_paths):
-    """ Dump user-provided parameters in the log file """
-    msg = f"Options :\n\n"
-    msg += f"browser = {browser}\n"
-    msg += f"headless = {headless}\n"
-    msg += f"maximize_window = {maximize_window}\n"
-    msg += f"screenshots = {screenshots}\n"
-    msg += f"driver_config = {driver_config}"
-    if driver_config is not None:
-        if config_data != {}:
-            msg += "   (valid)"
-        else:
-            msg += "   (invalid)"
-    msg += '\n'
-    msg += f"driver_paths = \n"
-    msg += f"{json.dumps(driver_paths, indent=4)}\n\n"
-    msg += f"{separator}\n\n"
-    _write(msg)
-'''
-
-
 def append_driver_error(description, error=None, traceback=None):
     content = description
     if error is not None:
