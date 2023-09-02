@@ -17,7 +17,12 @@ div.image img {
     /* text-align: center; */
 }
 
-.selenium_log_comment{
+.selenium_log_comment {
+    font-family: monospace;
+    color: maroon;
+}
+
+.selenium_log_description {
     font-family: monospace;
     color: black;
 }
@@ -28,7 +33,6 @@ div.image img {
 }
 
 .selenium_log_target {
-    font-family: monospace;
     color: blue;
 }
 

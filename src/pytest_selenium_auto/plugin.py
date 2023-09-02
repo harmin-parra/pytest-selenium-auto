@@ -99,7 +99,13 @@ def pytest_addoption(parser):
         "description_tag",
         type="string",
         default="h2",
-        help="HTML tag for the test description. Accepted values: h1, h2, h3, p or pre",
+        help="HTML tag for the test description. Accepted values: h1, h2, h3, p or pre.",
+    )
+    parser.addini(
+        "pause",
+        type="string",
+        default="0",
+        help="Number of seconds to pause after webdriver events."
     )
 
 #
@@ -171,6 +177,14 @@ def driver_safari(request):
 def driver_config(request):
     return utils.getini(request.config, "driver_config")
 
+@pytest.fixture(scope='session')
+def pause(request):
+    try:
+        return int(utils.getini(request.config, "pause"))
+    except:
+        return 0
+
+
 @pytest.fixture(scope="session")
 def config_data(request, driver_config):
     return utils.load_json_yaml_file(driver_config)
@@ -210,7 +224,7 @@ def comments(request):
 @pytest.fixture(scope='function')
 def _driver(request, check_options, browser, report_folder,
             images, comments, screenshots, detailed, maximize_window,
-            config_data, browser_options, browser_service):
+            config_data, browser_options, browser_service, pause):
     """ Instantiates the webdriver """
     driver = None
     try:
@@ -249,7 +263,7 @@ def _driver(request, check_options, browser, report_folder,
     if maximize_window:
         driver.maximize_window()
 
-    event_listener = CustomEventListener()
+    event_listener = CustomEventListener(pause)
     wrapped_driver = EventFiringWebDriver(driver, event_listener)
 
     yield wrapped_driver
@@ -374,7 +388,7 @@ def pytest_runtest_makereport(item, call):
                         event = "failure"
                     else:
                         event = "skip"
-                    rows += utils.get_table_row_tag(f"Last screenshot before {event}", image)
+                    rows += utils.get_table_row_tag(f"Last screenshot before {event}", image, clazz="selenium_log_description")
                 else:
                     extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if links != "":
@@ -427,6 +441,7 @@ def pytest_configure(config):
             metadata = config.stash[metadata_key]
     try:
         browser = config.getoption("browser")
+        pause = utils.getini(config, "pause")
         headless = config.getoption("headless")
         screenshots = config.getoption("screenshots")
         report_folder = os.path.dirname(config.getoption("htmlpath"))
@@ -434,6 +449,7 @@ def pytest_configure(config):
         metadata['Browser'] = browser.capitalize()
         metadata['Headless'] = str(headless).lower()
         metadata['Screenshots'] = screenshots
+        metadata['Pause'] = pause + " second(s)"
         try:
             metadata['Selenium'] = version("selenium")
         except:
