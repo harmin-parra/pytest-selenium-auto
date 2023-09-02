@@ -143,7 +143,8 @@ Default value: ``h2``
 
 * **detailed**
 
-Whether to log WebElement locators and attributes. Only applicable when ``--screenshots=all``.
+| Whether to log WebElement locators and attributes.
+| Only applicable when ``--screenshots=all``.
 
 Accepted values: ``True`` or ``False``
 
@@ -184,7 +185,8 @@ Example
 
 The plugin provides a function scoped ``webdriver`` fixture.
 
-**pytest-selenium-auto** needs to be executed in conjunction of **pytest-html** plugin. Therefore, the ``--html`` option also needs to be provided.
+| **pytest-selenium-auto** needs to be executed in conjunction of **pytest-html** plugin.
+| Therefore, the ``--html`` option also needs to be provided.
 
 An external CSS file can be provided by using the **pytest-html** ``--css`` command-line option.
 
@@ -573,8 +575,10 @@ Sample JSON file configurations
   }
 
 
-Sample report
-=============
+Sample reports
+==============
 
-.. image:: example.png
+.. image:: example1.png
 
+
+.. image:: example2.png
