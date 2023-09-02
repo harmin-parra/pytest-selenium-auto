@@ -172,7 +172,7 @@ The screenshot gathering strategies are:
 
 * ``none``:   Screenshots are completely disabled.
 
-The function scoped ``webdriver`` fixture provides a method named ``log_screenshot`` that allows logging screenshots manually (``webdriver.log_screenshot(comment: str | None)``).
+The function scoped ``webdriver`` fixture provides a method named ``log_screenshot`` that allows logging screenshots manually (``webdriver.log_screenshot(comment: str)``).
 
 Manual logs will only appear in the HTML report when the screenshot gathering strategy is ``manual``.
 
