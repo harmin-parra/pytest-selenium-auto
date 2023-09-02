@@ -180,7 +180,7 @@ def driver_config(request):
 @pytest.fixture(scope='session')
 def pause(request):
     try:
-        return int(utils.getini(request.config, "pause"))
+        return float(utils.getini(request.config, "pause"))
     except:
         return 0
 

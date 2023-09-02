@@ -147,6 +147,12 @@ Whether to log WebElement attributes alongside screenshots.
 
 Only applicable when ``--screenshots`` = all.
 
+----
+
+* **pause**
+
+The time in seconds (as integer or float) to pause after each webdriver event.
+
 
 Screenshot gathering
 ====================
