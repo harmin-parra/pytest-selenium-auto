@@ -143,9 +143,11 @@ Default value: ``h2``
 
 * **detailed**
 
-Whether to log WebElement attributes alongside screenshots.
+Whether to log WebElement locators and attributes. Only applicable when ``--screenshots=all``.
 
-Only applicable when ``--screenshots`` = all.
+Accepted values: ``True`` or ``False``
+
+Default value: ``False``
 
 ----
 
@@ -200,6 +202,7 @@ Sample ``pytest.ini`` file
 .. code-block::
 
   maximize_window=True
+  pause=0.5
   driver_firefox = /path/to/driver
   driver_config=/path/to/conf.yml
 
