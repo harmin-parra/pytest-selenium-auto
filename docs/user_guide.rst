@@ -172,13 +172,14 @@ The screenshot gathering strategies are:
 
 * ``none``:   Screenshots are completely disabled.
 
-The function scoped ``webdriver`` fixture provides a method named ``log_screenshot`` that allows logging screenshots manually (``webdriver.manual_screenshot()``).
+The function scoped ``webdriver`` fixture provides a method named ``log_screenshot`` that allows logging screenshots manually (``webdriver.log_screenshot(comment: str | None)``).
 
 Manual logs will only appear in the HTML report when the screenshot gathering strategy is ``manual``.
 
 In ``manual`` mode, screenshot of the last step of ``failed``, ``xfailed`` and ``xpassed`` tests are automatically logged as well.
 
-Screenshots are stored in the parent folder of the HTML report, provided by the **pytest-html** ``--html`` command-line option.
+| Screenshots are stored in the parent folder of the HTML report, provided by 
+| the **pytest-html** ``--html`` command-line option.
 
 Example
 =======
@@ -580,5 +581,6 @@ Sample reports
 
 .. image:: example1.png
 
+----
 
 .. image:: example2.png
