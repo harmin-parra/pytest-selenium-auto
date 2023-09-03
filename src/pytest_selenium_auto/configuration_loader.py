@@ -160,7 +160,7 @@ def _set_profile(options, config):
         options.profile = profile
     except Exception as e:
         trace = traceback.format_exc()
-        logger.append_driver_error(f"Error creating browser's profile.", str(e), trace)
+        logger.append_driver_error("Error creating browser's profile.", str(e), trace)
         raise e
 
 
