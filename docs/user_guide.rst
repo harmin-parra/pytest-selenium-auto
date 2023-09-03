@@ -196,6 +196,12 @@ Manual logs will only appear in the HTML report when the screenshot gathering st
 In ``manual`` mode, screenshot of the last step of ``failed``, ``xfailed`` and ``xpassed`` tests are automatically logged as well.
 
 
+Limitations
+===========
+
+No support of any kind of parallel tests execution (multi-treads, multi-tabs or multi-windows).
+
+
 Example
 =======
 
