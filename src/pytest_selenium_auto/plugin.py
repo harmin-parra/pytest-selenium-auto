@@ -394,7 +394,6 @@ def pytest_runtest_makereport(item, call):
             if xfail or report.outcome in ('failed', 'skipped'):
                 image = utils.save_screenshot(driver, driver.report_folder)
                 if screenshots == "manual":
-                    #anchors += utils.get_anchor_tag(image, div=False)
                     if len(images) == 0:
                         # If this is the only screenshot, append it to the right of the log table row
                         anchors += utils.get_anchor_tag(image)
