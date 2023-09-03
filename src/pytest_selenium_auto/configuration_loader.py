@@ -20,10 +20,7 @@ def get_options(browser, config):
         if browser == "firefox":
             options = Options_Firefox()
             if 'browsers' in config and browser in config['browsers'] and 'profile' in config['browsers'][browser]:
-                try:
-                    _set_profile(options, config['browsers'][browser]['profile'])
-                except:
-                    raise
+                _set_profile(options, config['browsers'][browser]['profile'])
         if browser == "chrome":
             options = Options_Chrome()
         if browser == "chromium":
