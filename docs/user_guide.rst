@@ -209,6 +209,13 @@ Sample ``pytest.ini`` file
   driver_firefox = /path/to/driver
   driver_config=/path/to/conf.yml
 
+
+Limitations
+-----------
+
+No support of any kind of parallel tests execution (multi-treads, multi-tabs or multi-windows).
+
+
 Sample code
 -----------
 
