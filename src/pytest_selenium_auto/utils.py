@@ -176,9 +176,9 @@ def get_table_row_tag(comment, image, clazz="selenium_log_comment"):
     link = decorate_href(image, "selenium_log_img")
     if type(comment) == dict:
         comment = decorate_description(comment)
-    if type(comment) == str:
+    elif type(comment) == str:
         comment = decorate_label(comment, clazz)
-    if comment is None:
+    else:
         comment = ""
     return f"<tr><td>{comment}</td><td class=\"selenium_td_img\"><div class=\"selenium_div_img\">{link}</div></td></tr>"
 
