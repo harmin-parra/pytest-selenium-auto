@@ -2,6 +2,7 @@ import importlib
 import os
 import pytest
 import re
+import sys
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
 from selenium.webdriver.support.events import EventFiringWebDriver
@@ -372,8 +373,13 @@ def pytest_runtest_makereport(item, call):
         if screenshots == 'all' and not detailed:
             for image in images:
                 links += utils.get_anchor_tag(image, div=False)
-        elif screenshots == 'manual'\
+        elif screenshots == 'manual' \
                 or (screenshots == 'all' and detailed):
+            # Check images and comments lists consistency
+            if len(images) != len(comments):
+                print("ERROR: \"images\" and \"comments\" don't have the same length\nScreenshots won't be logged for this test.", file=sys.stderr)
+                report.extra = extra
+                return
             for i in range(len(images)):
                 rows += utils.get_table_row_tag(comments[i], images[i])
         elif screenshots == "last":
@@ -384,11 +390,16 @@ def pytest_runtest_makereport(item, call):
             if xfail or report.outcome in ('failed', 'skipped'):
                 image = utils.save_screenshot(driver, driver.report_folder)
                 if screenshots == "manual":
-                    if xfail or report.outcome == "failed":
-                        event = "failure"
+                    # If this is the only screenshot, append it to the right of the table log row
+                    if len(images) == 0:
+                        extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
+                    # append the last screenshot in a new table log row
                     else:
-                        event = "skip"
-                    rows += utils.get_table_row_tag(f"Last screenshot before {event}", image, clazz="selenium_log_description")
+                        if xfail or report.outcome == "failed":
+                            event = "failure"
+                        else:
+                            event = "skip"
+                        rows += utils.get_table_row_tag(f"Last screenshot before {event}", image, clazz="selenium_log_description")
                 else:
                     extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if links != "":
