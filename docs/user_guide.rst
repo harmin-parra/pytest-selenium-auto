@@ -181,6 +181,13 @@ In ``manual`` mode, screenshot of the last step of ``failed``, ``xfailed`` and `
 | Screenshots are stored in the parent folder of the HTML report, provided by 
 | the **pytest-html** ``--html`` command-line option.
 
+
+Limitations
+===========
+
+No support of any kind of parallel tests execution (multi-treads, multi-tabs or multi-windows).
+
+
 Example
 =======
 
@@ -208,13 +215,6 @@ Sample ``pytest.ini`` file
   pause=0.5
   driver_firefox = /path/to/driver
   driver_config=/path/to/conf.yml
-
-
-Limitations
------------
-
-No support of any kind of parallel tests execution (multi-treads, multi-tabs or multi-windows).
-
 
 Sample code
 -----------
