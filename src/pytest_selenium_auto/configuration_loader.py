@@ -10,6 +10,8 @@ from selenium.webdriver.edge.options import Options as Options_Edge
 from selenium.webdriver.edge.service import Service as Service_Edge
 from selenium.webdriver.safari.options import Options as Options_Safari
 from selenium.webdriver.safari.service import Service as Service_Safari
+import traceback
+from . import logger
 
 
 def get_options(browser, config):
@@ -149,19 +151,20 @@ def _set_window(driver, config):
         driver.set_window_rect(config['rect']['x'], config['rect']['y'], config['rect']['width'], config['rect']['height'])
 
 
-def _get_profile(config):
-    profile = FirefoxProfile(config.get('directory', None))
-    if 'preferences' in config:
-        for key in config['preferences']:
-            profile.set_preference(key, config['preferences'][key])
-    if 'extensions' in config:
-        for ext in config['extensions']:
-            profile.add_extension(ext)
-    return profile
-
-
 def _set_profile(options, config):
-    options.profile = _get_profile(config)
+    try:
+        profile = FirefoxProfile(config.get('directory', None))
+        if 'preferences' in config:
+            for key in config['preferences']:
+                profile.set_preference(key, config['preferences'][key])
+        if 'extensions' in config:
+            for ext in config['extensions']:
+                profile.add_extension(ext)
+        options.profile = profile
+    except Exception as e:
+        trace = traceback.format_exc()
+        logger.append_driver_error(f"Error creating browser's profile.", str(e), trace)
+        raise e
 
 
 def _install_addons(driver, addons):
