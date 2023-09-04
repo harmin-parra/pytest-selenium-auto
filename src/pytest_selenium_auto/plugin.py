@@ -374,7 +374,6 @@ def pytest_runtest_makereport(item, call):
         exception_logged = utils.append_header(call, report, extra, pytest_html, description, description_tag)
 
         if screenshots == "none":
-            report.extra = extra
             return
 
         if (description is not None or exception_logged is True) \
@@ -405,7 +404,6 @@ def pytest_runtest_makereport(item, call):
             extra.append(pytest_html.extras.html(anchors))
 
         report.extra = extra
-        #logger.append_screenshot_error(item.location[0], item.location[2])
 
     # Let's deal with exit status
     global skipped, failed, xfailed, passed, xpassed, errors
