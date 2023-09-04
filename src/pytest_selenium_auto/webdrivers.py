@@ -5,9 +5,7 @@ from selenium.webdriver.edge.webdriver import WebDriver as WebDriverEdge
 from selenium.webdriver.safari.webdriver import WebDriver as WebDriverSafari
 from selenium.webdriver.support.events import AbstractEventListener
 from selenium.webdriver.remote.webelement import By
-import sys
 import time
-import traceback
 from . import utils
 
 

@@ -182,14 +182,14 @@ def get_table_row_tag(comment, image, clazz="selenium_log_comment"):
         comment = ""
     return f"<tr><td>{comment}</td><td class=\"selenium_td_img\"><div class=\"selenium_div_img\">{link}</div></td></tr>"
 
-
+'''
 def append_image(extra, pytest_html, item, linkname):
     if "WARNING" in linkname:
         extra.append(pytest_html.extras.html(f"<pre style='color:red;'>{linkname}</pre>"))
-        logger.append_screenshot_error(item.location[0], item.location[2])
+        logger.append_report_error(item.location[0], item.location[2])
     else:
         extra.append(pytest_html.extras.html(f"<img src ='{linkname}'>"))
-
+'''
 
 def decorate_description(description):
     if description is None:
@@ -267,3 +267,26 @@ def try_catch_wrap_driver(message):
             return response
         return wrapped
     return decorator
+
+
+def add_item_stderr_message(item, message):
+    ''' Add error in stderr section of a test item '''
+    i = -1
+    for x in range(0, len(item._report_sections)):
+        if 'stderr' in item._report_sections[x][1]:
+            i = x
+            break
+    sections = []
+    if i != -1:
+        for x in range(0, len(item._report_sections)):
+            if x != i:
+                sections.append(item._report_sections[x])
+            else:
+                sections.append((
+                    item._report_sections[i][0],
+                    item._report_sections[i][1],
+                    item._report_sections[i][2] + message + '\n'
+                ))
+        item._report_sections = sections
+    else:
+        item._report_sections.append(('call', 'stderr', message))

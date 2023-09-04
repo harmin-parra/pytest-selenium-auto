@@ -2,11 +2,11 @@ import importlib
 import os
 import pytest
 import re
-import sys
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
 from selenium.webdriver.support.events import EventFiringWebDriver
 
+from . import logger
 from . import utils
 from .browser_settings import (
     browser_options,
@@ -377,7 +377,9 @@ def pytest_runtest_makereport(item, call):
                 or (screenshots == 'all' and detailed):
             # Check images and comments lists consistency
             if len(images) != len(comments):
-                print("ERROR: \"images\" and \"comments\" don't have the same length\nScreenshots won't be logged for this test.", file=sys.stderr)
+                message = "\"images\" and \"comments\" lists don't have the same length. Screenshots won't be logged for this test."
+                utils.add_item_stderr_message(item, "ERROR: " + message)
+                logger.append_report_error(item.location[0], item.location[2], message)
                 report.extra = extra
                 return
             for i in range(len(images)):
@@ -408,7 +410,14 @@ def pytest_runtest_makereport(item, call):
             rows = "<table style=\"width: 100%;\"><thead><tr><td/><td class=\"selenium_log_td_img\"/></tr></thead>" + rows + "</table>"
             extra.append(pytest_html.extras.html(rows))
         report.extra = extra
-        # logger.append_screenshot_error(item.location[0], item.location[2])
+        # Check if there was a screenshot gathering failure
+        if screenshots in ('all', 'manual'):
+            for image in images:
+                if image == f"screenshots{os.sep}error.png":
+                    message = "Failed to gather screenshot(s)"
+                    utils.add_item_stderr_message(item, "ERROR: " + message)
+                    logger.append_report_error(item.location[0], item.location[2], message)
+                    break;
 
     # Let's deal with exit status
     global skipped, failed, xfailed, passed, xpassed, errors

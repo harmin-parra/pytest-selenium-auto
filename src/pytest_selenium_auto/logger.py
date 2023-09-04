@@ -37,8 +37,8 @@ def append_driver_error(description, error=None, traceback=None):
     _write(content)
 
 
-def append_screenshot_error(module, function):
-    _write(f"{module} :: {function}  -  Failed to gather screenshot\n")
+def append_report_error(module, function, message):
+    _write(f"{module} :: {function}  -  {message}\n")
 
 
 def _write(content):
