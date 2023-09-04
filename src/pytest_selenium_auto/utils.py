@@ -182,14 +182,6 @@ def get_table_row_tag(comment, image, clazz="selenium_log_comment"):
         comment = ""
     return f"<tr><td>{comment}</td><td class=\"selenium_td_img\"><div class=\"selenium_div_img\">{link}</div></td></tr>"
 
-'''
-def append_image(extra, pytest_html, item, linkname):
-    if "WARNING" in linkname:
-        extra.append(pytest_html.extras.html(f"<pre style='color:red;'>{linkname}</pre>"))
-        logger.append_report_error(item.location[0], item.location[2])
-    else:
-        extra.append(pytest_html.extras.html(f"<img src ='{linkname}'>"))
-'''
 
 def decorate_description(description):
     if description is None:
