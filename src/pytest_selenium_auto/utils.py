@@ -238,7 +238,7 @@ def decorate_quotation():
 # Function decorators to handle exceptions.
 #
 def try_catch_wrap_event(message):
-    ''' # wrapper to handle exceptions during webdriver events logging. '''
+    """ # wrapper to handle exceptions during webdriver events logging. """
     def decorator(func):
         def wrapped(*args, **kwargs):
             try:
@@ -255,7 +255,7 @@ def try_catch_wrap_event(message):
 
 
 def try_catch_wrap_driver(message):
-    ''' # wrapper to handle exceptions during webdriver instantiation. '''
+    """ # wrapper to handle exceptions during webdriver instantiation. """
     def decorator(func):
         def wrapped(*args, **kwargs):
             try:
@@ -270,23 +270,26 @@ def try_catch_wrap_driver(message):
 
 
 def add_item_stderr_message(item, message):
-    ''' Add error in stderr section of a test item '''
-    i = -1
-    for x in range(0, len(item._report_sections)):
-        if 'stderr' in item._report_sections[x][1]:
-            i = x
-            break
-    sections = []
-    if i != -1:
+    """ Add error in stderr section of a test item """
+    try:
+        i = -1
         for x in range(0, len(item._report_sections)):
-            if x != i:
-                sections.append(item._report_sections[x])
-            else:
-                sections.append((
-                    item._report_sections[i][0],
-                    item._report_sections[i][1],
-                    item._report_sections[i][2] + message + '\n'
-                ))
-        item._report_sections = sections
-    else:
-        item._report_sections.append(('call', 'stderr', message))
+            if 'stderr' in item._report_sections[x][1]:
+                i = x
+                break
+        sections = []
+        if i != -1:
+            for x in range(0, len(item._report_sections)):
+                if x != i:
+                    sections.append(item._report_sections[x])
+                else:
+                    sections.append((
+                        item._report_sections[i][0],
+                        item._report_sections[i][1],
+                        item._report_sections[i][2] + message + '\n'
+                    ))
+            item._report_sections = sections
+        else:
+            item._report_sections.append(('call', 'stderr', message))
+    except:
+        pass
