@@ -10,8 +10,7 @@ from selenium.webdriver.edge.options import Options as Options_Edge
 from selenium.webdriver.edge.service import Service as Service_Edge
 from selenium.webdriver.safari.options import Options as Options_Safari
 from selenium.webdriver.safari.service import Service as Service_Safari
-import traceback
-from . import logger
+from . import utils
 
 
 def get_options(browser, config):
@@ -42,45 +41,44 @@ def get_options(browser, config):
     return options
 
 
+@utils.try_catch_wrap_driver("Error instantiating browser's service.")
 def get_service(browser, config):
-    try:
-        if browser == "firefox":
-            service = Service_Firefox(
-                executable_path=config.get('driver_path'),
-                port=config.get('port', 0),
-                service_args=config.get('args', None),
-                log_output=config.get('log_output', None),
-            )
-        if browser == "chrome":
-            service = Service_Chrome(
-                executable_path=config.get('driver_path'),
-                port=config.get('port', 0),
-                service_args=config.get('args', None),
-                log_output=config.get('log_output', None),
-            )
-        if browser == "chromium":
-            service = Service_Chromium(
-                executable_path=config.get('driver_path'),
-                port=config.get('port', 0),
-                service_args=config.get('args', None),
-                log_output=config.get('log_output', None),
-            )
-        if browser == "edge":
-            service = Service_Edge(
-                executable_path=config.get('driver_path'),
-                port=config.get('port', 0),
-                service_args=config.get('args', None),
-                log_output=config.get('log_output', None),
-            )
-        if browser == "safari":
-            service = Service_Safari(
-                executable_path=config.get('driver_path'),
-                port=config.get('port', 0),
-                service_args=config.get('args', None),
-                log_output=config.get('log_output', None),
-            )
-    except:
-        raise
+    service = None
+    if browser == "firefox":
+        service = Service_Firefox(
+            executable_path=config.get('driver_path'),
+            port=config.get('port', 0),
+            service_args=config.get('args', None),
+            log_output=config.get('log_output', None),
+        )
+    if browser == "chrome":
+        service = Service_Chrome(
+            executable_path=config.get('driver_path'),
+             port=config.get('port', 0),
+            service_args=config.get('args', None),
+            log_output=config.get('log_output', None),
+        )
+    if browser == "chromium":
+        service = Service_Chromium(
+            executable_path=config.get('driver_path'),
+            port=config.get('port', 0),
+            service_args=config.get('args', None),
+            log_output=config.get('log_output', None),
+        )
+    if browser == "edge":
+        service = Service_Edge(
+            executable_path=config.get('driver_path'),
+            port=config.get('port', 0),
+            service_args=config.get('args', None),
+            log_output=config.get('log_output', None),
+        )
+    if browser == "safari":
+        service = Service_Safari(
+            executable_path=config.get('driver_path'),
+            port=config.get('port', 0),
+            service_args=config.get('args', None),
+            log_output=config.get('log_output', None),
+        )
     return service
 
 
@@ -96,6 +94,7 @@ def set_driver_capabilities(driver, browser, config):
             _install_addons(driver, config['browsers'][browser]['addons'])
 
 
+@utils.try_catch_wrap_driver("Error setting browser's proxy.")
 def _set_proxy(options, config):
     if 'proxyType' in config and isinstance(config['proxyType'], str):
         if config['proxyType'].lower() == "manual":
@@ -115,10 +114,12 @@ def _set_proxy(options, config):
     options.proxy = proxy.Proxy(config)
 
 
+@utils.try_catch_wrap_driver("Error setting browser's acceptInsecureCerts capability.")
 def _set_insecure_certificates(options, value):
     options.set_capability("acceptInsecureCerts", value)
 
 
+@utils.try_catch_wrap_driver("Error setting browser's pageLoadStrategy capability.")
 def _set_page_load_strategy(options, value):
     options.set_capability("pageLoadStrategy", value)
 
@@ -128,6 +129,7 @@ def _set_headless(options, value):
         options.add_argument("--headless")
 
 
+@utils.try_catch_wrap_driver("Error setting browser's timeouts.")
 def _set_timeouts(driver, config):
     if 'implicit' in config and hasattr(driver, 'implicit_wait'):
         driver.implicit_wait(config['implicit'])
@@ -137,6 +139,7 @@ def _set_timeouts(driver, config):
         driver.set_page_load_timeout(config['pageLoad'])
 
 
+@utils.try_catch_wrap_driver("Error setting browser's windows.")
 def _set_window(driver, config):
     if 'maximize' in config and config['maximize'] is True:
         driver.maximize_window()
@@ -148,28 +151,22 @@ def _set_window(driver, config):
         driver.set_window_rect(config['rect']['x'], config['rect']['y'], config['rect']['width'], config['rect']['height'])
 
 
+@utils.try_catch_wrap_driver("Error creating browser's profile.")
 def _set_profile(options, config):
-    try:
-        profile = FirefoxProfile(config.get('directory', None))
-        if 'preferences' in config:
-            for key in config['preferences']:
-                profile.set_preference(key, config['preferences'][key])
-        if 'extensions' in config:
-            for ext in config['extensions']:
-                profile.add_extension(ext)
-        options.profile = profile
-    except Exception as e:
-        trace = traceback.format_exc()
-        logger.append_driver_error(f"Error creating browser's profile.", str(e), trace)
-        raise e
+    profile = FirefoxProfile(config.get('directory', None))
+    if 'preferences' in config:
+        for key in config['preferences']:
+            profile.set_preference(key, config['preferences'][key])
+    if 'extensions' in config:
+        for ext in config['extensions']:
+            profile.add_extension(ext)
+    options.profile = profile
 
 
+@utils.try_catch_wrap_driver("Error installing browser's addons.")
 def _install_addons(driver, addons):
     for addon in addons:
-        try:
-            driver.install_addon(addon)
-        except:
-            raise
+        driver.install_addon(addon)
 
 
 def _set_general_options(options, config):
@@ -181,28 +178,17 @@ def _set_general_options(options, config):
         _set_page_load_strategy(options, config['pageLoadStrategy'])
 
 
+@utils.try_catch_wrap_driver("Error setting browser's specific options.")
 def _set_specific_options(options, config):
     for opt in config:
         if opt == "arguments":
             for arg in config['arguments']:
-                try:
-                    options.add_argument(arg)
-                except:
-                    raise
+                options.add_argument(arg)
         elif opt == "preferences":
             for pref in config['preferences']:
-                try:
-                    options.set_preference(pref, config['preferences'][pref])
-                except:
-                    raise
+                options.set_preference(pref, config['preferences'][pref])
         elif opt == "extensions":
             for ext in config['extensions']:
-                try:
-                    options.add_extension(ext)
-                except:
-                    raise
+                options.add_extension(ext)
         elif hasattr(options, opt):
-            try:
-                setattr(options, opt, config[opt])
-            except:
-                raise
+            setattr(options, opt, config[opt])

@@ -11,22 +11,6 @@ import traceback
 from . import utils
 
 
-def try_catch_wrap(message):
-    def decorator(func):
-        def wrapped(*args, **kwargs):
-            try:
-                response = func(*args, **kwargs)
-            except Exception as e:
-                e = str(e).replace('>', '&gt;').replace('<', '&lt;')
-                trace = traceback.format_exc().replace('>', '&gt;').replace('<', '&lt;')
-                msg = f"{e}\n\n{trace}"
-                print(msg, file=sys.stderr)
-                response = utils.decorate_label(message, "selenium_log_fatal")
-            return response
-        return wrapped
-    return decorator
-
-
 #
 # Driver event listener
 #
@@ -82,7 +66,7 @@ class CustomEventListener(AbstractEventListener):
     def before_navigate_forward(self, driver) -> None:
         pass
 
-    @try_catch_wrap("Undetermined event")
+    @utils.try_catch_wrap_event("Undetermined event")
     def after_click(self, element, driver) -> None:
         self._log_screenshot(driver)
         if driver.current_url != self._url:
@@ -106,7 +90,7 @@ class CustomEventListener(AbstractEventListener):
         self._attributes = self._get_web_element_attributes(element, driver)
         self._locator = self._get_web_element_locator(element, driver)
 
-    @try_catch_wrap("Undetermined event")
+    @utils.try_catch_wrap_event("Undetermined event")
     def after_change_value_of(self, element, driver) -> None:
         self._log_screenshot(driver)
         self._attributes = self._get_web_element_attributes(element, driver)
@@ -170,7 +154,7 @@ class CustomEventListener(AbstractEventListener):
         if driver.screenshots == 'all':
             driver.images.append(utils.save_screenshot(driver, driver.report_folder))
 
-    @try_catch_wrap("Undetermined WebElement")
+    @utils.try_catch_wrap_event("Undetermined WebElement")
     def _get_web_element_attributes(self, element, driver):
         if not (driver.screenshots == 'all' and driver.verbose):
             return None

@@ -29,7 +29,7 @@ def init():
 def append_driver_error(description, error=None, traceback=None):
     content = description
     if error is not None:
-        content = content + '\n\n' + error
+        content = content + '\n\n' + str(error)
     if traceback is not None:
         content = content + '\n\n' + traceback
     print(content, file=sys.stderr)

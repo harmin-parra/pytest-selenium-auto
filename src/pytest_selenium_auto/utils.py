@@ -15,7 +15,7 @@ count = 0
 
 
 #
-# Auxiliary functions and classes
+# Auxiliary functions to check options
 #
 def check_browser_option(browser):
     if browser is None:
@@ -232,3 +232,38 @@ def decorate_href(link, clazz):
 
 def decorate_quotation():
     return decorate_label("\"", "quotation")
+
+
+#
+# Function decorators to handle exceptions.
+#
+def try_catch_wrap_event(message):
+    ''' # wrapper to handle exceptions during webdriver events logging. '''
+    def decorator(func):
+        def wrapped(*args, **kwargs):
+            try:
+                response = func(*args, **kwargs)
+            except Exception as e:
+                e = str(e).replace('>', '&gt;').replace('<', '&lt;')
+                trace = traceback.format_exc().replace('>', '&gt;').replace('<', '&lt;')
+                msg = f"{e}\n\n{trace}"
+                print(msg, file=sys.stderr)
+                response = decorate_label(message, "selenium_log_fatal")
+            return response
+        return wrapped
+    return decorator
+
+
+def try_catch_wrap_driver(message):
+    ''' # wrapper to handle exceptions during webdriver instantiation. '''
+    def decorator(func):
+        def wrapped(*args, **kwargs):
+            try:
+                response = func(*args, **kwargs)
+            except Exception as e:
+                trace = traceback.format_exc()
+                logger.append_driver_error(message, e, trace)
+                raise e
+            return response
+        return wrapped
+    return decorator
