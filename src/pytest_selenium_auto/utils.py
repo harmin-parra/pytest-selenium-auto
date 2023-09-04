@@ -170,12 +170,3 @@ def get_anchor_tag(image, div=True):
         style += f" width: {img_width}; height: {img_height}; object-fit: cover; object-position: top;"
         anchor = f"<a href=\"{image}\" target=\"_blank\"><img src =\"{image}\" style=\"{style}\"></a>"
         return anchor
-
-
-def append_image(extra, pytest_html, item, linkname):
-    if "WARNING" in linkname:
-        extra.append(pytest_html.extras.html(f"<pre style='color:red;'>{linkname}</pre>"))
-        logger.append_screenshot_error(item.location[0], item.location[2])
-    else:
-        extra.append(pytest_html.extras.html(f"<img src ='{linkname}'>"))
-
