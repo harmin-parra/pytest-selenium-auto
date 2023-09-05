@@ -185,7 +185,7 @@ In ``manual`` mode, screenshot of the last step of ``failed``, ``xfailed`` and `
 Limitations
 ===========
 
-No support of any kind of parallel tests execution (multi-treads, multi-tabs or multi-windows).
+No support for any kind of parallel tests execution (multi-treads, multi-tabs or multi-windows).
 
 
 Example
