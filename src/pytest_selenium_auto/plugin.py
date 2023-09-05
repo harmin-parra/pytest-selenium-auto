@@ -361,7 +361,6 @@ def pytest_runtest_makereport(item, call):
         exception_logged = utils.append_header(call, report, extra, pytest_html, description, description_tag)
 
         if screenshots == "none":
-            report.extra = extra
             return
 
         if (description is not None or exception_logged is True) \
