@@ -1,10 +1,12 @@
-dist/
-docs/_build
+.project
+.pydevproject
+.settings/
+.idea
+venv
 
 **/__pycache__
 **/.pytest_cache/
 **/*.pyc
 
-.project
-.pydevproject
-.settings/
+dist/
+docs/_build
