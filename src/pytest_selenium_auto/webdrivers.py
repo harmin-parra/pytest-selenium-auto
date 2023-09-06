@@ -177,16 +177,16 @@ class CustomEventListener(AbstractEventListener):
         if elem_id is not None and len(elem_id) > 0:
             label += f" id=\"{elem_id}\""
         if elem_name is not None and len(elem_name) > 0:
-            label += f" name=\"{elem_name}\"";
+            label += f" name=\"{elem_name}\""
         if elem_value is not None and type not in ("text", "textarea"):
-            label += f" value=\"{elem_value}\"";
+            label += f" value=\"{elem_value}\""
         if elem_classes is not None and len(elem_classes) > 0:
-            label += f" class=\"{elem_classes}\"";
+            label += f" class=\"{elem_classes}\""
         if elem_text is not None and len(elem_text) > 0:
-            label += f" text=\"{elem_text}\"";
+            label += f" text=\"{elem_text}\""
         if elem_checked:
             label += " checked"
-        label += "&gt;";
+        label += "&gt;"
         return label
 
     def _get_web_element_locator(self, element, driver):
@@ -222,7 +222,7 @@ class CustomEventListener(AbstractEventListener):
 #
 # WedDriver subclasses
 #
-class _Extras():
+class _Extras:
 
     images = None
     comments = None
@@ -230,26 +230,21 @@ class _Extras():
     screenshots = None
     verbose = False
 
-
     def log_screenshot(self, comment=""):
         if self.screenshots in ('all', 'manual'):
             self.images.append(utils.save_screenshot(self, self.report_folder))
             self.comments.append({ 'comment': comment })
-
 
     def wrap_element(self, element, by, value):
         setattr(element, "_by", by)
         setattr(element, "_value", value)
         return element
 
-
     def wrap_elements(self, elements, by=By.ID, value=None):
         return [self.wrap_element(element, by, value) for element in elements]
 
-
     def find_element(self, by=By.ID, value=None):
         return self.wrap_element(super().find_element(by, value), by, value)
-
 
     def find_elements(self, by=By.ID, value=None):
         return self.wrap_elements(by, value)

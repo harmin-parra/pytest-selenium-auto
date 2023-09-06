@@ -109,27 +109,31 @@ def pytest_addoption(parser):
         help="Number of seconds to pause after webdriver events."
     )
 
+
 #
 # Read test parameters
 #
-
 @pytest.fixture(scope='session')
 def browser(request):
     _browser = request.config.getoption("--browser")
     utils.check_browser_option(_browser)
     return _browser
 
+
 @pytest.fixture(scope='session')
 def screenshots(request):
     return request.config.getoption("--screenshots")
+
 
 @pytest.fixture(scope='session')
 def headless(request):
     return request.config.getoption("--headless")
 
+
 @pytest.fixture(scope='session')
 def detailed(request):
     return request.config.getoption("--detailed")
+
 
 @pytest.fixture(scope='session')
 def report_folder(request):
@@ -138,9 +142,11 @@ def report_folder(request):
     folder = os.path.dirname(request.config.getoption("--html"))
     return folder
 
+
 @pytest.fixture(scope='session')
 def report_css(request):
     return request.config.getoption("--css")
+
 
 @pytest.fixture(scope='session')
 def description_tag(request):
@@ -150,33 +156,41 @@ def description_tag(request):
     else:
         return 'h2'
 
+
 @pytest.fixture(scope='session')
 def maximize_window(request):
     return request.config.getini("maximize_window")
+
 
 @pytest.fixture(scope='session')
 def driver_firefox(request):
     return utils.getini(request.config, "driver_firefox")
 
+
 @pytest.fixture(scope='session')
 def driver_chrome(request):
     return utils.getini(request.config, "driver_chrome")
+
 
 @pytest.fixture(scope='session')
 def driver_chromium(request):
     return utils.getini(request.config, "driver_chromium")
 
+
 @pytest.fixture(scope='session')
 def driver_edge(request):
     return utils.getini(request.config, "driver_edge")
+
 
 @pytest.fixture(scope='session')
 def driver_safari(request):
     return utils.getini(request.config, "driver_safari")
 
+
 @pytest.fixture(scope='session')
 def driver_config(request):
     return utils.getini(request.config, "driver_config")
+
 
 @pytest.fixture(scope='session')
 def pause(request):
@@ -189,6 +203,7 @@ def pause(request):
 @pytest.fixture(scope="session")
 def config_data(request, driver_config):
     return utils.load_json_yaml_file(driver_config)
+
 
 @pytest.fixture(scope='session')
 def driver_paths(request, driver_firefox, driver_chrome, driver_chromium, driver_edge, driver_safari):
@@ -211,7 +226,6 @@ def check_options(request, browser, report_folder, report_css, driver_config):
 #
 # Test fixtures
 #
-
 @pytest.fixture(scope='function')
 def images(request):
     return []
@@ -288,10 +302,9 @@ skipped = 0
 xpassed = 0
 errors  = 0
 
-#
-# Modify the exit code
-#
+
 def pytest_sessionfinish(session, exitstatus):
+    """ Modify xit code. """
     summary = []
     if failed > 0:
         summary.append(str(failed) + " failed")
@@ -316,11 +329,9 @@ def pytest_sessionfinish(session, exitstatus):
         session.exitstatus = exitstatus
 
 
-#
-# Override pytest-html report generation
-#
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
+    """ Override report generation. """
     pytest_html = item.config.pluginmanager.getplugin('html')
     outcome = yield
     report = outcome.get_result()
@@ -447,11 +458,9 @@ def pytest_runtest_makereport(item, call):
             errors += 1
 
 
-#
-# Add some info to the metadata
-#
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
+    """ Add metadata. """
     metadata = config.pluginmanager.getplugin("metadata")
     if metadata:
         try:
