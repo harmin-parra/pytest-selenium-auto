@@ -6,7 +6,7 @@ import traceback
 
 
 logfile = f"logs{os.sep}webdriver.log"
-separator = "================================================================"
+separator = 64 * '='
 
 
 def init():

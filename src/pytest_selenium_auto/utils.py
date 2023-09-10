@@ -230,7 +230,7 @@ def decorate_quotation():
 # Function decorators to handle exceptions.
 #
 def try_catch_wrap_event(message):
-    """ # wrapper to handle exceptions during webdriver events logging. """
+    """ Wrapper to handle exceptions during webdriver events logging. """
     def decorator(func):
         def wrapped(*args, **kwargs):
             try:
@@ -247,7 +247,7 @@ def try_catch_wrap_event(message):
 
 
 def try_catch_wrap_driver(message):
-    """ # wrapper to handle exceptions during webdriver instantiation. """
+    """ Wrapper to handle exceptions during webdriver instantiation. """
     def decorator(func):
         def wrapped(*args, **kwargs):
             try:
