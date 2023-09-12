@@ -233,7 +233,7 @@ class _Extras:
     def log_screenshot(self, comment=""):
         if self.screenshots in ('all', 'manual'):
             self.images.append(utils.save_screenshot(self, self.report_folder))
-            self.comments.append({ 'comment': comment })
+            self.comments.append({ 'comment': utils.escape_html(comment) })
 
     def wrap_element(self, element, by, value):
         setattr(element, "_by", by)
