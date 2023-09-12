@@ -11,6 +11,10 @@ Changelog
 * External CSS file can be added to the report.
 * Comments can be added to manually logged screenshots. 
 
+**Bugfix**
+
+* HTML characters aren't escaped in logs of exception stack traces.
+
 
 1.1.0
 -----
