@@ -128,7 +128,7 @@ def append_header(call, report, extra, pytest_html,
     """ Append description and exception trace """
     # Append description
     if description is not None:
-        description = description.strip().replace('\n', '<br>')
+        description = escape_html(description).strip().replace('\n', '<br>')
         extra.append(pytest_html.extras.html(f"<{description_tag}>{description}</{description_tag}>"))
 
     # Append exception
@@ -139,15 +139,15 @@ def append_header(call, report, extra, pytest_html,
             and call.excinfo.typename in ('Failed','Skipped') \
             and hasattr(call.excinfo, "value") \
             and hasattr(call.excinfo.value, "msg"):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> reason = {call.excinfo.value.msg}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{escape_html(call.excinfo.typename)}</span> reason = {escape_html(call.excinfo.value.msg)}</pre>"))
         exception_logged = True
     # Catch XFailed tests
     if report.skipped and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XFailed</span> reason = {report.wasxfail}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XFailed</span> reason = {escape_html(report.wasxfail)}</pre>"))
         exception_logged = True
     # Catch XPassed tests
     if report.passed and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {report.wasxfail}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {escape_html(report.wasxfail)}</pre>"))
         exception_logged = True
     # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
     if hasattr(call, 'excinfo') \
@@ -156,10 +156,14 @@ def append_header(call, report, extra, pytest_html,
             and hasattr(call.excinfo, '_excinfo') \
             and call.excinfo._excinfo is not None \
             and isinstance(call.excinfo._excinfo, tuple) and len(call.excinfo._excinfo) > 1:
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{call.excinfo.typename}</span> {call.excinfo._excinfo[1]}</pre>"))
+        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{escape_html(call.excinfo.typename)}</span> {escape_html(call.excinfo._excinfo[1])}</pre>"))
         exception_logged = True
     # extra.append(pytest_html.extras.html("<br>"))
     return exception_logged
+
+
+def escape_html(msg):
+    return str(msg).replace('<', '&lt;').replace('>', '&gt;')
 
 
 def get_anchor_tag(image, div=True):
@@ -236,8 +240,8 @@ def try_catch_wrap_event(message):
             try:
                 response = func(*args, **kwargs)
             except Exception as e:
-                e = str(e).replace('>', '&gt;').replace('<', '&lt;')
-                trace = traceback.format_exc().replace('>', '&gt;').replace('<', '&lt;')
+                e = str(e)
+                trace = traceback.format_exc()
                 msg = f"{e}\n\n{trace}"
                 print(msg, file=sys.stderr)
                 response = decorate_label(message, "selenium_log_fatal")
@@ -264,9 +268,10 @@ def try_catch_wrap_driver(message):
 def add_item_stderr_message(item, message):
     """ Add error in stderr section of a test item """
     try:
+        message = escape_html(message)
         i = -1
         for x in range(0, len(item._report_sections)):
-            if 'stderr' in item._report_sections[x][1]:
+            if 'stderr call' in item._report_sections[x][1]:
                 i = x
                 break
         sections = []
