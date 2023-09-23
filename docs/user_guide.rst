@@ -195,7 +195,7 @@ Command-line invocation
 
 .. code-block:: bash
 
-  pytest --html=/path/to/report --css=/path/to/css --browser=firefox --headless --screenshots=all --detailed
+  pytest --html=/path/to/report --css=/path/to/css --browser=firefox --headless --screenshots=all --show-attributes
 
 Sample ``pytest.ini`` file
 --------------------------
