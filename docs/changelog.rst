@@ -9,7 +9,8 @@ Changelog
 
 * Possibility to log WebElement attributes alongside screenshots.
 * External CSS file can be added to the report.
-* Comments can be added to manually logged screenshots. 
+* Comments can be added to manually logged screenshots.
+* Some command-line and INI file options can be overloaded with pytest markers.
 
 **Bugfix**
 

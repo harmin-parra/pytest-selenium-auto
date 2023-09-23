@@ -61,10 +61,12 @@ Default value: ``all``
 
 Whether to run the browser in headless mode.
 
-Accepted values: ``True`` or ``False``
+----
 
-Default value: ``False``
+* **show-attributes**
 
+| Whether to log WebElement locators and attributes.
+| Only applicable when ``--screenshots=all``.
 
 Optional options via pytest.ini file
 ------------------------------------
@@ -138,17 +140,6 @@ The HTML tag for the test description (test docstring).
 Accepted values: ``h1``, ``h2``, ``h3``, ``p`` or ``pre``
 
 Default value: ``h2``
-
-----
-
-* **detailed**
-
-| Whether to log WebElement locators and attributes.
-| Only applicable when ``--screenshots=all``.
-
-Accepted values: ``True`` or ``False``
-
-Default value: ``False``
 
 ----
 
