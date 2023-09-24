@@ -14,6 +14,7 @@ Changelog
 
 **Bugfix**
 
+* Custom test execution summary displayed incorrect information
 * HTML characters aren't escaped in logs of exception stack traces.
 
 
