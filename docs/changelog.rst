@@ -12,10 +12,17 @@ Changelog
 * Comments can be added to manually logged screenshots.
 * Some command-line and INI file options can be overloaded with pytest markers.
 
+**Change**
+
+* The custom test execution summary was removed because it displayed incorrect information
+
 **Bugfix**
 
-* Custom test execution summary displayed incorrect information
 * HTML characters aren't escaped in logs of exception stack traces.
+
+**Limitation**
+
+* Since pytest-html 4.0.0, the CSS sheet needs to be externally added with the `--css` command-line option.
 
 
 1.1.0
