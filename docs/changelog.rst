@@ -22,7 +22,7 @@ Changelog
 
 **Limitation**
 
-* Since pytest-html 4.0.0, the CSS sheet needs to be externally added with the `--css` command-line option.
+* Since pytest-html 4.0.0, the CSS sheet needs to be externally added with the ``--css`` command-line option.
 
 
 1.1.0
