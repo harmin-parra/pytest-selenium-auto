@@ -19,14 +19,17 @@ count = 0
 #
 def check_browser_option(browser):
     if browser is None:
-        msg = "The usage of 'webdriver' fixture requires the pytest-selenium-auto plugin.\n'--browser' option is missing.\n"
+        msg = ("The usage of 'webdriver' fixture requires the pytest-selenium-auto plugin.\n"
+               "'--browser' option is missing.\n")
         print(msg, file=sys.stderr)
         sys.exit(pytest.ExitCode.USAGE_ERROR)
 
 
 def check_html_option(htmlpath):
     if htmlpath is None:
-        msg = "It seems you are using pytest-selenium-auto plugin.\npytest-html plugin is required.\n'--html' option is missing.\n"
+        msg = ("It seems you are using pytest-selenium-auto plugin.\n"
+               "pytest-html plugin is required.\n"
+               "'--html' option is missing.\n")
         print(msg, file=sys.stderr)
         sys.exit(pytest.ExitCode.USAGE_ERROR)
 
@@ -76,7 +79,8 @@ def load_json_yaml_file(filename):
                 return data
             except Exception as e:
                 trace = traceback.format_exc()
-                logger.append_driver_error(f"Error loading '{filename}' file. Your JSON file will be ignored", str(e), trace)
+                logger.append_driver_error(f"Error loading '{filename}' file. Your JSON file will be ignored",
+                                           str(e), trace)
                 return {}
         elif filename.endswith('.yaml') or filename.endswith('.yml'):
             try:
@@ -86,7 +90,8 @@ def load_json_yaml_file(filename):
                 return data
             except Exception as e:
                 trace = traceback.format_exc()
-                logger.append_driver_error(f"Error loading '{filename}' file. Your YAML file will be ignored", str(e), trace)
+                logger.append_driver_error(f"Error loading '{filename}' file. Your YAML file will be ignored",
+                                           str(e), trace)
                 return {}
     else:
         return {}
@@ -134,29 +139,58 @@ def append_header(call, report, extra, pytest_html,
     # Append exception
     exception_logged = False
     # Catch explicit pytest.fail and pytest.skip calls
-    if hasattr(call, 'excinfo') \
-            and call.excinfo is not None \
-            and call.excinfo.typename in ('Failed','Skipped') \
-            and hasattr(call.excinfo, "value") \
-            and hasattr(call.excinfo.value, "msg"):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{escape_html(call.excinfo.typename)}</span> reason = {escape_html(call.excinfo.value.msg)}</pre>"))
+    if (
+        hasattr(call, 'excinfo') and
+        call.excinfo is not None and
+        call.excinfo.typename in ('Failed', 'Skipped') and
+        hasattr(call.excinfo, "value") and
+        hasattr(call.excinfo.value, "msg")
+    ):
+        extra.append(pytest_html.extras.html(
+            "<pre>"
+            f"<span style='color:black;'>{escape_html(call.excinfo.typename)}</span>"
+            f" reason = {escape_html(call.excinfo.value.msg)}"
+            "</pre>"
+            )
+        )
         exception_logged = True
     # Catch XFailed tests
     if report.skipped and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XFailed</span> reason = {escape_html(report.wasxfail)}</pre>"))
+        extra.append(pytest_html.extras.html(
+            "<pre>"
+            "<span style='color:black;'>XFailed</span>"
+            f" reason = {escape_html(report.wasxfail)}"
+            "</pre>"
+            )
+        )
         exception_logged = True
     # Catch XPassed tests
     if report.passed and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>XPassed</span> reason = {escape_html(report.wasxfail)}</pre>"))
+        extra.append(pytest_html.extras.html(
+            "<pre>"
+            "<span style='color:black;'>XPassed</span>"
+            f" reason = {escape_html(report.wasxfail)}"
+            "</pre>"
+            )
+        )
         exception_logged = True
     # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
-    if hasattr(call, 'excinfo') \
-            and call.excinfo is not None \
-            and call.excinfo.typename not in ('Failed', 'Skipped')\
-            and hasattr(call.excinfo, '_excinfo') \
-            and call.excinfo._excinfo is not None \
-            and isinstance(call.excinfo._excinfo, tuple) and len(call.excinfo._excinfo) > 1:
-        extra.append(pytest_html.extras.html(f"<pre><span style='color:black;'>{escape_html(call.excinfo.typename)}</span> {escape_html(call.excinfo._excinfo[1])}</pre>"))
+    if (
+        hasattr(call, 'excinfo') and
+        call.excinfo is not None and
+        call.excinfo.typename not in ('Failed', 'Skipped') and
+        hasattr(call.excinfo, '_excinfo') and
+        call.excinfo._excinfo is not None and
+        isinstance(call.excinfo._excinfo, tuple) and
+        len(call.excinfo._excinfo) > 1
+    ):
+        extra.append(pytest_html.extras.html(
+            "<pre>"
+            f"<span style='color:black;'>{escape_html(call.excinfo.typename)}</span>"
+            f" {escape_html(call.excinfo._excinfo[1])}"
+            "</pre>"
+            )
+        )
         exception_logged = True
     # extra.append(pytest_html.extras.html("<br>"))
     return exception_logged
@@ -166,7 +200,7 @@ def escape_html(msg):
     return str(msg).replace('<', '&lt;').replace('>', '&gt;')
 
 
-def get_anchor_tag(image, div=True):
+def get_anchor_tag(image, div=False):
     if div:
         anchor = decorate_href(image, "selenium_extras_img")
         return "<div class=\"image\">" + anchor + "</div>"
@@ -223,8 +257,10 @@ def decorate_description(description):
 def decorate_label(label, clazz):
     return f"<span class=\"{clazz}\">{label}</span>"
 
+
 def decorate_href(link, clazz):
     return f"<a href=\"{link}\" target=\"_blank\"><img src =\"{link}\" class=\"{clazz}\"></a>"
+
 
 def decorate_quotation():
     return decorate_label("\"", "quotation")
@@ -271,21 +307,15 @@ def add_item_stderr_message(item, message):
         message = escape_html(message)
         i = -1
         for x in range(0, len(item._report_sections)):
-            if 'stderr call' in item._report_sections[x][1]:
+            if (item._report_sections[x][0], item._report_sections[x][1]) == ('call', 'stderr'):
                 i = x
                 break
-        sections = []
         if i != -1:
-            for x in range(0, len(item._report_sections)):
-                if x != i:
-                    sections.append(item._report_sections[x])
-                else:
-                    sections.append((
-                        item._report_sections[i][0],
-                        item._report_sections[i][1],
-                        item._report_sections[i][2] + message + '\n'
-                    ))
-            item._report_sections = sections
+            item._report_sections[i] = (
+                'call',
+                'stderr',
+                item._report_sections[i][2] + '\n' + message + '\n'
+            )
         else:
             item._report_sections.append(('call', 'stderr', message))
     except:

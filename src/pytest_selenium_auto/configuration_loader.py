@@ -54,7 +54,7 @@ def get_service(browser, config):
     if browser == "chrome":
         service = Service_Chrome(
             executable_path=config.get('driver_path'),
-             port=config.get('port', 0),
+            port=config.get('port', 0),
             service_args=config.get('args', None),
             log_output=config.get('log_output', None),
         )
@@ -83,15 +83,32 @@ def get_service(browser, config):
 
 
 def set_driver_capabilities(driver, browser, config):
-    if 'capabilities' in config:
-        if 'timeouts' in config['capabilities']:
-            _set_timeouts(driver, config['capabilities']['timeouts'])
-        if 'window' in config:
-            _set_window(driver, config['window'])
-        if 'window' in config and 'maximize' in config['window'] and config['window']['maximize'] is True:
-            driver.maximize_window()
-        if browser == 'firefox' and 'browsers' in config and 'firefox' in config['browsers'] and 'addons' in config['browsers']['firefox']:
-            _install_addons(driver, config['browsers'][browser]['addons'])
+    try:
+        if 'capabilities' in config:
+            if 'timeouts' in config['capabilities']:
+                _set_timeouts(driver, config['capabilities']['timeouts'])
+            if 'window' in config:
+                _set_window(driver, config['window'])
+            if (
+                'window' in config and
+                'maximize' in config['window'] and
+                config['window']['maximize'] is True
+            ):
+                driver.maximize_window()
+            if (
+                browser == 'firefox' and
+                'browsers' in config and
+                'firefox' in config['browsers'] and
+                'addons' in config['browsers']['firefox']
+            ):
+                _install_addons(driver, config['browsers'][browser]['addons'])
+    except:
+        if driver is not None:
+            try:
+                driver.quit()
+            except:
+                pass
+        raise
 
 
 @utils.try_catch_wrap_driver("Error setting browser's proxy.")
@@ -148,7 +165,12 @@ def _set_window(driver, config):
     if 'position' in config:
         driver.set_window_position(config['position']['x'], config['position']['y'])
     if 'rect' in config:
-        driver.set_window_rect(config['rect']['x'], config['rect']['y'], config['rect']['width'], config['rect']['height'])
+        driver.set_window_rect(
+            config['rect']['x'],
+            config['rect']['y'],
+            config['rect']['width'],
+            config['rect']['height']
+        )
 
 
 @utils.try_catch_wrap_driver("Error creating browser's profile.")

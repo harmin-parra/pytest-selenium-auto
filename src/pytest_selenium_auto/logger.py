@@ -26,12 +26,12 @@ def init():
     '''
 
 
-def append_driver_error(description, error=None, traceback=None):
+def append_driver_error(description, error=None, trace=None):
     content = description
     if error is not None:
         content = content + '\n\n' + str(error)
-    if traceback is not None:
-        content = content + '\n\n' + traceback
+    if trace is not None:
+        content = content + '\n\n' + trace
     print(content, file=sys.stderr)
     content += f"\n{separator}\n\n"
     _write(content)

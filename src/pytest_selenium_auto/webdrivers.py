@@ -1,8 +1,8 @@
-from selenium.webdriver.firefox.webdriver import WebDriver as WebDriverFirefox
-from selenium.webdriver.chrome.webdriver import WebDriver as WebDriverChrome
-from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriverChromium
-from selenium.webdriver.edge.webdriver import WebDriver as WebDriverEdge
-from selenium.webdriver.safari.webdriver import WebDriver as WebDriverSafari
+from selenium.webdriver.firefox.webdriver  import WebDriver as WebDriver_Firefox
+from selenium.webdriver.chrome.webdriver   import WebDriver as WebDriver_Chrome
+from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
+from selenium.webdriver.edge.webdriver     import WebDriver as WebDriver_Edge
+from selenium.webdriver.safari.webdriver   import WebDriver as WebDriver_Safari
 from selenium.webdriver.support.events import AbstractEventListener
 from selenium.webdriver.remote.webelement import By
 import time
@@ -21,6 +21,9 @@ class CustomEventListener(AbstractEventListener):
         self._url = None
         self.pause = pause
 
+    def before_navigate_to(self, url: str, driver) -> None:
+        pass
+
     def after_navigate_to(self, url: str, driver) -> None:
         self._log_screenshot(driver)
         self._log_comment(
@@ -33,7 +36,7 @@ class CustomEventListener(AbstractEventListener):
         self._url = driver.current_url
         time.sleep(self.pause)
 
-    def before_navigate_to(self, url: str, driver) -> None:
+    def before_navigate_back(self, driver) -> None:
         pass
 
     def after_navigate_back(self, driver) -> None:
@@ -47,7 +50,7 @@ class CustomEventListener(AbstractEventListener):
         self._url = driver.current_url
         time.sleep(self.pause)
 
-    def before_navigate_back(self, driver) -> None:
+    def before_navigate_forward(self, driver) -> None:
         pass
 
     def after_navigate_forward(self, driver) -> None:
@@ -61,8 +64,9 @@ class CustomEventListener(AbstractEventListener):
         self._url = driver.current_url
         time.sleep(self.pause)
 
-    def before_navigate_forward(self, driver) -> None:
-        pass
+    def before_click(self, element, driver) -> None:
+        self._attributes = self._get_web_element_attributes(element, driver)
+        self._locator = self._get_web_element_locator(element, driver)
 
     @utils.try_catch_wrap_event("Undetermined event")
     def after_click(self, element, driver) -> None:
@@ -84,9 +88,8 @@ class CustomEventListener(AbstractEventListener):
         self._locator = None
         time.sleep(self.pause)
 
-    def before_click(self, element, driver) -> None:
-        self._attributes = self._get_web_element_attributes(element, driver)
-        self._locator = self._get_web_element_locator(element, driver)
+    def before_change_value_of(self, element, driver) -> None:
+        self._value = element.get_attribute("value")
 
     @utils.try_catch_wrap_event("Undetermined event")
     def after_change_value_of(self, element, driver) -> None:
@@ -125,15 +128,6 @@ class CustomEventListener(AbstractEventListener):
             )
         self._value = None
         time.sleep(self.pause)            
-
-    def before_change_value_of(self, element, driver) -> None:
-        self._value = element.get_attribute("value")
-
-    def after_execute_script(self, script, driver) -> None:
-        pass
-
-    def before_execute_script(self, script, driver) -> None:
-        pass
 
     def before_quit(self, driver) -> None:
         self._attributes = None
@@ -224,57 +218,93 @@ class CustomEventListener(AbstractEventListener):
 #
 class _Extras:
 
-    images = None
-    comments = None
-    report_folder = None
-    screenshots = None
-    verbose = False
+    @staticmethod
+    def log_screenshot(driver, comment=""):
+        if driver.screenshots in ('all', 'manual'):
+            driver.images.append(utils.save_screenshot(driver, driver.report_folder))
+            driver.comments.append({'comment': utils.escape_html(comment).replace('\n', '<br>')})
 
-    def log_screenshot(self, comment=""):
-        if self.screenshots in ('all', 'manual'):
-            self.images.append(utils.save_screenshot(self, self.report_folder))
-            self.comments.append({ 'comment': utils.escape_html(comment) })
-
-    def wrap_element(self, element, by, value):
+    @staticmethod
+    def wrap_element(element, by, value):
         setattr(element, "_by", by)
         setattr(element, "_value", value)
         return element
 
-    def wrap_elements(self, elements, by=By.ID, value=None):
-        return [self.wrap_element(element, by, value) for element in elements]
+    @staticmethod
+    def wrap_elements(elements, by=By.ID, value=None):
+        return [_Extras.wrap_element(element, by, value) for element in elements]
+
+
+class WebDriverFirefox(WebDriver_Firefox):
+
+    def __init__(self, options=None, service=None):
+        super().__init__(options=options, service=service)
+
+    def log_screenshot(self, comment=""):
+        _Extras.log_screenshot(self, comment)
 
     def find_element(self, by=By.ID, value=None):
-        return self.wrap_element(super().find_element(by, value), by, value)
+        return _Extras.wrap_element(super().find_element(by, value), by, value)
 
     def find_elements(self, by=By.ID, value=None):
-        return self.wrap_elements(by, value)
+        return _Extras.wrap_elements(super().find_elements(by, value), by, value)
 
 
-class WebDriver_Firefox(_Extras, WebDriverFirefox):
-
-    def __init__(self, options=None, service=None):
-        super().__init__(options=options, service=service)
-
-
-class WebDriver_Chrome(_Extras, WebDriverChrome):
+class WebDriverChrome(WebDriver_Chrome):
 
     def __init__(self, options=None, service=None):
         super().__init__(options=options, service=service)
 
+    def log_screenshot(self, comment=""):
+        _Extras.log_screenshot(self, comment)
 
-class WebDriver_Chromium(_Extras, WebDriverChromium):
+    def find_element(self, by=By.ID, value=None):
+        return _Extras.wrap_element(super().find_element(by, value), by, value)
+
+    def find_elements(self, by=By.ID, value=None):
+        return _Extras.wrap_elements(super().find_elements(by, value), by, value)
+
+
+class WebDriverChromium(WebDriver_Chromium):
 
     def __init__(self, options=None, service=None):
         super().__init__(browser_name="Chromium", vendor_prefix="Chromium", options=options, service=service)
 
+    def log_screenshot(self, comment=""):
+        _Extras.log_screenshot(self, comment)
 
-class WebDriver_Edge(_Extras, WebDriverEdge):
+    def find_element(self, by=By.ID, value=None):
+        return _Extras.wrap_element(super().find_element(by, value), by, value)
+
+    def find_elements(self, by=By.ID, value=None):
+        return _Extras.wrap_elements(super().find_elements(by, value), by, value)
+
+
+class WebDriverEdge(WebDriver_Edge):
 
     def __init__(self, options=None, service=None):
         super().__init__(options=options, service=service)
 
+    def log_screenshot(self, comment=""):
+        _Extras.log_screenshot(self, comment)
 
-class WebDriver_Safari(_Extras, WebDriverSafari):
+    def find_element(self, by=By.ID, value=None):
+        return _Extras.wrap_element(super().find_element(by, value), by, value)
+
+    def find_elements(self, by=By.ID, value=None):
+        return _Extras.wrap_elements(super().find_elements(by, value), by, value)
+
+
+class WebDriverSafari(WebDriver_Safari):
 
     def __init__(self, options=None, service=None):
         super().__init__(options=options, service=service)
+
+    def log_screenshot(self, comment=""):
+        _Extras.log_screenshot(self, comment)
+
+    def find_element(self, by=By.ID, value=None):
+        return _Extras.wrap_element(super().find_element(by, value), by, value)
+
+    def find_elements(self, by=By.ID, value=None):
+        return _Extras.wrap_elements(super().find_elements(by, value), by, value)

@@ -1,4 +1,3 @@
-import pytest
 from selenium.webdriver.chrome.service   import Service as Service_Chrome
 from selenium.webdriver.chromium.service import ChromiumService as Service_Chromium
 from selenium.webdriver.firefox.service  import Service as Service_Firefox
@@ -19,30 +18,26 @@ services = {
 }
 
 
-@pytest.fixture(scope='session')
-def browser_options(request, browser, config_data, headless):
+def browser_options(browser, config, headless):
     if browser is None:
         return None
-    options = get_options(browser, config_data)
 
-    for arg in get_arguments_from_markers(request.node):
-        options.add_argument(arg)
-
-    if headless is True:
+    options = get_options(browser, config)
+    # window = markers.get_marker_window(request.node)
+    if headless is True or \
+            ('window' in config and 
+             'headless' in config['window'] and 
+             config['window']['headless'] is True):
         options.add_argument("--headless")
-
-    if browser == "firefox":
-        for name, value in get_preferences_from_markers(request.node).items():
-            options.set_preference(name, value)
+    # options.update(markers.get_marker_options(request.node))
 
     return options
 
 
-@pytest.fixture(scope='session')
-def browser_service(request, browser, config_data, driver_paths):
+def browser_service(browser, config, driver_paths):
     config_service = {}
-    if 'browsers' in config_data and browser in config_data['browsers'] and 'service' in config_data['browsers'][browser]:
-        config_service = config_data['browsers'][browser]['service']
+    if 'browsers' in config and browser in config['browsers'] and 'service' in config['browsers'][browser]:
+        config_service = config['browsers'][browser]['service']
     if browser is None:
         return None
     # When driver configuration provided in pytest.ini file
@@ -55,17 +50,3 @@ def browser_service(request, browser, config_data, driver_paths):
         return get_service(browser, config_service)
     else:
         return services[browser]()
-
-
-def get_arguments_from_markers(node):
-    arguments = []
-    for m in node.iter_markers("firefox_arguments"):
-        arguments.extend(m.args)
-    return arguments
-
-
-def get_preferences_from_markers(node):
-    preferences = dict()
-    for mark in node.iter_markers("firefox_preferences"):
-        preferences.update(mark.args[0])
-    return preferences
