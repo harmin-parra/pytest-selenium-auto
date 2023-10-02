@@ -307,7 +307,6 @@ Sample CSS file
   }
 
 
-
 Sample YAML file configurations
 ===============================
 
