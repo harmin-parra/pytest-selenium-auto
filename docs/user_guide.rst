@@ -577,7 +577,7 @@ Sample JSON configuration files
                 "/path/to/addon2"
               ],
               "profile":{
-                  "directory": "/path/to/profile/directory" or null,
+                  "directory": "/path/to/profile/directory or null",
                   "preferences": {
                       "pref1": "value1",
                       "pref2": "value2"
