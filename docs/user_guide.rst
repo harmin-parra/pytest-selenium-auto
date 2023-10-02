@@ -307,7 +307,7 @@ Sample CSS file
   }
 
 
-Sample YAML file configurations
+Sample YAML configuration files
 ===============================
 
 * Simple YAML configuration:
@@ -450,7 +450,7 @@ Sample YAML file configurations
                  -  arg2
 
 
-Sample JSON file configurations
+Sample JSON configuration files
 ===============================
 
 * Simple JSON configuration:
