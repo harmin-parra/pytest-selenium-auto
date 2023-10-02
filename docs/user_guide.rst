@@ -237,7 +237,7 @@ Sample code
 
 
 Sample CSS file
-===========================
+===============
 
 .. code-block:: css
 
