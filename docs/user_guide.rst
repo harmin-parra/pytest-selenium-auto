@@ -455,7 +455,7 @@ Sample JSON configuration files
 
 * Simple JSON configuration:
 
-.. code-block:: JSON
+.. code-block:: json
 
   {
       "capabilities": {
@@ -520,7 +520,7 @@ Sample JSON configuration files
 
 * Complete JSON configuration:
 
-.. code-block:: JSON
+.. code-block:: json
 
   {
       "capabilities": {
