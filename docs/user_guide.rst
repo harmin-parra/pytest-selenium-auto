@@ -200,7 +200,7 @@ Command-line invocation
 Sample ``pytest.ini`` file
 --------------------------
 
-.. code-block::
+.. code-block:: ini
 
   maximize_window=True
   pause=0.5
