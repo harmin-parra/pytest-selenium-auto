@@ -236,7 +236,7 @@ Sample code
       webdriver.log_screenshot("Fill in authentication form")
 
 
-Sample CSS style sheet file
+Sample CSS file
 ===========================
 
 .. code-block:: css
