@@ -421,12 +421,6 @@ def pytest_runtest_makereport(item, call):
         if rows != "":
             rows = (
                 "<table style=\"width: 100%;\">"
-                "    <thead>"
-                "        <tr>"
-                "            <td/>"
-                "            <td class=\"selenium_log_td_img\"/>"
-                "        </tr>"
-                "    </thead>"
                 "    <tbody>"
                 + rows +
                 "    </tbody>"
