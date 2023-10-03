@@ -6,7 +6,7 @@ Pytest plugin to automatically capture screenshots upon selenium webdriver event
 
 ## Resources ##
 
-- [Documentation](https://pytest-selenium-auto.readthedocs.io/en/1.1.x/)
+- [Documentation](https://pytest-selenium-auto.readthedocs.io/en/stable/)
 - [Issue tracker](https://github.com/harmin-parra/pytest-selenium-auto/issues)
 - [Source code](https://github.com/harmin-parra/pytest-selenium-auto)
 
