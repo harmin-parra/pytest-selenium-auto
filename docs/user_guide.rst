@@ -259,6 +259,10 @@ Sample CSS file
       width: 320px;
   }
   
+  .selenium_div_img {
+      text-align: center;
+  }
+  
   .selenium_log_comment {
       font-family: monospace;
       color: maroon;
@@ -287,10 +291,6 @@ Sample CSS file
   .selenium_log_fatal {
       font-family: monospace;
       color: red;
-  }
-  
-  .selenium_div_img {
-      text-align: center;
   }
   
   .selenium_log_img {
