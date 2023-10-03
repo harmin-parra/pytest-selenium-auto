@@ -22,7 +22,7 @@ Installing pytest-selenium-auto
 Support for older pytest-html versions
 --------------------------------------
 
-If pytest-html <= 3.2.0
+If ``pytest-html <= 3.2.0``
 
 .. code-block:: bash
 
