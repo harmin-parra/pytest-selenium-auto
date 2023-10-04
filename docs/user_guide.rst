@@ -27,7 +27,7 @@ Options
 Required options via command line
 ---------------------------------
 
-* **browser**
+* ``--browser``
  
 The browser to use.
 
