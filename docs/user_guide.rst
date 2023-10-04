@@ -33,6 +33,7 @@ The browser to use.
 
 Accepted values: ``firefox``, ``chrome``, ``chromium``, ``edge`` or ``safari``
 
+
 Optional options via command line
 ---------------------------------
 
@@ -63,10 +64,24 @@ Whether to run the browser in headless mode.
 
 ----
 
-* **show-attributes**
+* **log-attributes**
 
 | Whether to log WebElement locators and attributes.
 | Only applicable when ``--screenshots=all``.
+
+----
+
+* **log-page-source**
+
+Whether to log web page sources.
+
+
+----
+
+* **log-verbose**
+
+Same as combining ``log-attributes`` and ``log-page-source`` options.
+ 
 
 Optional options via pytest.ini file
 ------------------------------------
@@ -195,7 +210,8 @@ Command-line invocation
 
 .. code-block:: bash
 
-  pytest --html=/path/to/report --css=/path/to/css --browser=firefox --headless --screenshots=all --show-attributes
+  pytest --html=/path/to/report --css=/path/to/css --browser=firefox --headless --screenshots=all --log-attributes --log-page-source
+
 
 Sample ``pytest.ini`` file
 --------------------------
@@ -206,6 +222,7 @@ Sample ``pytest.ini`` file
   pause=0.5
   driver_firefox = /path/to/driver
   driver_config=/path/to/conf.yml
+
 
 Sample code
 -----------
