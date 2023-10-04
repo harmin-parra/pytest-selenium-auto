@@ -37,7 +37,7 @@ Accepted values: ``firefox``, ``chrome``, ``chromium``, ``edge`` or ``safari``
 Optional options via command line
 ---------------------------------
 
-* **- -screenshots**
+* ``--screenshots``
 
 The strategy of screenshot gathering.
 
@@ -58,27 +58,27 @@ Default value: ``all``
 
 ----
 
-* **- -headless**
+* ``--headless``
 
 Whether to run the browser in headless mode.
 
 ----
 
-* **- -log-attributes**
+* ``--log-attributes``
 
 | Whether to log WebElement locators and attributes.
 | Only applicable when ``--screenshots=all``.
 
 ----
 
-* **- -log-page-source**
+* ``--log-page-source``
 
 Whether to log web page sources.
 
 
 ----
 
-* **- -log-verbose**
+* ``--log-verbose``
 
 Same as combining ``--log-attributes`` and ``--log-page-source`` options.
  
