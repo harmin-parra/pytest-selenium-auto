@@ -329,7 +329,7 @@ def pytest_runtest_makereport(item, call):
     pytest_html = item.config.pluginmanager.getplugin('html')
     outcome = yield
     report = outcome.get_result()
-    extra = getattr(report, 'extra', [])
+    extras = getattr(report, 'extras', [])
 
     # Let's deal with exit status
     # update_test_status_counter(call, report)
@@ -366,14 +366,14 @@ def pytest_runtest_makereport(item, call):
         verbose = driver.verbose
         description_tag = feature_request.getfixturevalue("description_tag")
 
-        exception_logged = utils.append_header(call, report, extra, pytest_html, description, description_tag)
+        exception_logged = utils.append_header(call, report, extras, pytest_html, description, description_tag)
 
         if screenshots == "none":
             return
 
         if (description is not None or exception_logged is True) \
                 and screenshots in ('all', 'manual'):
-            extra.append(pytest_html.extras.html(f"<hr class=\"selenium_separator\">"))
+            extras.append(pytest_html.extras.html(f"<hr class=\"selenium_separator\">"))
 
         links = ""
         rows = ""
@@ -388,13 +388,13 @@ def pytest_runtest_makereport(item, call):
                            "Screenshots won't be logged for this test.")
                 utils.add_item_stderr_message(item, "ERROR: " + message)
                 logger.append_report_error(item.location[0], item.location[2], message)
-                report.extra = extra
+                report.extras = extras
                 return
             for i in range(len(images)):
                 rows += utils.get_table_row_tag(comments[i], images[i])
         elif screenshots == "last":
             image = utils.save_screenshot(driver, driver.report_folder)
-            extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
+            extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ('failed', 'skipped'):
@@ -402,7 +402,7 @@ def pytest_runtest_makereport(item, call):
                 if screenshots == "manual":
                     # If this is the only screenshot, append it to the right of the table log row
                     if len(images) == 0:
-                        extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
+                        extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
                     # append the last screenshot in a new table log row
                     else:
                         if xfail or report.outcome == "failed":
@@ -415,9 +415,9 @@ def pytest_runtest_makereport(item, call):
                                     clazz="selenium_log_description"
                                 )
                 else:
-                    extra.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
+                    extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
         if links != "":
-            extra.append(pytest_html.extras.html(links))
+            extras.append(pytest_html.extras.html(links))
         if rows != "":
             rows = (
                 "<table style=\"width: 100%;\">"
@@ -426,8 +426,8 @@ def pytest_runtest_makereport(item, call):
                 "    </tbody>"
                 "</table>"
             )
-            extra.append(pytest_html.extras.html(rows))
-        report.extra = extra
+            extras.append(pytest_html.extras.html(rows))
+        report.extras = extras
         # Check if there was a screenshot gathering failure
         if screenshots in ('all', 'manual'):
             for image in images:
