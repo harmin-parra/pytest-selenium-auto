@@ -5,6 +5,14 @@ Changelog
 1.3.0
 -----
 
+**New feature**
+
+* Possibility to log web page sources.
+
+**Changes**
+
+* ``--show-attributes`` option has been renamed to ``--log-attributes``.
+* Replacement of deprecated code.
 
 
 1.2.0
