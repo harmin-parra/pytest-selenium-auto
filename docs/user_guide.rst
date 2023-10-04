@@ -112,7 +112,7 @@ Accepted file extensions:
 
 File path of the Firefox driver to use.
 
-Takes precedence over the driver path mentioned in the JSON configuration file.
+Takes precedence over the driver path mentioned in the json/yaml configuration file.
 
 ----
 
@@ -120,7 +120,7 @@ Takes precedence over the driver path mentioned in the JSON configuration file.
 
 File path of the Chrome driver to use.
 
-Takes precedence over the driver path mentioned in the JSON configuration file.
+Takes precedence over the driver path mentioned in the json/yaml configuration file.
 
 ----
 
@@ -128,7 +128,7 @@ Takes precedence over the driver path mentioned in the JSON configuration file.
 
 File path of the Chromium driver to use.
 
-Takes precedence over the driver path mentioned in the JSON configuration file.
+Takes precedence over the driver path mentioned in the json/yaml configuration file.
 
 ----
 
@@ -136,7 +136,7 @@ Takes precedence over the driver path mentioned in the JSON configuration file.
 
 File path of the Edge driver to use.
 
-Takes precedence over the driver path mentioned in the JSON configuration file.
+Takes precedence over the driver path mentioned in the json/yaml configuration file.
 
 ----
 
@@ -144,7 +144,7 @@ Takes precedence over the driver path mentioned in the JSON configuration file.
 
 File path of the Safari driver to use.
 
-Takes precedence over the driver path mentioned in the JSON configuration file.
+Takes precedence over the driver path mentioned in the json/yaml configuration file.
 
 ----
 
