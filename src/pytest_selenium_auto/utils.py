@@ -200,13 +200,8 @@ def escape_html(msg):
     return str(msg).replace('<', '&lt;').replace('>', '&gt;')
 
 
-def get_anchor_tag(image, div=False):
-    if div:
-        anchor = decorate_href(image, "selenium_extras_img")
-        return "<div class=\"image\">" + anchor + "</div>"
-    else:
-        anchor = decorate_href(image, "selenium_log_img")
-        return anchor
+def get_anchor_tag(image):
+    return decorate_href(image, "selenium_log_img")
 
 
 def get_table_row_tag(comment, image, clazz="selenium_log_comment"):

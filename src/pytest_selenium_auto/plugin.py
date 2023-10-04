@@ -379,7 +379,7 @@ def pytest_runtest_makereport(item, call):
         rows = ""
         if screenshots == 'all' and not verbose:
             for image in images:
-                links += utils.get_anchor_tag(image, div=False)
+                links += utils.get_anchor_tag(image)
         elif screenshots == 'manual' \
                 or (screenshots == 'all' and verbose):
             # Check images and comments lists consistency
@@ -391,7 +391,7 @@ def pytest_runtest_makereport(item, call):
                 report.extras = extras
                 return
             for i in range(len(images)):
-                rows += utils.get_table_row_tag(comments[i], images[i])
+                rows += utils.get_table_row_tag(comments[i], images[i], clazz="selenium_log_comment")
         elif screenshots == "last":
             image = utils.save_screenshot(driver, driver.report_folder)
             extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))

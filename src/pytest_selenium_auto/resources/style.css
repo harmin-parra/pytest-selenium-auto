@@ -1,11 +1,3 @@
-div.image {
-    text-align: center;
-}
-
-div.image img {
-    width: 300px;
-}
-
 .selenium_separator {
     height:5px;
     background-color: gray;
