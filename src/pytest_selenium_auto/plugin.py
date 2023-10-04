@@ -450,37 +450,32 @@ def pytest_configure(config):
     """ Add metadata. """
     metadata = config.pluginmanager.getplugin("metadata")
     if metadata:
+        metadata = config.stash[metadata_key]
         try:
-            metadata = config._metadata
-        except AttributeError:
-            metadata = config.stash[metadata_key]
-    try:
-        browser = config.getoption("browser")
-        pause = utils.getini(config, "pause")
-        headless = config.getoption("headless")
-        screenshots = config.getoption("screenshots")
-        driver_config = utils.getini(config, "driver_config")
-        metadata['Browser'] = browser.capitalize()
-        metadata['Headless'] = str(headless).lower()
-        metadata['Screenshots'] = screenshots
-        metadata['Pause'] = pause + " second(s)"
-        try:
-            metadata['Selenium'] = version("selenium")
+            browser = config.getoption("browser")
+            pause = utils.getini(config, "pause")
+            headless = config.getoption("headless")
+            screenshots = config.getoption("screenshots")
+            driver_config = utils.getini(config, "driver_config")
+            metadata['Browser'] = browser.capitalize()
+            metadata['Headless'] = str(headless).lower()
+            metadata['Screenshots'] = screenshots
+            metadata['Pause'] = pause + " second(s)"
+            try:
+                metadata['Selenium'] = version("selenium")
+            except:
+                metadata['Selenium'] = "unknown"
+            if driver_config is not None and os.path.isfile(driver_config):
+                if utils.load_json_yaml_file(driver_config) != {}:
+                    metadata["Driver configuration"] = \
+                        (f"<a href='{driver_config}'>{driver_config}</a>"
+                         f"<span style=\"color:green;\"> (valid)</span>")
+                else:
+                    metadata["Driver configuration"] = \
+                        (f"<a href='{driver_config}'>{driver_config}</a>"
+                         f"<span style=\"color:red;\"> (invalid)</span>")
         except:
-            metadata['Selenium'] = "unknown"
-        if driver_config is not None and os.path.isfile(driver_config):
-            if utils.load_json_yaml_file(driver_config) != {}:
-                metadata["Driver configuration"] = \
-                    (f"<a href='{driver_config}'>{driver_config}</a>"
-                     f"<span style=\"color:green;\"> (valid)</span>")
-            else:
-                metadata["Driver configuration"] = \
-                    (f"<a href='{driver_config}'>{driver_config}</a>"
-                     f"<span style=\"color:red;\"> (invalid)</span>")
-    except:
-        pass
-    finally:
-        config._metadata = metadata
+            pass
 
 
 '''
