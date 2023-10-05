@@ -6,7 +6,6 @@ import shutil
 import sys
 import traceback
 import yaml
-from pathlib import Path
 from . import logger
 
 
@@ -98,15 +97,23 @@ def load_json_yaml_file(filename):
 
 
 def counter():
-    """ Returns a counter used for image file naming """
+    """ Returns a counter used for image and page source file naming """
     global count
     count += 1
     return count
 
 
-def save_screenshot(driver, report_folder):
-    """ Save the image in the specified folder and return the filename for the anchor link """
+def save_resources(driver, report_folder):
     index = counter()
+    image = save_screenshot(driver, report_folder, index)
+    source = None
+    if driver.log_page_source:
+        source = save_page_source(driver, report_folder, index)
+    return image, source
+
+
+def save_screenshot(driver, report_folder, index):
+    """ Save the image in the specified folder and return the filename for the anchor link """
     link = f"screenshots{os.sep}image-{index}.png"
     folder = ""
     if report_folder is not None and report_folder != '':
@@ -120,6 +127,26 @@ def save_screenshot(driver, report_folder):
     except Exception as e:
         trace = traceback.format_exc()
         link = f"screenshots{os.sep}error.png"
+        print(f"{str(e)}\n\n{trace}", file=sys.stderr)
+    finally:
+        return link
+
+
+def save_page_source(driver, report_folder, index):
+    """ Save the page source in the specified folder and return the filename for the anchor link """
+    link = f"sources{os.sep}page-{index}.txt"
+    folder = ""
+    if report_folder is not None and report_folder != '':
+        folder = f"{report_folder}{os.sep}"
+    filename = folder + link
+    try:
+        source = driver.page_source
+        f = open(filename, 'w')
+        f.write(source)
+        f.close()
+    except Exception as e:
+        trace = traceback.format_exc()
+        link = None
         print(f"{str(e)}\n\n{trace}", file=sys.stderr)
     finally:
         return link
@@ -201,19 +228,36 @@ def escape_html(msg):
 
 
 def get_anchor_tag(image):
-    return decorate_href(image, "selenium_log_img")
+    anchor = decorate_href(image, "selenium_log_img")
+    return anchor
 
 
-def get_table_row_tag(comment, image, clazz="selenium_log_comment"):
+def get_anchor_tags(image, source):
+    image = decorate_href(image, "selenium_log_img")
+    if source is not None:
+        source = decorate_page_source(source)
+        return f"<div class=\"selenium_div\">{image}<br>{source}</div>"
+    else:
+        return image
+
+
+def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
     """ Return HTML table row with event label and screenshot anchor link """
-    link = decorate_href(image, "selenium_log_img")
+    image = decorate_href(image, "selenium_log_img")
     if type(comment) == dict:
         comment = decorate_description(comment)
     elif type(comment) == str:
         comment = decorate_label(comment, clazz)
     else:
         comment = ""
-    return f"<tr><td>{comment}</td><td class=\"selenium_td_img\"><div class=\"selenium_div_img\">{link}</div></td></tr>"
+    if source is not None:
+        source = decorate_page_source(source, clazz)
+        return (
+            f"<tr><td>{comment}</td><td class=\"selenium_td\">"
+            f"<div class=\"selenium_td_div\">{image}<br>{source}</div></td></tr>"
+        )
+    else:
+        return f"<tr><td>{comment}</td><td class=\"selenium_td\"><div class=\"selenium_td_div\">{image}</div></td></tr>"
 
 
 def decorate_description(description):
@@ -238,7 +282,7 @@ def decorate_description(description):
         label += " " + decorate_label(description['url'], "selenium_log_target")
     else:
         if description['value'] is not None:
-            label += " " + decorate_quotation() + description['value'] + decorate_quotation() + " to"
+            label += " " + decorate_quotation() + description['value'] + decorate_quotation()
         if description['locator'] is not None or description['attributes'] is not None:
             label += "<br/><br>"
             if description['locator'] is not None:
@@ -255,6 +299,10 @@ def decorate_label(label, clazz):
 
 def decorate_href(link, clazz):
     return f"<a href=\"{link}\" target=\"_blank\"><img src =\"{link}\" class=\"{clazz}\"></a>"
+
+
+def decorate_page_source(filename, clazz=""):
+    return f"<a href=\"{filename}\" target=\"_blank\">[page source]</a>"
 
 
 def decorate_quotation():
@@ -296,22 +344,24 @@ def try_catch_wrap_driver(message):
     return decorator
 
 
-def add_item_stderr_message(item, message):
-    """ Add error in stderr section of a test item """
-    try:
-        message = escape_html(message)
-        i = -1
-        for x in range(0, len(item._report_sections)):
-            if (item._report_sections[x][0], item._report_sections[x][1]) == ('call', 'stderr'):
-                i = x
-                break
-        if i != -1:
-            item._report_sections[i] = (
-                'call',
-                'stderr',
-                item._report_sections[i][2] + '\n' + message + '\n'
-            )
-        else:
-            item._report_sections.append(('call', 'stderr', message))
-    except:
-        pass
+def check_lists_length(report, item, list1, *lists):
+    message = ("Lists \"images\", \"comments\" and/or \"sources\" don't have the same length. "
+               "Screenshots won't be logged for this test.")
+    size = len(list1)
+    for listx in lists:
+        if size != len(listx):
+            log_error_message(report, item, message)
+            return False
+    return True
+
+
+def log_error_message(report, item, message):
+    report.sections.append(("pytest-selenium-auto log", message))
+    logger.append_report_error(item.location[0], item.location[2], message)
+
+
+def get_folder(filepath):
+    folder = None
+    if filepath is not None:
+        folder = os.path.dirname(filepath)
+    return folder

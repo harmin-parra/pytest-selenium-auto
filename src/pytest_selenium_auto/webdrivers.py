@@ -25,7 +25,7 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def after_navigate_to(self, url: str, driver) -> None:
-        self._log_screenshot(driver)
+        self._log_resources(driver)
         self._log_comment(
             driver,
             {
@@ -40,7 +40,7 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def after_navigate_back(self, driver) -> None:
-        self._log_screenshot(driver)
+        self._log_resources(driver)
         self._log_comment(
             driver,
             {
@@ -54,7 +54,7 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def after_navigate_forward(self, driver) -> None:
-        self._log_screenshot(driver)
+        self._log_resources(driver)
         self._log_comment(
             driver,
             {
@@ -70,7 +70,7 @@ class CustomEventListener(AbstractEventListener):
 
     @utils.try_catch_wrap_event("Undetermined event")
     def after_click(self, element, driver) -> None:
-        self._log_screenshot(driver)
+        self._log_resources(driver)
         if driver.current_url != self._url:
             self._url = driver.current_url
         else:
@@ -93,7 +93,7 @@ class CustomEventListener(AbstractEventListener):
 
     @utils.try_catch_wrap_event("Undetermined event")
     def after_change_value_of(self, element, driver) -> None:
-        self._log_screenshot(driver)
+        self._log_resources(driver)
         self._attributes = self._get_web_element_attributes(element, driver)
         self._locator = self._get_web_element_locator(element, driver)
         if self._value != element.get_attribute("value"):
@@ -139,16 +139,30 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def _log_comment(self, driver, comment):
-        if driver.screenshots == 'all' and driver.verbose:
+        """
+        comment: dict{"action": str, "url": str, "value": str, "locator": str, "attributes": str} or dict{"comment": str}
+        """
+        if driver.screenshots == 'all' and driver.log_attributes:
             driver.comments.append(comment)
 
-    def _log_screenshot(self, driver):
+    def _log_resources(self, driver):
         if driver.screenshots == 'all':
-            driver.images.append(utils.save_screenshot(driver, driver.report_folder))
+            index = utils.counter()
+            self._log_screenshot(driver, index)
+            self._log_page_source(driver, index)
+
+    def _log_screenshot(self, driver, index):
+        driver.images.append(utils.save_screenshot(driver, driver.report_folder, index))
+
+    def _log_page_source(self, driver, index):
+        if driver.log_page_source:
+            driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
+        else:
+            driver.sources.append(None)
 
     @utils.try_catch_wrap_event("Undetermined WebElement")
     def _get_web_element_attributes(self, element, driver):
-        if not (driver.screenshots == 'all' and driver.verbose):
+        if not (driver.screenshots == 'all' and driver.log_attributes):
             return None
 
         elem_tag = element.tag_name
@@ -184,7 +198,7 @@ class CustomEventListener(AbstractEventListener):
         return label
 
     def _get_web_element_locator(self, element, driver):
-        if not (driver.screenshots == 'all' and driver.verbose):
+        if not (driver.screenshots == 'all' and driver.log_attributes):
             return None
 
         label = None
@@ -220,9 +234,17 @@ class _Extras:
 
     @staticmethod
     def log_screenshot(driver, comment=""):
+        if comment is None:
+            comment = ""
         if driver.screenshots in ('all', 'manual'):
-            driver.images.append(utils.save_screenshot(driver, driver.report_folder))
+            index = utils.counter()
+            driver.images.append(utils.save_screenshot(driver, driver.report_folder, index))
             driver.comments.append({'comment': utils.escape_html(comment).replace('\n', '<br>')})
+            if driver.log_page_source:
+                driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
+            else:
+                driver.sources.append(None)
+
 
     @staticmethod
     def wrap_element(element, by, value):

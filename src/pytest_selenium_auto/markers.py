@@ -22,8 +22,18 @@ def get_marker_screenshots(node):
     return value
 
 
-def get_marker_verbose(node):
-    value = node.iter_markers("show_attributes")
+def get_marker_log_verbose(node):
+    value = node.iter_markers("log_verbose")
+    return next(value, None) is not None
+
+
+def get_marker_log_attributes(node):
+    value = node.iter_markers("log_attributes")
+    return next(value, None) is not None
+
+
+def get_marker_log_page_source(node):
+    value = node.iter_markers("log_page_source")
     return next(value, None) is not None
 
 

@@ -1,5 +1,6 @@
 import importlib
 import os
+import pathlib
 import pytest
 import re
 from importlib.metadata import version
@@ -7,7 +8,6 @@ from pytest_metadata.plugin import metadata_key
 from selenium.webdriver.support.events import EventFiringWebDriver
 
 from . import (
-    logger,
     markers,
     supported_browsers,
     utils
@@ -53,10 +53,22 @@ def pytest_addoption(parser):
         choices=("all", "last", "failed", "manual", "none"),
     )
     group.addoption(
-        "--show-attributes",
+        "--log-attributes",
         action="store_true",
         default=False,
         help="Whether to log WebElement attributes. Only applicable when --screenshots=all",
+    )
+    group.addoption(
+        "--log-page-source",
+        action="store_true",
+        default=False,
+        help="Whether to log page sources.",
+    )
+    group.addoption(
+        "--log-verbose",
+        action="store_true",
+        default=False,
+        help="Whether to log WebElement attributes and web page sources.",
     )
     parser.addini(
         "maximize_window",
@@ -119,9 +131,7 @@ def pytest_addoption(parser):
 #
 @pytest.fixture(scope='session')
 def browser(request):
-    _browser = request.config.getoption("--browser")
-    utils.check_browser_option(_browser)
-    return _browser
+    return request.config.getoption("--browser")
 
 
 @pytest.fixture(scope='session')
@@ -136,15 +146,23 @@ def headless(request):
 
 @pytest.fixture(scope='session')
 def verbose(request):
-    return request.config.getoption("--show-attributes")
+    return request.config.getoption("--log-verbose")
+
+
+@pytest.fixture(scope='session')
+def log_attributes(request):
+    return request.config.getoption("--log-attributes")
+
+
+@pytest.fixture(scope='session')
+def log_page_source(request):
+    return request.config.getoption("--log-page-source")
 
 
 @pytest.fixture(scope='session')
 def report_folder(request):
-    folder = request.config.getoption("--html")
-    utils.check_html_option(folder)
-    folder = os.path.dirname(request.config.getoption("--html"))
-    return folder
+    htmlpath = request.config.getoption("--html")
+    return utils.get_folder(htmlpath)
 
 
 @pytest.fixture(scope='session')
@@ -233,14 +251,22 @@ def images(request):
 
 
 @pytest.fixture(scope='function')
+def sources(request):
+    return []
+
+
+@pytest.fixture(scope='function')
 def comments(request):
     return []
 
 
 @pytest.fixture(scope='function')
-def _driver(request, check_options, browser, report_folder,
-            images, comments, screenshots, verbose, maximize_window,
-            config_data, driver_paths, headless, pause):
+def _driver(request, check_options, browser, report_folder, config_data, driver_paths,
+            images, sources, comments, screenshots, pause, headless, maximize_window,
+            verbose, log_attributes, log_page_source):
+
+    log_attributes = log_attributes or verbose
+    log_page_source = log_page_source or verbose
 
     # Update settings from markers
     marker_window = markers.get_marker_window(request.node)
@@ -254,9 +280,18 @@ def _driver(request, check_options, browser, report_folder,
     if marker_browser is not None:
         browser = marker_browser
 
-    marker_verbose = markers.get_marker_verbose(request.node)
-    if marker_verbose is True:
-        verbose = marker_verbose
+    marker_log_attributes = markers.get_marker_log_attributes(request.node)
+    if marker_log_attributes is True:
+        log_attributes = marker_log_attributes
+
+    marker_log_page_source = markers.get_marker_log_page_source(request.node)
+    if marker_log_page_source is True:
+        log_page_source = marker_log_page_source
+
+    marker_log_verbose = markers.get_marker_log_verbose(request.node)
+    if marker_log_verbose is True:
+        log_attributes = marker_log_verbose
+        log_page_source = marker_log_verbose
 
     # Instantiate webdriver
     driver = None
@@ -283,10 +318,12 @@ def _driver(request, check_options, browser, report_folder,
 
     # Set driver attributes
     setattr(driver, "images", images)
+    setattr(driver, "sources", sources)
     setattr(driver, "comments", comments)
     setattr(driver, "screenshots", screenshots)
-    setattr(driver, "verbose", verbose)
     setattr(driver, "report_folder", report_folder)
+    setattr(driver, "log_attributes", log_attributes)
+    setattr(driver, "log_page_source", log_page_source)
 
     # Set capabilities
     set_driver_capabilities(driver, browser, config_data)
@@ -361,10 +398,12 @@ def pytest_runtest_makereport(item, call):
         # Get test fixture values
         driver = feature_request.getfixturevalue('webdriver')
         images = feature_request.getfixturevalue('images')
+        sources = feature_request.getfixturevalue('sources')
         comments = feature_request.getfixturevalue('comments')
-        screenshots = driver.screenshots
-        verbose = driver.verbose
         description_tag = feature_request.getfixturevalue("description_tag")
+        screenshots = driver.screenshots
+        log_attributes = driver.log_attributes
+        log_page_source = driver.log_page_source
 
         exception_logged = utils.append_header(call, report, extras, pytest_html, description, description_tag)
 
@@ -377,45 +416,40 @@ def pytest_runtest_makereport(item, call):
 
         links = ""
         rows = ""
-        if screenshots == 'all' and not verbose:
-            for image in images:
-                links += utils.get_anchor_tag(image)
-        elif screenshots == 'manual' \
-                or (screenshots == 'all' and verbose):
-            # Check images and comments lists consistency
-            if len(images) != len(comments):
-                message = ("\"images\" and \"comments\" lists don't have the same length. "
-                           "Screenshots won't be logged for this test.")
-                utils.add_item_stderr_message(item, "ERROR: " + message)
-                logger.append_report_error(item.location[0], item.location[2], message)
-                report.extras = extras
+        if screenshots == 'all' and not log_attributes:
+            if not utils.check_lists_length(report, item, images, sources):
                 return
             for i in range(len(images)):
-                rows += utils.get_table_row_tag(comments[i], images[i], clazz="selenium_log_comment")
+                links += utils.get_anchor_tags(images[i], sources[i])
+        elif screenshots == 'manual' \
+                or (screenshots == 'all' and log_attributes):
+            if not utils.check_lists_length(report, item, images, sources, comments):
+                return
+            for i in range(len(images)):
+                rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
         elif screenshots == "last":
-            image = utils.save_screenshot(driver, driver.report_folder)
-            extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
+            resources = utils.save_resources(driver, driver.report_folder)
+            extras.append(pytest_html.extras.html(
+                utils.get_anchor_tags(resources[0], resources[1])
+            ))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ('failed', 'skipped'):
-                image = utils.save_screenshot(driver, driver.report_folder)
+                resources = utils.save_resources(driver, driver.report_folder)
                 if screenshots == "manual":
-                    # If this is the only screenshot, append it to the right of the table log row
-                    if len(images) == 0:
-                        extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
-                    # append the last screenshot in a new table log row
+                    if xfail or report.outcome == "failed":
+                        event = "failure"
                     else:
-                        if xfail or report.outcome == "failed":
-                            event = "failure"
-                        else:
-                            event = "skip"
-                        rows += utils.get_table_row_tag(
-                                    f"Last screenshot before {event}",
-                                    image,
-                                    clazz="selenium_log_description"
-                                )
+                        event = "skip"
+                    rows += utils.get_table_row_tag(
+                                f"Last screenshot before {event}",
+                                resources[0], resources[1],
+                                clazz="selenium_log_description"
+                            )
                 else:
-                    extras.append(pytest_html.extras.html(utils.get_anchor_tag(image)))
+                    extras.append(pytest_html.extras.html(
+                        utils.get_anchor_tags(resources[0], resources[1])
+                    ))
         if links != "":
             extras.append(pytest_html.extras.html(links))
         if rows != "":
@@ -429,29 +463,35 @@ def pytest_runtest_makereport(item, call):
             extras.append(pytest_html.extras.html(rows))
         report.extras = extras
         # Check if there was a screenshot gathering failure
-        if screenshots in ('all', 'manual'):
+        if screenshots != 'none':
             for image in images:
                 if image == f"screenshots{os.sep}error.png":
                     message = "Failed to gather screenshot(s)"
-                    utils.add_item_stderr_message(item, "ERROR: " + message)
-                    logger.append_report_error(item.location[0], item.location[2], message)
+                    utils.log_error_message(report, item, message)
                     break
 
 
-@pytest.hookimpl(trylast=True)
+@pytest.hookimpl(trylast=False)
 def pytest_configure(config):
-    """ Register custom markers """
+    # Register custom markers
     config.addinivalue_line("markers", "browser(arg)")
     config.addinivalue_line("markers", "pause(arg)")
     config.addinivalue_line("markers", "window(kwargs)")
     config.addinivalue_line("markers", "screenshots(arg)")
-    config.addinivalue_line("markers", "show_attributes")
+    config.addinivalue_line("markers", "log_verbose")
+    config.addinivalue_line("markers", "log_attributes")
+    config.addinivalue_line("markers", "log_page_source")
 
-    """ Add metadata. """
+    # Add metadata
     metadata = config.pluginmanager.getplugin("metadata")
     if metadata:
         metadata = config.stash[metadata_key]
+        browser = None
+        report_folder = None
+        report_css = None
+        driver_config = None
         try:
+            # Get request options to add to metadata
             browser = config.getoption("browser")
             pause = utils.getini(config, "pause")
             headless = config.getoption("headless")
@@ -467,15 +507,29 @@ def pytest_configure(config):
                 metadata['Selenium'] = "unknown"
             if driver_config is not None and os.path.isfile(driver_config):
                 if utils.load_json_yaml_file(driver_config) != {}:
-                    metadata["Driver configuration"] = \
-                        (f"<a href='{driver_config}'>{driver_config}</a>"
-                         f"<span style=\"color:green;\"> (valid)</span>")
+                    metadata["Driver configuration"] = (
+                        f"<a href='{driver_config}'>{driver_config}</a>"
+                        f"<span style=\"color:green;\"> (valid)</span>"
+                    )
                 else:
-                    metadata["Driver configuration"] = \
-                        (f"<a href='{driver_config}'>{driver_config}</a>"
-                         f"<span style=\"color:red;\"> (invalid)</span>")
+                    metadata["Driver configuration"] = (
+                        f"<a href='{driver_config}'>{driver_config}</a>"
+                        f"<span style=\"color:red;\"> (invalid)</span>"
+                    )
         except:
             pass
+    
+    # Check required options and create assets
+    htmlpath = config.getoption("--html")
+    report_folder = utils.get_folder(htmlpath)
+    utils.check_options(browser, report_folder)
+    utils.create_assets(report_folder, driver_config)
+
+    # Add CSS file to --css request option for pytest-html
+    report_css = config.getoption("--css")
+    resources_path = pathlib.Path(__file__).parent.joinpath("resources")
+    style_css = pathlib.Path(resources_path, "style.css")
+    report_css.insert(0, style_css)
 
 
 '''
