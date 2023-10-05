@@ -19,6 +19,7 @@ Installing pytest-selenium-auto
 
   $ pip install pytest-selenium-auto
 
+
 Support for older pytest-html versions
 --------------------------------------
 

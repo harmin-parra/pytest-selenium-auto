@@ -11,8 +11,9 @@ Changelog
 
 **Changes**
 
-* ``--show-attributes`` option has been renamed to ``--log-attributes``.
 * Replacement of deprecated code.
+* ``--show-attributes`` option has been renamed to ``--log-attributes``.
+* The plugin CSS file doesn't need to be externally added with the ``--css`` command-line option anymore.
 
 
 1.2.0
