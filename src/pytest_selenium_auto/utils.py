@@ -41,22 +41,27 @@ def getini(config, name):
     return value
 
 
-def create_assets(report_folder, report_css, driver_config):
-    """ Recreate screenshots and log folders and files """
+def check_options(browser, report_folder):
+    check_html_option(report_folder)
+    check_browser_option(browser)
+
+
+def create_assets(report_folder, driver_config):
+    """ Recreate screenshots, page sources and log folders and files """
     # Recreate screenshots_folder
     folder = ""
     if report_folder is not None and report_folder != '':
         folder = f"{report_folder}{os.sep}"
-    # Create screenshots folders
+    # Create page sources folder
+    shutil.rmtree(f"{folder}sources", ignore_errors=True)
+    pathlib.Path(f"{folder}sources").mkdir(parents=True)
+    # Create screenshots folder
     shutil.rmtree(f"{folder}screenshots", ignore_errors=True)
     pathlib.Path(f"{folder}screenshots").mkdir(parents=True)
     # Copy error.png to screenshots folder
-    resources_path = Path(__file__).parent.joinpath("resources")
-    error_img = Path(resources_path, "error.png")
+    resources_path = pathlib.Path(__file__).parent.joinpath("resources")
+    error_img = pathlib.Path(resources_path, "error.png")
     shutil.copy(str(error_img), f"{folder}screenshots")
-    # Add custom CSS file to pytest-html --css option
-    style_css = Path(resources_path, "style.css")
-    report_css.insert(0, style_css)
     # Copy config file to report folder
     if driver_config is not None and folder != "":
         shutil.copy(driver_config, f"{folder}{driver_config}")
