@@ -253,6 +253,78 @@ Sample code
       webdriver.log_screenshot("Fill in authentication form")
 
 
+Sample CSS file
+===============
+
+  .logwrapper {
+      max-height: 100px;
+  }
+  
+  .selenium_separator {
+      height:5px;
+      background-color: gray;
+      display: none;
+  }
+  
+  .selenium_td {
+      width: 320px;
+      /* text-align: center; */
+  }
+  
+  .selenium_td_div {
+      text-align: center;
+  }
+  
+  .selenium_div {
+      display: inline-block;
+      text-align: center;
+  }
+  
+  .selenium_div br + a,
+  .selenium_td_div br + a {
+      font-size: 12px;
+      color: #999;
+  }
+  
+  .selenium_log_comment {
+      font-family: monospace;
+      color: maroon;
+  }
+  
+  .selenium_log_description {
+      font-family: monospace;
+      color: black;
+  }
+  
+  .selenium_log_action {
+      font-weight: bold;
+      color: black;
+  }
+  
+  .selenium_log_target {
+      color: blue;
+  }
+  
+  .selenium_log_quotation {
+      font-family: monospace;
+      font-weight: bold;
+      color: black;
+  }
+  
+  .selenium_log_fatal {
+      font-family: monospace;
+      color: red;
+  }
+  
+  .selenium_log_img {
+      border: 1px solid black;
+      width: 300px;
+      height: 170px;
+      object-fit: cover;
+      object-position: top;
+  }
+
+
 Sample YAML configuration files
 ===============================
 
