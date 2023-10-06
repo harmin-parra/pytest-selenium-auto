@@ -353,7 +353,6 @@ def webdriver(_driver):
 #
 # Hookers
 #
-
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     """ Override report generation. """
@@ -520,6 +519,7 @@ def pytest_configure(config):
     utils.create_assets(report_folder, driver_config)
 
     # Add CSS file to --css request option for pytest-html
+    # This code doesn't always run before pytest-html configuration
     report_css = config.getoption("--css")
     resources_path = pathlib.Path(__file__).parent.joinpath("resources")
     style_css = pathlib.Path(resources_path, "style.css")
@@ -527,70 +527,37 @@ def pytest_configure(config):
 
 
 '''
-passed  = 0
-failed  = 0
-xfailed = 0
-skipped = 0
-xpassed = 0
-errors  = 0
-
-
+@pytest.hookimpl(trylast=True)
 def pytest_sessionfinish(session, exitstatus):
-    """ Modify exit code. """
-    summary = []
-    if failed > 0:
-        summary.append(str(failed) + " failed")
-    if passed > 0:
-        summary.append(str(passed) + " passed")
-    if skipped > 0:
-        summary.append(str(skipped) + " skipped")
-    if xfailed > 0:
-        summary.append(str(xfailed) + " xfailed")
-    if xpassed > 0:
-        summary.append(str(xpassed) + " xpassed")
-    if errors > 0:
-        summary.append(str(errors) + " errors")
-    print('\nSummary: ' + ', '.join(summary))
-
-    if exitstatus == 0:
-        if xfailed > 0 or xpassed > 0:
-            session.exitstatus = 6
-        else:
-            session.exitstatus = 0
-    else:
-        session.exitstatus = exitstatus
+    yield
+    htmlpath = os.getcwd() + '/' + session.config.getoption("--html")
+    report_css = session.config.getoption("--css")
+    resources_path = pathlib.Path(__file__).parent.joinpath("resources")
+    style_css = pathlib.Path(resources_path, "style.css")
+    if style_css.exists():
+        f1 = style_css.open()
+        content_css = f1.read()
+        with open(htmlpath,"r+") as f2:
+            content_html = f2.read()
+            content_html = content_html.replace("</style>", content_css + "</style>")
+            f2.write(content_html)
 
 
-def update_test_status_counter(call, report):
-    global skipped, failed, xfailed, passed, xpassed, errors
-
-    if call.when == 'call':
-        if report.failed:
-            failed += 1
-        if report.skipped and not hasattr(report, "wasxfail"):
-            skipped += 1
-        if report.skipped and hasattr(report, "wasxfail"):
-            xfailed += 1
-        if report.passed and hasattr(report, "wasxfail"):
-            xpassed += 1
-        if report.passed and not hasattr(report, "wasxfail"):
-            passed += 1
-
-    if call.when == 'setup':
-        # For tests with the pytest.mark.skip fixture
-        if (
-            report.skipped and
-            hasattr(call, 'excinfo') and
-            call.excinfo is not None and
-            call.excinfo.typename == 'Skipped'
-        ):
-            skipped += 1
-        # For setup fixture
-        if report.failed and call.excinfo is not None:
-            errors += 1
-
-    # For teardown fixture
-    if call.when == 'teardown':
-        if report.failed and call.excinfo is not None:
-            errors += 1
- '''
+def pytest_terminal_summary(terminalreporter, exitstatus, config):
+    for item in terminalreporter.stats.items():
+        passed = []
+        failed = []
+        xpassed = []
+        xfailed = []
+        skipped = []
+        if item[0] == "passed":
+            passed = item[1]
+        if item[0] == "failed":
+            failed = item[1]
+        if item[0] == "skipped":
+            skipped = item[1]
+        if item[0] == "xpassed":
+            xpassed = item[1]
+        if item[0] == "xfailed":
+            xfailed = item[1]
+'''
