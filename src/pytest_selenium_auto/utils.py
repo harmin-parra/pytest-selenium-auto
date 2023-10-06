@@ -258,11 +258,18 @@ def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
     if source is not None:
         source = decorate_page_source(source, clazz)
         return (
-            f"<tr><td>{comment}</td><td class=\"selenium_td\">"
-            f"<div class=\"selenium_td_div\">{image}<br>{source}</div></td></tr>"
+            f"<tr>"
+            f"<td>{comment}</td>"
+            f"<td class=\"selenium_td\"><div class=\"selenium_td_div\">{image}<br>{source}</div></td>"
+            f"</tr>"
         )
     else:
-        return f"<tr><td>{comment}</td><td class=\"selenium_td\"><div class=\"selenium_td_div\">{image}</div></td></tr>"
+        return (
+            f"<tr>"
+            f"<td>{comment}</td>"
+            f"<td class=\"selenium_td\"><div class=\"selenium_td_div\">{image}</div></td>"
+            "</tr>"
+        )
 
 
 def decorate_description(description):

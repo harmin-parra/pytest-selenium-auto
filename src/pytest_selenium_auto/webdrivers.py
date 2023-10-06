@@ -140,7 +140,9 @@ class CustomEventListener(AbstractEventListener):
 
     def _log_comment(self, driver, comment):
         """
-        comment: dict{"action": str, "url": str, "value": str, "locator": str, "attributes": str} or dict{"comment": str}
+        comment: dict{"action": str, "url": str, "value": str, "locator": str, "attributes": str}
+                 or
+                 dict{"comment": str}
         """
         if driver.screenshots == 'all' and driver.log_attributes:
             driver.comments.append(comment)
