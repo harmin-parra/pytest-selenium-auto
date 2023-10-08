@@ -233,12 +233,12 @@ def escape_html(msg):
 
 
 def get_anchor_tag(image):
-    anchor = decorate_href(image, "selenium_log_img")
+    anchor = decorate_screenshot(image)
     return anchor
 
 
 def get_anchor_tags(image, source):
-    image = decorate_href(image, "selenium_log_img")
+    image = decorate_screenshot(image)
     if source is not None:
         source = decorate_page_source(source)
         return f"<div class=\"selenium_div\">{image}<br>{source}</div>"
@@ -248,7 +248,7 @@ def get_anchor_tags(image, source):
 
 def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
     """ Return HTML table row with event label and screenshot anchor link """
-    image = decorate_href(image, "selenium_log_img")
+    image = decorate_screenshot(image)
     if type(comment) == dict:
         comment = decorate_description(comment)
     elif type(comment) == str:
@@ -256,7 +256,7 @@ def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
     else:
         comment = ""
     if source is not None:
-        source = decorate_page_source(source, clazz)
+        source = decorate_page_source(source)
         return (
             f"<tr>"
             f"<td>{comment}</td>"
@@ -309,12 +309,12 @@ def decorate_label(label, clazz):
     return f"<span class=\"{clazz}\">{label}</span>"
 
 
-def decorate_href(link, clazz):
-    return f"<a href=\"{link}\" target=\"_blank\"><img src =\"{link}\" class=\"{clazz}\"></a>"
+def decorate_screenshot(filename, clazz="selenium_log_img"):
+    return f"<a href=\"{filename}\" target=\"_blank\"><img src =\"{filename}\" class=\"{clazz}\"></a>"
 
 
-def decorate_page_source(filename, clazz=""):
-    return f"<a href=\"{filename}\" target=\"_blank\">[page source]</a>"
+def decorate_page_source(filename, clazz="selenium_page_src"):
+    return f"<a href=\"{filename}\" target=\"_blank\" class=\"{clazz}\">[page source]</a>"
 
 
 def decorate_quotation():
