@@ -1,8 +1,8 @@
-from selenium.webdriver.firefox.webdriver  import WebDriver as WebDriver_Firefox
-from selenium.webdriver.chrome.webdriver   import WebDriver as WebDriver_Chrome
+from selenium.webdriver.firefox.webdriver import WebDriver as WebDriver_Firefox
+from selenium.webdriver.chrome.webdriver import WebDriver as WebDriver_Chrome
 from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
-from selenium.webdriver.edge.webdriver     import WebDriver as WebDriver_Edge
-from selenium.webdriver.safari.webdriver   import WebDriver as WebDriver_Safari
+from selenium.webdriver.edge.webdriver import WebDriver as WebDriver_Edge
+from selenium.webdriver.safari.webdriver import WebDriver as WebDriver_Safari
 from selenium.webdriver.support.events import AbstractEventListener
 from selenium.webdriver.remote.webelement import By
 import time
@@ -13,10 +13,11 @@ from . import utils
 # Driver event listener
 #
 class CustomEventListener(AbstractEventListener):
-    
+
     def __init__(self, pause=0):
         self._attributes = None
         self._locator = None
+        self._action = None
         self._value = None
         self._url = None
         self.pause = pause
@@ -65,6 +66,7 @@ class CustomEventListener(AbstractEventListener):
         time.sleep(self.pause)
 
     def before_click(self, element, driver) -> None:
+        self._action = self._get_web_element_action(element, driver)
         self._attributes = self._get_web_element_attributes(element, driver)
         self._locator = self._get_web_element_locator(element, driver)
 
@@ -76,14 +78,16 @@ class CustomEventListener(AbstractEventListener):
         else:
             self._attributes = self._get_web_element_attributes(element, driver)
             self._locator = self._get_web_element_locator(element, driver)
+            self._action = self._get_web_element_action(element, driver)
         self._log_comment(
             driver,
             {
-                'action': "Click",
+                'action': self._action,
                 'locator': self._locator,
                 'attributes': self._attributes,
             }
         )
+        self._action = None
         self._attributes = None
         self._locator = None
         time.sleep(self.pause)
@@ -121,17 +125,18 @@ class CustomEventListener(AbstractEventListener):
             self._log_comment(
                 driver,
                 {
-                    'action': "Click",
+                    'action': self._get_web_element_action(element, driver),
                     'locator': self._locator,
                     'attributes': self._attributes,
                 }
             )
         self._value = None
-        time.sleep(self.pause)            
+        time.sleep(self.pause)
 
     def before_quit(self, driver) -> None:
         self._attributes = None
         self._locator = None
+        self._action = None
         self._value = None
         self._url = None
 
@@ -161,6 +166,28 @@ class CustomEventListener(AbstractEventListener):
             driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
         else:
             driver.sources.append(None)
+
+    @utils.try_catch_wrap_event("Undetermined WebElement")
+    def _get_web_element_action(self, element, driver):
+        if not (driver.screenshots == 'all' and driver.log_attributes):
+            return None
+
+        elem_tag = element.tag_name
+        elem_type = element.get_dom_attribute("type")
+        elem_checked = element.is_selected()
+
+        if elem_tag == 'option':
+            if elem_checked:
+                return "Select"
+            else:
+                return "Deselect"
+        if elem_tag == 'input' and elem_type in ('radio', 'checkbox'):
+            if elem_checked:
+                return "Check"
+            else:
+                return "Uncheck"
+        else:
+            return "Click"
 
     @utils.try_catch_wrap_event("Undetermined WebElement")
     def _get_web_element_attributes(self, element, driver):
@@ -246,7 +273,6 @@ class _Extras:
                 driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
             else:
                 driver.sources.append(None)
-
 
     @staticmethod
     def wrap_element(element, by, value):
