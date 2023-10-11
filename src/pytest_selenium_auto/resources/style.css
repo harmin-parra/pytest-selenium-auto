@@ -46,14 +46,12 @@
     color: blue;
 }
 
-.selenium_log_quotation {
-    font-family: monospace;
+.selenium_log_quote {
     font-weight: bold;
     color: black;
 }
 
 .selenium_log_fatal {
-    font-family: monospace;
     color: red;
 }
 

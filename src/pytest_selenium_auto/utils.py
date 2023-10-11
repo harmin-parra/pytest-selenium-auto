@@ -294,11 +294,11 @@ def decorate_description(description):
         label += " " + decorate_label(description['url'], "selenium_log_target")
     else:
         if description['value'] is not None:
-            label += " " + decorate_quotation() + description['value'] + decorate_quotation()
+            label += " " + decorate_quote() + description['value'] + decorate_quote()
         if description['locator'] is not None or description['attributes'] is not None:
             label += "<br/><br>"
             if description['locator'] is not None:
-                locator = description['locator'].replace('"', decorate_quotation())
+                locator = description['locator'].replace('"', decorate_quote())
                 label += "Locator: " + decorate_label(locator, "selenium_log_target") + "<br/><br>"
             if description['attributes'] is not None:
                 label += "Attributes: " + decorate_label(description['attributes'], "selenium_log_target")
@@ -317,8 +317,8 @@ def decorate_page_source(filename, clazz="selenium_page_src"):
     return f"<a href=\"{filename}\" target=\"_blank\" class=\"{clazz}\">[page source]</a>"
 
 
-def decorate_quotation():
-    return decorate_label("\"", "quotation")
+def decorate_quote():
+    return decorate_label("\"", "selenium_log_quote")
 
 
 #
