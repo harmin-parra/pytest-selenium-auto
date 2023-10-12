@@ -368,8 +368,23 @@ def check_lists_length(report, item, list1, *lists):
 
 
 def log_error_message(report, item, message):
-    report.sections.append(("pytest-selenium-auto log", message))
+    """ Add error in log file and in stderr section of a report """
     logger.append_report_error(item.location[0], item.location[2], message)
+    try:
+        i = -1
+        for x in range(len(report.sections)):
+            if "stderr call" in report.sections[x][0]:
+                i = x
+                break
+        if i != -1:
+            report.sections[i] = (
+                report.sections[i][0],
+                report.sections[i][1] + '\n' + message + '\n'
+            )
+        else:
+            report.sections.append(('Captured stderr call', message))
+    except:
+        pass
 
 
 def get_folder(filepath):
