@@ -391,6 +391,7 @@ def log_error_message(report, item, message):
 
 
 def get_folder(filepath):
+    """ Return the folder of a filepath. """
     folder = None
     if filepath is not None:
         folder = os.path.dirname(filepath)
