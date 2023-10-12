@@ -416,16 +416,14 @@ def pytest_runtest_makereport(item, call):
         links = ""
         rows = ""
         if screenshots == 'all' and not log_attributes:
-            if not utils.check_lists_length(report, item, images, sources):
-                return
-            for i in range(len(images)):
-                links += utils.get_anchor_tags(images[i], sources[i])
+            if utils.check_lists_length(report, item, images, sources):
+                for i in range(len(images)):
+                    links += utils.get_anchor_tags(images[i], sources[i])
         elif screenshots == 'manual' \
                 or (screenshots == 'all' and log_attributes):
-            if not utils.check_lists_length(report, item, images, sources, comments):
-                return
-            for i in range(len(images)):
-                rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
+            if utils.check_lists_length(report, item, images, sources, comments):
+                for i in range(len(images)):
+                    rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
         elif screenshots == "last":
             resources = utils.save_resources(driver, driver.report_folder)
             extras.append(pytest_html.extras.html(
