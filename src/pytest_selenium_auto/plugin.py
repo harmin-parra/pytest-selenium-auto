@@ -17,8 +17,8 @@ from .browser_settings import (
     browser_service,
 )
 from .configuration_loader import set_driver_capabilities
+from .listener import CustomEventListener
 from .webdrivers import (
-    CustomEventListener,
     WebDriverFirefox,
     WebDriverChrome,
     WebDriverChromium,
