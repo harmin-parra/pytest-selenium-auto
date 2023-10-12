@@ -483,10 +483,6 @@ def pytest_configure(config):
     metadata = config.pluginmanager.getplugin("metadata")
     if metadata:
         metadata = config.stash[metadata_key]
-        browser = None
-        report_folder = None
-        report_css = None
-        driver_config = None
         try:
             # Get request options to add to metadata
             browser = config.getoption("browser")
