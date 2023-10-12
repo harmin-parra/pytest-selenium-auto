@@ -515,12 +515,6 @@ def pytest_configure(config):
                     )
         except:
             pass
-    
-    # Check required options and create assets
-    htmlpath = config.getoption("--html")
-    report_folder = utils.get_folder(htmlpath)
-    utils.check_options(browser, report_folder)
-    utils.create_assets(report_folder, driver_config)
 
     # Add CSS file to --css request option for pytest-html
     # This code doesn't always run before pytest-html configuration
