@@ -1,5 +1,4 @@
 import json
-#import lxml
 import os
 import pathlib
 import pytest
@@ -7,6 +6,7 @@ import shutil
 import sys
 import traceback
 import yaml
+from lxml import etree, html
 from . import logger
 
 
@@ -149,6 +149,8 @@ def save_page_source(driver, report_folder, index):
         source = driver.page_source
         #document_root = lxml.html.fromstring(source)
         #source = lxml.etree.tostring(document_root, encoding='unicode', pretty_print=True)
+        document_root = html.fromstring(source)
+        source = etree.tostring(document_root, encoding='unicode', pretty_print=True)
         f = open(filename, 'w')
         f.write(source)
         f.close()
