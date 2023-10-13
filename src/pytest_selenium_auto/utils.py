@@ -10,12 +10,19 @@ from lxml import etree, html
 from . import logger
 
 
-# Counter used for image files naming
+# Counter used for image and page source files naming
 count = 0
 
 
+def counter():
+    """ Returns a suffix used for image and page source file naming """
+    global count
+    count += 1
+    return count
+
+
 #
-# Auxiliary functions to check options
+# Auxiliary functions to check options and fixtures
 #
 def check_browser_option(browser):
     if browser is None:
@@ -34,6 +41,11 @@ def check_html_option(htmlpath):
         sys.exit(pytest.ExitCode.USAGE_ERROR)
 
 
+def check_options(browser, report_folder):
+    check_html_option(report_folder)
+    check_browser_option(browser)
+
+
 def getini(config, name):
     """ Workaround for bug https://github.com/pytest-dev/pytest/issues/11282 """
     value = config.getini(name)
@@ -42,9 +54,23 @@ def getini(config, name):
     return value
 
 
-def check_options(browser, report_folder):
-    check_html_option(report_folder)
-    check_browser_option(browser)
+def get_folder(filepath):
+    """ Return the folder of a filepath. """
+    folder = None
+    if filepath is not None:
+        folder = os.path.dirname(filepath)
+    return folder
+
+
+def check_lists_length(report, item, list1, *lists):
+    message = ("Lists \"images\", \"comments\" and/or \"sources\" don't have the same length. "
+               "Screenshots won't be logged for this test.")
+    size = len(list1)
+    for listx in lists:
+        if size != len(listx):
+            log_error_message(report, item, message)
+            return False
+    return True
 
 
 def create_assets(report_folder, driver_config):
@@ -72,7 +98,7 @@ def create_assets(report_folder, driver_config):
 
 def load_json_yaml_file(filename):
     """
-    Load the file into a dictionary.
+    Load a json/xml file into a dictionary.
     If the file is invalid, return empty dictionary.
     """
     if filename is not None:
@@ -102,13 +128,9 @@ def load_json_yaml_file(filename):
         return {}
 
 
-def counter():
-    """ Returns a counter used for image and page source file naming """
-    global count
-    count += 1
-    return count
-
-
+#
+# Persistence functions
+#
 def save_resources(driver, report_folder):
     index = counter()
     image = save_screenshot(driver, report_folder, index)
@@ -326,6 +348,26 @@ def decorate_quote():
     return decorate_label("\"", "selenium_log_quote")
 
 
+def log_error_message(report, item, message):
+    """ Add error in log file and in stderr section of a report """
+    logger.append_report_error(item.location[0], item.location[2], message)
+    try:
+        i = -1
+        for x in range(len(report.sections)):
+            if "stderr call" in report.sections[x][0]:
+                i = x
+                break
+        if i != -1:
+            report.sections[i] = (
+                report.sections[i][0],
+                report.sections[i][1] + '\n' + message + '\n'
+            )
+        else:
+            report.sections.append(('Captured stderr call', message))
+    except:
+        pass
+
+
 #
 # Function decorators to handle exceptions.
 #
@@ -359,42 +401,3 @@ def try_catch_wrap_driver(message):
             return response
         return wrapped
     return decorator
-
-
-def check_lists_length(report, item, list1, *lists):
-    message = ("Lists \"images\", \"comments\" and/or \"sources\" don't have the same length. "
-               "Screenshots won't be logged for this test.")
-    size = len(list1)
-    for listx in lists:
-        if size != len(listx):
-            log_error_message(report, item, message)
-            return False
-    return True
-
-
-def log_error_message(report, item, message):
-    """ Add error in log file and in stderr section of a report """
-    logger.append_report_error(item.location[0], item.location[2], message)
-    try:
-        i = -1
-        for x in range(len(report.sections)):
-            if "stderr call" in report.sections[x][0]:
-                i = x
-                break
-        if i != -1:
-            report.sections[i] = (
-                report.sections[i][0],
-                report.sections[i][1] + '\n' + message + '\n'
-            )
-        else:
-            report.sections.append(('Captured stderr call', message))
-    except:
-        pass
-
-
-def get_folder(filepath):
-    """ Return the folder of a filepath. """
-    folder = None
-    if filepath is not None:
-        folder = os.path.dirname(filepath)
-    return folder
