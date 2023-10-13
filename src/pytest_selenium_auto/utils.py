@@ -169,8 +169,6 @@ def save_page_source(driver, report_folder, index):
     filename = folder + link
     try:
         source = driver.page_source
-        #document_root = lxml.html.fromstring(source)
-        #source = lxml.etree.tostring(document_root, encoding='unicode', pretty_print=True)
         document_root = html.fromstring(source)
         source = etree.tostring(document_root, encoding='unicode', pretty_print=True)
         f = open(filename, 'w')
