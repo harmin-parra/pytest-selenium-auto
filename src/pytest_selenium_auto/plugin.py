@@ -411,7 +411,7 @@ def pytest_runtest_makereport(item, call):
 
         if (description is not None or exception_logged is True) \
                 and screenshots in ('all', 'manual'):
-            extras.append(pytest_html.extras.html(f"<hr class=\"selenium_separator\">"))
+            extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
 
         links = ""
         rows = ""
@@ -451,10 +451,8 @@ def pytest_runtest_makereport(item, call):
             extras.append(pytest_html.extras.html(links))
         if rows != "":
             rows = (
-                "<table style=\"width: 100%;\">"
-                "    <tbody>"
+                '<table style="width: 100%;">'
                 + rows +
-                "    </tbody>"
                 "</table>"
             )
             extras.append(pytest_html.extras.html(rows))
@@ -501,13 +499,13 @@ def pytest_configure(config):
             if driver_config is not None and os.path.isfile(driver_config):
                 if utils.load_json_yaml_file(driver_config) != {}:
                     metadata["Driver configuration"] = (
-                        f"<a href='{driver_config}'>{driver_config}</a>"
-                        f"<span style=\"color:green;\"> (valid)</span>"
+                        f'<a href="{driver_config}">{driver_config}</a>'
+                        f'<span style="color:green;"> (valid)</span>'
                     )
                 else:
                     metadata["Driver configuration"] = (
-                        f"<a href='{driver_config}'>{driver_config}</a>"
-                        f"<span style=\"color:red;\"> (invalid)</span>"
+                        f'<a href="{driver_config}">{driver_config}</a>'
+                        f'<span style="color:red;"> (invalid)</span>'
                     )
         except:
             pass

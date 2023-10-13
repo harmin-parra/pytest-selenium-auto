@@ -63,7 +63,7 @@ def get_folder(filepath):
 
 
 def check_lists_length(report, item, list1, *lists):
-    message = ("Lists \"images\", \"comments\" and/or \"sources\" don't have the same length. "
+    message = ('Lists "images", "comments" and/or "sources" don\'t have the same length. '
                "Screenshots won't be logged for this test.")
     size = len(list1)
     for listx in lists:
@@ -266,7 +266,7 @@ def get_anchor_tags(image, source):
     image = decorate_screenshot(image)
     if source is not None:
         source = decorate_page_source(source)
-        return f"<div class=\"selenium_div\">{image}<br>{source}</div>"
+        return f'<div class="selenium_div">{image}<br>{source}</div>'
     else:
         return image
 
@@ -285,14 +285,14 @@ def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
         return (
             f"<tr>"
             f"<td>{comment}</td>"
-            f"<td class=\"selenium_td\"><div class=\"selenium_td_div\">{image}<br>{source}</div></td>"
+            f'<td class="selenium_td"><div class="selenium_td_div">{image}<br>{source}</div></td>'
             f"</tr>"
         )
     else:
         return (
             f"<tr>"
             f"<td>{comment}</td>"
-            f"<td class=\"selenium_td\"><div class=\"selenium_td_div\">{image}</div></td>"
+            f'<td class="selenium_td"><div class="selenium_td_div">{image}</div></td>'
             "</tr>"
         )
 
@@ -335,15 +335,15 @@ def decorate_label(label, clazz):
 
 
 def decorate_screenshot(filename, clazz="selenium_log_img"):
-    return f"<a href=\"{filename}\" target=\"_blank\"><img src =\"{filename}\" class=\"{clazz}\"></a>"
+    return f'<a href="{filename}" target="_blank"><img src ="{filename}" class="{clazz}"></a>'
 
 
 def decorate_page_source(filename, clazz="selenium_page_src"):
-    return f"<a href=\"{filename}\" target=\"_blank\" class=\"{clazz}\">[page source]</a>"
+    return f'<a href="{filename}" target="_blank" class="{clazz}">[page source]</a>'
 
 
 def decorate_quote():
-    return decorate_label("\"", "selenium_log_quote")
+    return decorate_label('"', "selenium_log_quote")
 
 
 def log_error_message(report, item, message):
