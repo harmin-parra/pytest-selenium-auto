@@ -14,8 +14,9 @@ Changelog
 * Replacement of deprecated code.
 * ``--show-attributes`` option has been renamed to ``--log-attributes``.
 
-**Bugfix**
+**Bug fixes**
 
+* Pytest crash when executing tests not using the --browser option (not using this plugin)
 * Test description not displayed when some checks fail.
 
 
@@ -33,7 +34,7 @@ Changelog
 
 * The custom test execution summary was removed because it displayed incorrect information
 
-**Bugfix**
+**Bug fix**
 
 * HTML characters aren't escaped in logs of exception stack traces.
 
@@ -58,7 +59,7 @@ Changelog
 1.0.1
 -----
 
-**Bugfix**
+**Bug fix**
 
 * The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
 
