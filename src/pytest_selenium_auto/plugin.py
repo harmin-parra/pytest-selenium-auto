@@ -5,7 +5,11 @@ import pytest
 import re
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
-from selenium.webdriver.support.events import EventFiringWebDriver
+from selenium.webdriver.firefox.webdriver import WebDriver as WebDriver_Firefox
+from selenium.webdriver.chrome.webdriver import WebDriver as WebDriver_Chrome
+from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
+from selenium.webdriver.edge.webdriver import WebDriver as WebDriver_Edge
+from selenium.webdriver.safari.webdriver import WebDriver as WebDriver_Safari
 
 from . import (
     markers,
@@ -18,13 +22,7 @@ from .browser_settings import (
 )
 from .configuration_loader import set_driver_capabilities
 from .listener import CustomEventListener
-from .webdrivers import (
-    WebDriverFirefox,
-    WebDriverChrome,
-    WebDriverChromium,
-    WebDriverEdge,
-    WebDriverSafari,
-)
+from .wrappers import CustomEventFiringWebDriver
 
 
 #
@@ -299,15 +297,15 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
         opt = browser_options(browser, config_data, headless)
         srv = browser_service(browser, config_data, driver_paths)
         if browser == "firefox":
-            driver = WebDriverFirefox(options=opt, service=srv)
+            driver = WebDriver_Firefox(options=opt, service=srv)
         elif browser == "chrome":
-            driver = WebDriverChrome(options=opt, service=srv)
+            driver = WebDriver_Chrome(options=opt, service=srv)
         elif browser == "chromium":
-            driver = WebDriverChromium(options=opt, service=srv)
+            driver = WebDriver_Chromium(browser_name="Chromium", vendor_prefix="Chromium", options=opt, service=srv)
         elif browser == "edge":
-            driver = WebDriverEdge(options=opt, service=srv)
+            driver = WebDriver_Edge(options=opt, service=srv)
         elif browser == "safari":
-            driver = WebDriverSafari(options=opt, service=srv)
+            driver = WebDriver_Safari(options=opt, service=srv)
     except:
         if driver is not None:
             try:
@@ -344,7 +342,7 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
 
     # Decorate driver
     event_listener = CustomEventListener(pause)
-    wrapped_driver = EventFiringWebDriver(driver, event_listener)
+    wrapped_driver = CustomEventFiringWebDriver(driver, event_listener)
 
     yield wrapped_driver
 
