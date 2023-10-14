@@ -3,7 +3,7 @@ Changelog
 =========
 
 1.2.1
------
+=====
 
 **Bug fix**
 
@@ -11,7 +11,7 @@ Changelog
 
 
 1.2.0
------
+=====
 
 **New features**
 
@@ -34,7 +34,7 @@ Changelog
 
 
 1.1.0
------
+=====
 
 **New features**
 
@@ -47,7 +47,7 @@ Changelog
 
 
 1.0.1
------
+=====
 
 **Bug fix**
 
@@ -55,7 +55,7 @@ Changelog
 
 
 1.0.0
------
+=====
 
 **Initial release**
 
