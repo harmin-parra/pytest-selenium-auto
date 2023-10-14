@@ -14,9 +14,8 @@ Changelog
 * Replacement of deprecated code.
 * ``--show-attributes`` option has been renamed to ``--log-attributes``.
 
-**Bug fixes**
+**Bug fix**
 
-* Pytest crashes when executing tests not using the --browser option (not using this plugin).
 * Test description not displayed when some checks fail.
 
 
@@ -25,7 +24,7 @@ Changelog
 
 **Bug fix**
 
-* Pytest crashes when executing tests not using the --browser option (not using this plugin).
+* Pytest crashes when executing tests not using this plugin (not using the --browser option).
 
 
 1.2.0
