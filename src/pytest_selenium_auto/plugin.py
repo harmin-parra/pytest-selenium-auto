@@ -385,11 +385,12 @@ def pytest_runtest_makereport(item, call):
             func = getattr(cls, item.originalname)
         description = getattr(func, '__doc__')
 
-        try:
-            feature_request = item.funcargs['request']
-        except:
+        # Is the test item using fixtures?
+        if 'request' not in item.funcargs:
             return
-        # Is this plugin required/being used?
+        feature_request = item.funcargs['request']
+
+        # Is the 'browser' fixture being used?
         try:
             feature_request.getfixturevalue('browser')
         except pytest.FixtureLookupError:
