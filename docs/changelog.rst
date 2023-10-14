@@ -16,8 +16,16 @@ Changelog
 
 **Bug fixes**
 
-* Pytest crash when executing tests not using the --browser option (not using this plugin)
+* Pytest crashes when executing tests not using the --browser option (not using this plugin).
 * Test description not displayed when some checks fail.
+
+
+1.2.1
+-----
+
+**Bug fix**
+
+* Pytest crashes when executing tests not using the --browser option (not using this plugin).
 
 
 1.2.0
