@@ -2,6 +2,14 @@
 Changelog
 =========
 
+1.2.1
+-----
+
+**Bug fix**
+
+* Pytest crashes when executing tests not using this plugin (not using the --browser option).
+
+
 1.2.0
 -----
 
@@ -16,7 +24,7 @@ Changelog
 
 * The custom test execution summary was removed because it displayed incorrect information
 
-**Bugfix**
+**Bug fix**
 
 * HTML characters aren't escaped in logs of exception stack traces.
 
@@ -41,7 +49,7 @@ Changelog
 1.0.1
 -----
 
-**Bugfix**
+**Bug fix**
 
 * The plugin crashes with parametrized tests using the ``@pytest.mark.parametrize`` decorator.
 
