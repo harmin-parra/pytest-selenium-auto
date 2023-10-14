@@ -388,11 +388,11 @@ def pytest_runtest_makereport(item, call):
             return
         feature_request = item.funcargs['request']
 
-        # Is the 'browser' fixture being used?
-        try:
-            feature_request.getfixturevalue('browser')
-        except pytest.FixtureLookupError:
+        # Is the test item using the 'browser' fixtures?
+        if not ('request' in item.funcargs and 'browser' in item.funcargs):
             return
+
+        feature_request = item.funcargs['request']
         # Get test fixture values
         driver = feature_request.getfixturevalue('webdriver')
         images = feature_request.getfixturevalue('images')
