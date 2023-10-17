@@ -41,11 +41,11 @@ def wrap_element(element, by, value, description=None):
         
         value (str): The locator value.
         
-        description (str): The description to display in the HTML report.
+        description (str): The description pattern of the webelement interaction.
     """
-    setattr(element, "_by", by)
-    setattr(element, "_value", value)
-    setattr(element, "_description", description)
+    setattr(element, "locator_by", by)
+    setattr(element, "locator_value", value)
+    setattr(element, "description", description)
 
 
 class CustomEventFiringWebDriver(EventFiringWebDriver):
@@ -89,13 +89,13 @@ class CustomEventFiringWebElement(EventFiringWebElement):
 
     def find_element(self, by=By.ID, value=None):
         elem = super().find_element(by, value)
-        description = getattr(self.wrapped_element.wrapped_element, "_description", None)
+        description = getattr(self.wrapped_element.wrapped_element, "description", None)
         wrap_element(elem.wrapped_element, by, value, description)
         return elem
 
     def find_elements(self, by=By.ID, value=None):
         elems = super().find_elements(by, value)
-        description = getattr(self.wrapped_element.wrapped_element, "_description", None)
+        description = getattr(self.wrapped_element.wrapped_element, "description", None)
         for elem in elems:
             wrap_element(elem.wrapped_element, by, value, description)
         return elems
