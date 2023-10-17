@@ -23,11 +23,11 @@ def browser_options(browser, config, headless):
     Loads browser options from plugin options and JSON/YAML webdriver configuration.
     
     Args:
-        browser (str): The browser command-line option value.
+        browser (str): The 'browser' command-line option value.
         
         config (dict): The WedDriver configuration loaded from JSON/YAML file.
 
-        headless (bool): The headless INI option value.
+        headless (bool): The 'headless' INI option value.
         
     Returns:
         selenium.webdriver.<browser>.options.Options: The options instance.
@@ -55,11 +55,11 @@ def browser_service(browser, config, driver_paths):
     Loads browser service from plugin options and JSON/YAML webdriver configuration.
     
     Args:
-        browser (str): The browser command-line option value.
+        browser (str): The 'browser' command-line option value.
         
         config (dict): The WedDriver configuration loaded from JSON/YAML file.
 
-        driver_paths (list[str]): The webdrivers filepath INI option values.
+        driver_paths (list[str]): The webdriver filepath INI option values.
         
     Returns:
         selenium.webdriver.<browser>.service.Service: The service instance.
