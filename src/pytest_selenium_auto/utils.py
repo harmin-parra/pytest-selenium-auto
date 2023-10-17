@@ -6,7 +6,7 @@ import shutil
 import sys
 import traceback
 import yaml
-#from lxml import etree, html
+# from lxml import etree, html
 from . import logger
 
 
@@ -55,7 +55,12 @@ def getini(config, name):
 
 
 def get_folder(filepath):
-    """ Return the folder of a filepath. """
+    """
+    Returns the folder of a filepath.
+    
+    Args:
+        filepath (str): The filepath.
+    """
     folder = None
     if filepath is not None:
         folder = os.path.dirname(filepath)
@@ -63,6 +68,7 @@ def get_folder(filepath):
 
 
 def check_lists_length(report, item, list1, *lists):
+    """ Used to verify if the images, comments and page sources lists have the same lenght. """
     message = ('Lists "images", "comments" and/or "sources" don\'t have the same length. '
                "Screenshots won't be logged for this test.")
     size = len(list1)
@@ -74,7 +80,7 @@ def check_lists_length(report, item, list1, *lists):
 
 
 def create_assets(report_folder, driver_config):
-    """ Recreate screenshots, page sources and log folders and files """
+    """ Recreate screenshots, page sources and log folders. """
     # Recreate screenshots_folder
     folder = ""
     if report_folder is not None and report_folder != '':
@@ -98,8 +104,11 @@ def create_assets(report_folder, driver_config):
 
 def load_json_yaml_file(filename):
     """
-    Load a json/xml file into a dictionary.
-    If the file is invalid, return empty dictionary.
+    Loads a json/xml file into a dictionary.
+    If the file is invalid, returns an empty dictionary.
+    
+    Args:
+        filename (str): The filename of the file to load.
     """
     if filename is not None:
         if filename.endswith('.json'):
@@ -132,6 +141,18 @@ def load_json_yaml_file(filename):
 # Persistence functions
 #
 def save_resources(driver, report_folder):
+    """
+    Saves a screenshot and the HTML page source.
+    Returns the HTML anchor link for the screenshot and the page source.
+    
+    Args:
+        driver (WebDriver): The webdriver.
+
+        report_folder (str): The folder destination.
+    
+    Returns:
+        tuple: The HTML anchor link for the screenshot and the page source.
+    """
     index = counter()
     image = save_screenshot(driver, report_folder, index)
     source = None
@@ -141,7 +162,12 @@ def save_resources(driver, report_folder):
 
 
 def save_screenshot(driver, report_folder, index):
-    """ Save the image in the specified folder and return the filename for the anchor link """
+    """
+    Save a screenshot in 'screenshots' folder under the specified folder.
+    
+    Returns:
+        str: The filename for the anchor link.
+    """
     link = f"screenshots{os.sep}image-{index}.png"
     folder = ""
     if report_folder is not None and report_folder != '':
@@ -161,7 +187,13 @@ def save_screenshot(driver, report_folder, index):
 
 
 def save_page_source(driver, report_folder, index):
-    """ Save the page source in the specified folder and return the filename for the anchor link """
+    """
+    Saves the HTML page source with TXT extension
+    in 'sources' folder under the specified folder.
+    
+    Returns:
+        str: The filename for the anchor link.
+    """
     link = f"sources{os.sep}page-{index}.txt"
     folder = ""
     if report_folder is not None and report_folder != '':
@@ -185,16 +217,21 @@ def save_page_source(driver, report_folder, index):
 #
 # Auxiliary functions for the report generation
 #
-def append_header(call, report, extra, pytest_html,
+def append_header(call, report, extras, pytest_html,
                   description, description_tag):
-    """ Append description and exception trace """
+    """
+    Appends the description and the test execution exception trace, if any, to a test report.
+    
+    Args:
+        description (str): The test file docstring.
+        
+        description_tag (str): The HTML tag to use.
+    """
     # Append description
     if description is not None:
         description = escape_html(description).strip().replace('\n', '<br>')
-        extra.append(pytest_html.extras.html(f"<{description_tag}>{description}</{description_tag}>"))
+        extras.append(pytest_html.extras.html(f"<{description_tag}>{description}</{description_tag}>"))
 
-    # Append exception
-    exception_logged = False
     # Catch explicit pytest.fail and pytest.skip calls
     if (
         hasattr(call, 'excinfo') and
@@ -203,34 +240,31 @@ def append_header(call, report, extra, pytest_html,
         hasattr(call.excinfo, "value") and
         hasattr(call.excinfo.value, "msg")
     ):
-        extra.append(pytest_html.extras.html(
+        extras.append(pytest_html.extras.html(
             "<pre>"
             f"<span style='color:black;'>{escape_html(call.excinfo.typename)}</span>"
             f" reason = {escape_html(call.excinfo.value.msg)}"
             "</pre>"
             )
         )
-        exception_logged = True
     # Catch XFailed tests
     if report.skipped and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(
+        extras.append(pytest_html.extras.html(
             "<pre>"
             "<span style='color:black;'>XFailed</span>"
             f" reason = {escape_html(report.wasxfail)}"
             "</pre>"
             )
         )
-        exception_logged = True
     # Catch XPassed tests
     if report.passed and hasattr(report, 'wasxfail'):
-        extra.append(pytest_html.extras.html(
+        extras.append(pytest_html.extras.html(
             "<pre>"
             "<span style='color:black;'>XPassed</span>"
             f" reason = {escape_html(report.wasxfail)}"
             "</pre>"
             )
         )
-        exception_logged = True
     # Catch explicit pytest.xfail calls and runtime exceptions in failed tests
     if (
         hasattr(call, 'excinfo') and
@@ -241,38 +275,37 @@ def append_header(call, report, extra, pytest_html,
         isinstance(call.excinfo._excinfo, tuple) and
         len(call.excinfo._excinfo) > 1
     ):
-        extra.append(pytest_html.extras.html(
+        extras.append(pytest_html.extras.html(
             "<pre>"
             f"<span style='color:black;'>{escape_html(call.excinfo.typename)}</span>"
             f" {escape_html(call.excinfo._excinfo[1])}"
             "</pre>"
             )
         )
-        exception_logged = True
-    # extra.append(pytest_html.extras.html("<br>"))
-    return exception_logged
+    # extras.append(pytest_html.extras.html("<br>"))
 
 
-def escape_html(msg):
-    return str(msg).replace('<', '&lt;').replace('>', '&gt;')
-
-
-def get_anchor_tag(image):
-    anchor = decorate_screenshot(image)
-    return anchor
-
-
-def get_anchor_tags(image, source):
-    image = decorate_screenshot(image)
-    if source is not None:
-        source = decorate_page_source(source)
-        return f'<div class="selenium_div">{image}<br>{source}</div>'
-    else:
-        return image
+def escape_html(text):
+    """ Escapes the '<' and '>' characters. """
+    return str(text).replace('<', '&lt;').replace('>', '&gt;')
 
 
 def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
-    """ Return HTML table row with event label and screenshot anchor link """
+    """
+    Returns the HTML table row of a test step.
+    
+    Args:
+        comment (str): The comment of the test step.
+        
+        image (str): The screenshot anchor element.
+        
+        source (str): The page source anchor element.
+        
+        clazz (str): The CSS class to apply.
+    
+    Returns:
+        str: The <tr> element.
+    """
     image = decorate_screenshot(image)
     if type(comment) == dict:
         comment = decorate_description(comment)
@@ -298,6 +331,7 @@ def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
 
 
 def decorate_description(description):
+    """ Applies CSS style to a test step description. """
     if description is None:
         return ""
 
@@ -331,23 +365,47 @@ def decorate_description(description):
 
 
 def decorate_label(label, clazz):
+    """
+    Applies a CSS style to a text.
+    
+    Args:
+        label (str): The text to decorate.
+        
+        clazz (str): The CSS class to apply.
+    
+    Returns:
+        The <span> element. 
+    """
     return f"<span class=\"{clazz}\">{label}</span>"
 
 
+def decorate_anchors(image, source):
+    """ Applies CSS style to a screenshot and page source anchor elements. """
+    image = decorate_screenshot(image)
+    if source is not None:
+        source = decorate_page_source(source)
+        return f'<div class="selenium_div">{image}<br>{source}</div>'
+    else:
+        return image
+
+
 def decorate_screenshot(filename, clazz="selenium_log_img"):
+    """ Applies CSS style to a screenshot anchor element. """
     return f'<a href="{filename}" target="_blank"><img src ="{filename}" class="{clazz}"></a>'
 
 
 def decorate_page_source(filename, clazz="selenium_page_src"):
+    """ Applies CSS style to a page source anchor element. """
     return f'<a href="{filename}" target="_blank" class="{clazz}">[page source]</a>'
 
 
 def decorate_quote():
+    """ Applies CSS style to a quotation. """
     return decorate_label('"', "selenium_log_quote")
 
 
 def log_error_message(report, item, message):
-    """ Add error in log file and in stderr section of a report """
+    """ Appends error message in log file and in stderr section of a test report. """
     logger.append_report_error(item.location[0], item.location[2], message)
     try:
         i = -1
