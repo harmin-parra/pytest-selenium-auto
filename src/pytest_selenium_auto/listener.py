@@ -2,17 +2,19 @@ from selenium.webdriver.support.events import AbstractEventListener
 from selenium.webdriver.remote.webelement import By
 import re
 import time
-from . import utils
+from . import (
+    action_keywords,
+    utils,
+    value_keywords,
+)
 
 
 class CustomEventListener(AbstractEventListener):
     """ The WebDriver event listener. """
 
     def __init__(self, pause=0):
-        self._description = None
         self._attributes = None
         self._locator = None
-        self._action = None
         self._value = None
         self._url = None
         self.pause = pause
@@ -21,7 +23,7 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def after_navigate_to(self, url: str, driver) -> None:
-        _log_extras(
+        _append_extras(
             driver,
             {
                 'action': "Navigate to",
@@ -35,7 +37,7 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def after_navigate_back(self, driver) -> None:
-        _log_extras(
+        _append_extras(
             driver,
             {
                 'action': "Navigate back",
@@ -48,7 +50,7 @@ class CustomEventListener(AbstractEventListener):
         pass
 
     def after_navigate_forward(self, driver) -> None:
-        _log_extras(
+        _append_extras(
             driver,
             {
                 'action': "Navigate forward",
@@ -58,20 +60,17 @@ class CustomEventListener(AbstractEventListener):
         time.sleep(self.pause)
 
     def before_click(self, element, driver) -> None:
-        self._action = _get_web_element_action(element, driver)
         self._attributes = _get_web_element_attributes(element, driver)
         self._locator = _get_web_element_locator(element, driver)
-        self._description = getattr(element, "_description", None)
 
     @utils.try_catch_wrap_event("Undetermined event")
     def after_click(self, element, driver) -> None:
         if driver.current_url != self._url:
             self._url = driver.current_url
         else:
-            self._action = _get_web_element_action(element, driver)
             self._attributes = _get_web_element_attributes(element, driver)
-        action, value = _build_comment_from_metadata(driver, self._action, None, self._locator, self._description)
-        _log_extras(
+        action, value = _build_comment(driver, element, "Click", self._locator)
+        _append_extras(
             driver,
             {
                 'action': action,
@@ -80,7 +79,6 @@ class CustomEventListener(AbstractEventListener):
                 'attributes': self._attributes,
             }
         )
-        self._action = None
         self._attributes = None
         self._locator = None
         self._description = None
@@ -93,12 +91,11 @@ class CustomEventListener(AbstractEventListener):
     def after_change_value_of(self, element, driver) -> None:
         self._attributes = _get_web_element_attributes(element, driver)
         self._locator = _get_web_element_locator(element, driver)
-        description = getattr(element, "_description", None)
         if self._value != element.get_attribute("value"):
             self._value = element.get_attribute("value")
             if len(self._value) > 0:
-                action, value = _build_comment_from_metadata(driver, "Send keys", self._value, None, description)
-                _log_extras(
+                action, value = _build_comment(driver, element, "Send keys", self._locator)
+                _append_extras(
                     driver,
                     {
                         'action': action,
@@ -108,8 +105,8 @@ class CustomEventListener(AbstractEventListener):
                     }
                 )
             else:
-                action, value = _build_comment_from_metadata(driver, "Clear", self._value, None, description)
-                _log_extras(
+                action, value = _build_comment(driver, element, "Clear", self._locator)
+                _append_extras(
                     driver,
                     {
                         'action': action,
@@ -119,8 +116,8 @@ class CustomEventListener(AbstractEventListener):
                     }
                 )
         else:
-            action = _get_web_element_action(element, driver)
-            _log_extras(
+            action, value = _build_comment(driver, element, "Click", self._locator)
+            _append_extras(
                 driver,
                 {
                     'action': action,
@@ -134,7 +131,6 @@ class CustomEventListener(AbstractEventListener):
     def before_quit(self, driver) -> None:
         self._attributes = None
         self._locator = None
-        self._action = None
         self._value = None
         self._url = None
 
@@ -142,13 +138,13 @@ class CustomEventListener(AbstractEventListener):
         pass
 
 
-def _log_extras(driver, comment):
+def _append_extras(driver, comment):
     """
     Logs the report HTML extras of the test step.
-    
+
     Args:
-        driver (WebDriver): The WebDriver.
-        
+        driver (WebDriver): The webdriver.
+
         comment (dict): The comment to log.
             Examples:
                 {
@@ -162,32 +158,32 @@ def _log_extras(driver, comment):
                 {"comment": str}
     """
     if driver.screenshots == 'all' and driver.log_attributes:
-        _log_comment(driver, comment)
+        _append_comment(driver, comment)
     if driver.screenshots == 'all':
         index = utils.counter()
-        _log_screenshot(driver, index)
-        _log_page_source(driver, index)
+        _append_screenshot(driver, index)
+        _append_page_source(driver, index)
 
 
-def _log_comment(driver, comment):
+def _append_comment(driver, comment):
     """
     Logs the comment of a test step.
-    
+
     Args:
-        driver (WebDriver): The WebDriver.
-        
+        driver (WebDriver): The webdriver.
+
         comment (dict): The comment to log.
     """
     if driver.screenshots == 'all' and driver.log_attributes:
         driver.comments.append(comment)
 
 
-def _log_screenshot(driver, index):
+def _append_screenshot(driver, index):
     """ Logs the browser screenshot of a test step. """
     driver.images.append(utils.save_screenshot(driver, driver.report_folder, index))
 
 
-def _log_page_source(driver, index):
+def _append_page_source(driver, index):
     """ Logs the HTML page source of a test step. """
     if driver.log_page_source:
         driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
@@ -196,39 +192,8 @@ def _log_page_source(driver, index):
 
 
 @utils.try_catch_wrap_event("Undetermined WebElement")
-def _get_web_element_action(element, driver):
-    """
-    Returns the action executed to some WebElements.
-    
-    Examples:
-        'Click' for buttons.
-        'Select' and 'Deselect' for select options.
-        'Check' and 'Uncheck' for checkboxes and radio-buttons.
-    """
-    if not (driver.screenshots == 'all' and driver.log_attributes):
-        return None
-
-    elem_tag = element.tag_name
-    elem_type = element.get_dom_attribute("type")
-    elem_checked = element.is_selected()
-
-    if elem_tag == 'option':
-        if elem_checked:
-            return "Select"
-        else:
-            return "Deselect"
-    if elem_tag == 'input' and elem_type in ('radio', 'checkbox'):
-        if elem_checked:
-            return "Check"
-        else:
-            return "Uncheck"
-    else:
-        return "Click"
-
-
-@utils.try_catch_wrap_event("Undetermined WebElement")
 def _get_web_element_attributes(element, driver):
-    """ Returns a string representation of the WebElement HTML DOM attributes. """
+    """ Returns a string representation of the webelement HTML attributes. """
     if not (driver.screenshots == 'all' and driver.log_attributes):
         return None
 
@@ -268,10 +233,10 @@ def _get_web_element_attributes(element, driver):
 def _get_web_element_locator(element, driver):
     """
     Returns a string representation of the locator from the
-    WebElement metadata (_by and _value attributes).
-    
+    webelement metadata (_by and _value attributes).
+
     Returns:
-        str: String representation of the WebElement locator.
+        str: String representation of the webelement locator.
     """
     if not (driver.screenshots == 'all' and driver.log_attributes):
         return None
@@ -324,27 +289,35 @@ def _get_web_element_locator(element, driver):
     return label
 
 
-def _build_comment_from_metadata(driver, action, value, locator, description):
+def _build_comment(driver, element, action, locator):
     """
-    Builds the description sentence of a test step based on the
-    WebElement metadata, value attribute and
-    the action executed on the WebElement.
-    
+    Builds the comment of a test step based on the
+    webdriver metadata, value attribute and
+    the action executed on the webdriver.
+
+    A comment has one of the following forms:
+        - {action} "{value}"
+        - {action}
+
     Args:
-        action (str): The action executed on the WebElement.
+        driver (WebDriver): The webdriver.
+
+        element (WebElement): The webelement.
+
+        action (str): The default action for the webelement.
             Examples: Click, Send keys, Clear, Navigate to, etc.
-        
-        value (str or None): The WebElement DOM 'value' attribute.
-        
-        locator (str, optional): The WebElement _locator string representation.
-        
-        description (str): The WebElement _description metadata.
-    
+
+        locator (str, optional): The webelement locator string representation.
+
     Returns:
-        The action and value used to build the description of the test step.
+        (str, str): The action and the value to build the comment of a test step.
     """
     if not (driver.screenshots == 'all' and driver.log_attributes):
         return None, None
+
+    description = getattr(element, "_description", None)
+
+    value, description = _get_comment_value(element, description)
 
     # Is this an input text without description ?
     if description is None:
@@ -352,24 +325,71 @@ def _build_comment_from_metadata(driver, action, value, locator, description):
             return action, None
         else:
             return action, value
-    
+
     # Is this a select ?
-    match = re.search(r"(\$select|\"\$select\"|'\$select')", description)
+    # Replace $by by the locator and use it as value for the comment.
+    match = re.search(r"(\$by|\"\$by\"|'\$by')", description)
     if match is not None:
         description = description.replace(match.group(0), '').strip()
         value = locator[locator.index('=') + 2:]
-    
-    # Is this a checkbox, radio-button or textarea ?
-    match = re.search(r"(\".*\"|'.*')", description)
-    if match is not None:
-        value = match.group(0).replace('"', '').replace("'", '')
-        description = description.replace(match.group(0), '').strip()
-    
-    # Other objects
-    if description.startswith("$action"):
-        description = description.replace("$action", '')
-        action += description
-    else:
-        action = description
-    
+
+    action = _get_comment_action(element, description)
+
     return action, value
+
+
+def _get_comment_action(element, description):
+    """ Returns the action for the comment of a test step. """
+    try:
+        is_selected = element.is_selected()
+    except:
+        is_selected = None
+    if description is None or is_selected is None:
+        return description
+
+    for word in action_keywords.keys():
+        if description.startswith(word):
+            action = action_keywords[word][0] if is_selected else action_keywords[word][1]
+            description = description.replace(word, action)
+            break
+
+    return description
+
+
+def _get_comment_value(element, description):
+    """
+    Returns the value for the comment of a test step.
+    Removes the value from the description.
+
+    Returns:
+        (str, str): The value and the remaining of the description.
+    """
+    value = None
+
+    # Is this an input text ?
+    try:
+        value = element.get_attribute("value")
+    except:
+        pass
+
+    if description is not None:
+        # Is a value keyword present in description ?
+        # Then, extract the corresponding webelement attribute.
+        for word in value_keywords:
+            if word in description:
+                try:
+                    value = element.get_attribute(word[1:])
+                    description = description.replace(word, value).strip()
+                except:
+                    pass
+                finally:
+                    break
+
+        # Is there is a string surrounded by quotation?
+        # Use it as value for the comment.
+        exp = re.search(r"(\".*\"|'.*')", description)
+        if exp is not None:
+            value = exp.group(0).replace('"', '').replace("'", '')
+            description = description.replace(exp.group(0), '').strip()
+
+    return value, description

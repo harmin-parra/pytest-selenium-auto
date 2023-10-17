@@ -25,7 +25,7 @@ def browser_options(browser, config, headless):
     Args:
         browser (str): The 'browser' command-line option value.
         
-        config (dict): The WedDriver configuration loaded from JSON/YAML file.
+        config (dict): The webdriver configuration loaded from JSON/YAML file.
 
         headless (bool): The 'headless' INI option value.
         
@@ -57,7 +57,7 @@ def browser_service(browser, config, driver_paths):
     Args:
         browser (str): The 'browser' command-line option value.
         
-        config (dict): The WedDriver configuration loaded from JSON/YAML file.
+        config (dict): The webdriver configuration loaded from JSON/YAML file.
 
         driver_paths (list[str]): The webdriver filepath INI option values.
         

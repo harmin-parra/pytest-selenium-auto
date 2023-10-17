@@ -431,7 +431,7 @@ def pytest_runtest_makereport(item, call):
                 else:
                     links = utils.decorate_anchors(resources[0], resources[1])
 
-        # Add horizontal line between header and comments/screenshots
+        # Add horizontal line between the header and the comments/screenshots
         if len(extras) > 0 and len(links) + len(rows) > 0:
             extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
 
