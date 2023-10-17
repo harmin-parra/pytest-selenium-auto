@@ -4,7 +4,7 @@ __all__ = ["Select"]
 
 supported_browsers = ("firefox", "chrome", "chromium", "edge", "safari")
 
-screenshot_strategies = ('all', 'failed', 'last', 'manual', 'none')
+screenshot_strategies = ("all", "failed", "last", "manual", "none")
 
 action_keywords = {
     '$select': ("Select", "Deselect"),

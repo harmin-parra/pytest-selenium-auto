@@ -81,7 +81,6 @@ class CustomEventListener(AbstractEventListener):
         )
         self._attributes = None
         self._locator = None
-        self._description = None
         time.sleep(self.pause)
 
     def before_change_value_of(self, element, driver) -> None:
@@ -125,6 +124,8 @@ class CustomEventListener(AbstractEventListener):
                     'attributes': self._attributes,
                 }
             )
+        self._attributes = None
+        self._locator = None
         self._value = None
         time.sleep(self.pause)
 
@@ -140,7 +141,7 @@ class CustomEventListener(AbstractEventListener):
 
 def _append_extras(driver, comment):
     """
-    Logs the report HTML extras of the test step.
+    Appends a test step HTML extras to the webdriver metadata.
 
     Args:
         driver (WebDriver): The webdriver.
@@ -167,7 +168,7 @@ def _append_extras(driver, comment):
 
 def _append_comment(driver, comment):
     """
-    Logs the comment of a test step.
+    Appends a test step comment to the webdriver metadata.
 
     Args:
         driver (WebDriver): The webdriver.
@@ -179,12 +180,12 @@ def _append_comment(driver, comment):
 
 
 def _append_screenshot(driver, index):
-    """ Logs the browser screenshot of a test step. """
+    """ Appends a test step screenshot to the webdriver metadata. """
     driver.images.append(utils.save_screenshot(driver, driver.report_folder, index))
 
 
 def _append_page_source(driver, index):
-    """ Logs the HTML page source of a test step. """
+    """ Appends a test step HTML page source to the webdriver metadata. """
     if driver.log_page_source:
         driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
     else:
@@ -193,7 +194,7 @@ def _append_page_source(driver, index):
 
 @utils.try_catch_wrap_event("Undetermined WebElement")
 def _get_web_element_attributes(element, driver):
-    """ Returns a string representation of the webelement HTML attributes. """
+    """ Returns a string representation of the webelement attributes. """
     if not (driver.screenshots == 'all' and driver.log_attributes):
         return None
 
@@ -233,7 +234,7 @@ def _get_web_element_attributes(element, driver):
 def _get_web_element_locator(element, driver):
     """
     Returns a string representation of the locator from the
-    webelement metadata (_by and _value attributes).
+    webelement metadata (locator_by and locator_value attributes).
 
     Returns:
         str: String representation of the webelement locator.
@@ -243,49 +244,49 @@ def _get_web_element_locator(element, driver):
 
     label = None
     index = element.get_attribute('index')
-    by = getattr(element, "_by", None)
-    value = getattr(element, "_value", None)
+    by = getattr(element, "locator_by", None)
+    value = getattr(element, "locator_value", None)
 
     # Select by value ?
     if by == By.CSS_SELECTOR:
         x = re.match(r'option\[value\s*=\s*"', value)
         if x is not None:
-            element._by = "Select_By.VALUE"
-            element._value = value[x.end(): -2]
+            element.locator_by = "Select_By.VALUE"
+            element.locator_value = value[x.end(): -2]
     # Select by visible text ?
-    if by == By.XPATH and value.startswith('.//option[normalize-space(.) = "'):
-        element._by = "Select_By.VISIBLE_TEXT"
-        element._value = value[32: -2]
+    elif by == By.XPATH and value.startswith('.//option[normalize-space(.) = "'):
+        element.locator_by = "Select_By.VISIBLE_TEXT"
+        element.locator_value = value[32: -2]
 
     # Select by index ?
-    if by == By.TAG_NAME and value == "option" and index is not None:
-        element._by = "Select_By.INDEX"
-        element._value = str(index)
+    elif by == By.TAG_NAME and value == "option" and index is not None:
+        element.locator_by = "Select_By.INDEX"
+        element.locator_value = str(index)
 
     by = ""
-    if hasattr(element, "_value") and hasattr(element, "_by"):
-        if element._by == By.ID:
+    if hasattr(element, "locator_value") and hasattr(element, "locator_by"):
+        if element.locator_by == By.ID:
             by = "By.ID"
-        elif element._by == By.NAME:
+        elif element.locator_by == By.NAME:
             by = "By.NAME"
-        elif element._by == By.CLASS_NAME:
+        elif element.locator_by == By.CLASS_NAME:
             by = "By.CLASS_NAME"
-        elif element._by == By.CSS_SELECTOR:
+        elif element.locator_by == By.CSS_SELECTOR:
             by = "By.CSS_SELECTOR"
-        elif element._by == By.LINK_TEXT:
+        elif element.locator_by == By.LINK_TEXT:
             by = "By.LINK_TEXT"
-        elif element._by == By.PARTIAL_LINK_TEXT:
+        elif element.locator_by == By.PARTIAL_LINK_TEXT:
             by = "By.PARTIAL_LINK_TEXT"
-        elif element._by == By.TAG_NAME:
+        elif element.locator_by == By.TAG_NAME:
             by = "By.TAG_NAME"
-        elif element._by == By.XPATH:
+        elif element.locator_by == By.XPATH:
             by = "By.XPATH"
-        elif isinstance(element._by, str):
-            by = element._by
-        if element._value.find(' ') != -1:
-            label = f"{by} = \"{element._value}\""
+        elif isinstance(element.locator_by, str):
+            by = element.locator_by
+        if element.locator_value.find(' ') != -1:
+            label = f"{by} = \"{element.locator_value}\""
         else:
-            label = f"{by} = {element._value}"
+            label = f"{by} = {element.locator_value}"
     return label
 
 
@@ -315,7 +316,7 @@ def _build_comment(driver, element, action, locator):
     if not (driver.screenshots == 'all' and driver.log_attributes):
         return None, None
 
-    description = getattr(element, "_description", None)
+    description = getattr(element, "description", None)
 
     value, description = _get_comment_value(element, description)
 
@@ -328,9 +329,9 @@ def _build_comment(driver, element, action, locator):
 
     # Is this a select ?
     # Replace $by by the locator and use it as value for the comment.
-    match = re.search(r"(\$by|\"\$by\"|'\$by')", description)
-    if match is not None:
-        description = description.replace(match.group(0), '').strip()
+    expr = re.search(r"(\$by|\"\$by\"|'\$by')", description)
+    if expr is not None:
+        description = description.replace(expr.group(0), '').strip()
         value = locator[locator.index('=') + 2:]
 
     action = _get_comment_action(element, description)
@@ -387,9 +388,9 @@ def _get_comment_value(element, description):
 
         # Is there is a string surrounded by quotation?
         # Use it as value for the comment.
-        exp = re.search(r"(\".*\"|'.*')", description)
-        if exp is not None:
-            value = exp.group(0).replace('"', '').replace("'", '')
-            description = description.replace(exp.group(0), '').strip()
+        expr = re.search(r"(\".*\"|'.*')", description)
+        if expr is not None:
+            value = expr.group(0).replace('"', '').replace("'", '')
+            description = description.replace(expr.group(0), '').strip()
 
     return value, description
