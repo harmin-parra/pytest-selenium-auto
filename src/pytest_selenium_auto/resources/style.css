@@ -5,7 +5,7 @@
 .selenium_separator {
     height:2px;
     background-color: gray;
-    display: none;
+    /* display: none; */
 }
 
 .selenium_td {
