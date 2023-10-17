@@ -10,7 +10,7 @@ separator = 64 * '='
 
 
 def init():
-    """ Recreate logs folder and file """
+    """ Recreates logs folder. """
     # Delete existing logs folder and file, if any
     shutil.rmtree("logs", ignore_errors=True)
     pathlib.Path("logs").mkdir()
@@ -27,6 +27,7 @@ def init():
 
 
 def append_driver_error(description, error=None, trace=None):
+    """ Appends a Driver related error message to the log file. """
     content = description
     if error is not None:
         content = content + '\n\n' + str(error)
@@ -38,10 +39,12 @@ def append_driver_error(description, error=None, trace=None):
 
 
 def append_report_error(module, function, message):
+    """ Appends a general error message to the log file. """
     _write(f"{module} :: {function}  -  {message}\n")
 
 
 def _write(content):
+    """ Writes a line in the log file. """
     try:
         f = open(logfile, 'a')
         f.write(content)

@@ -24,10 +24,14 @@ def browser_options(browser, config, headless):
 
     options = get_options(browser, config)
     # window = markers.get_marker_window(request.node)
-    if headless is True or \
-            ('window' in config and
-             'headless' in config['window'] and
-             config['window']['headless'] is True):
+    if (
+        headless is True or
+        (
+            'window' in config and
+            'headless' in config['window'] and
+            config['window']['headless'] is True
+        )
+    ):
         options.add_argument("--headless")
     # options.update(markers.get_marker_options(request.node))
     return options
@@ -35,9 +39,11 @@ def browser_options(browser, config, headless):
 
 def browser_service(browser, config, driver_paths):
     config_service = {}
-    if 'browsers' in config and \
-            browser in config['browsers'] and \
-            'service' in config['browsers'][browser]:
+    if (
+        'browsers' in config and
+        browser in config['browsers'] and
+        'service' in config['browsers'][browser]
+    ):
         config_service = config['browsers'][browser]['service']
     if browser is None:
         return None

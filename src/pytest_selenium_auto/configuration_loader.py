@@ -18,9 +18,11 @@ def get_options(browser, config):
     try:
         if browser == "firefox":
             options = Options_Firefox()
-            if 'browsers' in config and \
-                    browser in config['browsers'] and \
-                    'profile' in config['browsers'][browser]:
+            if (
+                'browsers' in config and
+                browser in config['browsers'] and
+                'profile' in config['browsers'][browser]
+            ):
                 _set_profile(options, config['browsers'][browser]['profile'])
         if browser == "chrome":
             options = Options_Chrome()
@@ -37,9 +39,11 @@ def get_options(browser, config):
         _set_general_options(options, config['capabilities'])
     if 'window' in config and 'headless' in config['window']:
         _set_headless(options, config['window']['headless'])
-    if 'browsers' in config and \
-            browser in config['browsers'] and \
-            'options' in config['browsers'][browser]:
+    if (
+        'browsers' in config and
+        browser in config['browsers'] and
+        'options' in config['browsers'][browser]
+    ):
         _set_specific_options(options, config['browsers'][browser]['options'])
 
     return options
