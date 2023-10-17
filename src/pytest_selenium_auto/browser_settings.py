@@ -19,6 +19,19 @@ services = {
 
 
 def browser_options(browser, config, headless):
+    """
+    Loads browser options from plugin options and JSON/YAML webdriver configuration.
+    
+    Args:
+        browser (str): The browser command-line option value.
+        
+        config (dict): The WedDriver configuration.
+
+        headless (bool): The headless INI option value.
+        
+    Returns:
+        selenium.webdriver.<browser>.options.Options: The options instance.
+    """
     if browser is None:
         return None
 
@@ -38,6 +51,19 @@ def browser_options(browser, config, headless):
 
 
 def browser_service(browser, config, driver_paths):
+    """
+    Loads browser service from plugin options and JSON/YAML webdriver configuration.
+    
+    Args:
+        browser (str): The browser command-line option value.
+        
+        config (dict): The WedDriver configuration.
+
+        driver_paths (list[str]): The webdrivers filepath INI option values.
+        
+    Returns:
+        selenium.webdriver.<browser>.service.Service: The service instance.
+    """
     config_service = {}
     if (
         'browsers' in config and

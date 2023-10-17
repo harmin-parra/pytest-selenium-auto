@@ -14,6 +14,7 @@ from . import utils
 
 
 def get_options(browser, config):
+    """ Loads browser options from JSON/YAML webdriver configuration. """
     options = None
     try:
         if browser == "firefox":
@@ -51,6 +52,7 @@ def get_options(browser, config):
 
 @utils.try_catch_wrap_driver("Error instantiating browser's service.")
 def get_service(browser, config):
+    """ Loads browser service from JSON/YAML webdriver configuration. """
     service = None
     if browser == "firefox":
         service = Service_Firefox(
@@ -91,6 +93,7 @@ def get_service(browser, config):
 
 
 def set_driver_capabilities(driver, browser, config):
+    """ Loads and sets browser capabilities from JSON/YAML webdriver configuration. """
     try:
         if 'capabilities' in config:
             if 'timeouts' in config['capabilities']:
@@ -121,6 +124,7 @@ def set_driver_capabilities(driver, browser, config):
 
 @utils.try_catch_wrap_driver("Error setting browser's proxy.")
 def _set_proxy(options, config):
+    """ Loads browser proxy from JSON/YAML webdriver configuration. """
     if 'proxyType' in config and isinstance(config['proxyType'], str):
         if config['proxyType'].lower() == "manual":
             config['proxyType'] = proxy.ProxyType.MANUAL
@@ -141,21 +145,25 @@ def _set_proxy(options, config):
 
 @utils.try_catch_wrap_driver("Error setting browser's acceptInsecureCerts capability.")
 def _set_insecure_certificates(options, value):
+    """ Loads browser "insecure certificates" capability. """
     options.set_capability("acceptInsecureCerts", value)
 
 
 @utils.try_catch_wrap_driver("Error setting browser's pageLoadStrategy capability.")
 def _set_page_load_strategy(options, value):
+    """ Loads browser "page load strategy" capability. """
     options.set_capability("pageLoadStrategy", value)
 
 
 def _set_headless(options, value):
+    """ Loads browser "headless" argument. """
     if value is True:
         options.add_argument("--headless")
 
 
 @utils.try_catch_wrap_driver("Error setting browser's timeouts.")
 def _set_timeouts(driver, config):
+    """ Loads and sets browser timeouts from JSON/YAML webdriver configuration. """
     if 'implicit' in config and hasattr(driver, 'implicit_wait'):
         driver.implicit_wait(config['implicit'])
     if 'script' in config:
@@ -166,6 +174,7 @@ def _set_timeouts(driver, config):
 
 @utils.try_catch_wrap_driver("Error setting browser's windows.")
 def _set_window(driver, config):
+    """ Loads and sets browser window from JSON/YAML webdriver configuration. """
     if 'maximize' in config and config['maximize'] is True:
         driver.maximize_window()
     if 'size' in config:
@@ -183,6 +192,7 @@ def _set_window(driver, config):
 
 @utils.try_catch_wrap_driver("Error creating browser's profile.")
 def _set_profile(options, config):
+    """ Loads browser profiles (for firefox) from JSON/YAML webdriver configuration. """
     profile = FirefoxProfile(config.get('directory', None))
     if 'preferences' in config:
         for key in config['preferences']:
@@ -195,11 +205,13 @@ def _set_profile(options, config):
 
 @utils.try_catch_wrap_driver("Error installing browser's addons.")
 def _install_addons(driver, addons):
+    """ Loads and install browser addons. """
     for addon in addons:
         driver.install_addon(addon)
 
 
 def _set_general_options(options, config):
+    """ Loads browser shared options. """
     if 'proxy' in config:
         _set_proxy(options, config['proxy'])
     if 'acceptInsecureCerts' in config:
@@ -210,6 +222,7 @@ def _set_general_options(options, config):
 
 @utils.try_catch_wrap_driver("Error setting browser's specific options.")
 def _set_specific_options(options, config):
+    """ Loads browser specific options. """
     for opt in config:
         if opt == "arguments":
             for arg in config['arguments']:
