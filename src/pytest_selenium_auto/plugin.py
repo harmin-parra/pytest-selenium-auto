@@ -26,7 +26,7 @@ from .wrappers import CustomEventFiringWebDriver
 
 
 #
-# Definition of test parameters
+# Definition of test options
 #
 def pytest_addoption(parser):
     group = parser.getgroup("pytest-selenium-auto")
@@ -396,23 +396,22 @@ def pytest_runtest_makereport(item, call):
         description_tag = feature_request.getfixturevalue("description_tag")
         screenshots = driver.screenshots
         log_attributes = driver.log_attributes
-        log_page_source = driver.log_page_source
 
-        exception_logged = utils.append_header(call, report, extras, pytest_html, description, description_tag)
+        # Append test description and execution exception trace, if any.
+        utils.append_header(call, report, extras, pytest_html, description, description_tag)
 
         if screenshots == "none":
             return
 
-        if (description is not None or exception_logged is True) \
-                and screenshots in ('all', 'manual'):
-            extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
+        # if len(extras) > 0 and screenshots in ('all', 'last', 'manual'):
+        #     extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
 
         links = ""
         rows = ""
         if screenshots == 'all' and not log_attributes:
             if utils.check_lists_length(report, item, images, sources):
                 for i in range(len(images)):
-                    links += utils.get_anchor_tags(images[i], sources[i])
+                    links += utils.decorate_anchors(images[i], sources[i])
         elif screenshots == 'manual' \
                 or (screenshots == 'all' and log_attributes):
             if utils.check_lists_length(report, item, images, sources, comments):
@@ -420,9 +419,10 @@ def pytest_runtest_makereport(item, call):
                     rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
         elif screenshots == "last":
             resources = utils.save_resources(driver, driver.report_folder)
-            extras.append(pytest_html.extras.html(
-                utils.get_anchor_tags(resources[0], resources[1])
-            ))
+            links = utils.decorate_anchors(resources[0], resources[1])
+            # extras.append(pytest_html.extras.html(
+            #     utils.decorate_anchors(resources[0], resources[1])
+            #))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ('failed', 'skipped'):
@@ -438,9 +438,16 @@ def pytest_runtest_makereport(item, call):
                                 clazz="selenium_log_description"
                             )
                 else:
-                    extras.append(pytest_html.extras.html(
-                        utils.get_anchor_tags(resources[0], resources[1])
-                    ))
+                    links = utils.decorate_anchors(resources[0], resources[1])
+                    # extras.append(pytest_html.extras.html(
+                    #     utils.decorate_anchors(resources[0], resources[1])
+                    # ))
+
+        # Add horizontal line between header and extras
+        if len(extras) > 0 and len(links) + len(rows) > 0:
+            extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
+
+        # Append extras
         if links != "":
             extras.append(pytest_html.extras.html(links))
         if rows != "":
