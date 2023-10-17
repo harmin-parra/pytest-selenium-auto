@@ -4,6 +4,32 @@ from selenium.webdriver.support.select import Select
 from . import utils
 
 
+def wrap_driver(driver, images, sources, comments, screenshots, report_folder, log_attributes, log_page_source):
+    """
+    Adds metadata to a WebDriver.
+    
+    Args:
+        images (list[str]): The list of screenshots filenames.
+        
+        sources (list[str]): The list of web page sources filenames.
+        
+        comments (list[str]): The list of test steps comments.
+        
+        report_folder (str): The HTML report folder.
+        
+        log_attributes (bool): Whether to log WebElement DOM attributes.
+        
+        log_page_source (bool): Whether to log web page sources.
+    """
+    setattr(driver, "images", images)
+    setattr(driver, "sources", sources)
+    setattr(driver, "comments", comments)
+    setattr(driver, "screenshots", screenshots)
+    setattr(driver, "report_folder", report_folder)
+    setattr(driver, "log_attributes", log_attributes)
+    setattr(driver, "log_page_source", log_page_source)
+
+
 def wrap_element(element, by, value, description=None):
     """
     Adds metadata to a WebElement.

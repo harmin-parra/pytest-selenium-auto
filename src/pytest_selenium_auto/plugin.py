@@ -22,7 +22,10 @@ from .browser_settings import (
 )
 from .configuration_loader import set_driver_capabilities
 from .listener import CustomEventListener
-from .wrappers import CustomEventFiringWebDriver
+from .wrappers import (
+    CustomEventFiringWebDriver,
+    wrap_driver,
+)
 
 
 #
@@ -314,14 +317,8 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
                 pass
         raise
 
-    # Set driver attributes
-    setattr(driver, "images", images)
-    setattr(driver, "sources", sources)
-    setattr(driver, "comments", comments)
-    setattr(driver, "screenshots", screenshots)
-    setattr(driver, "report_folder", report_folder)
-    setattr(driver, "log_attributes", log_attributes)
-    setattr(driver, "log_page_source", log_page_source)
+    # Set driver metadata
+    wrap_driver(driver, images, sources, comments, screenshots, report_folder, log_attributes, log_page_source)
 
     # Set capabilities
     set_driver_capabilities(driver, browser, config_data)
@@ -403,9 +400,6 @@ def pytest_runtest_makereport(item, call):
         if screenshots == "none":
             return
 
-        # if len(extras) > 0 and screenshots in ('all', 'last', 'manual'):
-        #     extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
-
         links = ""
         rows = ""
         if screenshots == 'all' and not log_attributes:
@@ -420,9 +414,6 @@ def pytest_runtest_makereport(item, call):
         elif screenshots == "last":
             resources = utils.save_resources(driver, driver.report_folder)
             links = utils.decorate_anchors(resources[0], resources[1])
-            # extras.append(pytest_html.extras.html(
-            #     utils.decorate_anchors(resources[0], resources[1])
-            #))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ('failed', 'skipped'):
@@ -439,11 +430,8 @@ def pytest_runtest_makereport(item, call):
                             )
                 else:
                     links = utils.decorate_anchors(resources[0], resources[1])
-                    # extras.append(pytest_html.extras.html(
-                    #     utils.decorate_anchors(resources[0], resources[1])
-                    # ))
 
-        # Add horizontal line between header and extras
+        # Add horizontal line between header and comments/screenshots
         if len(extras) > 0 and len(links) + len(rows) > 0:
             extras.append(pytest_html.extras.html(f'<hr class="selenium_separator">'))
 
