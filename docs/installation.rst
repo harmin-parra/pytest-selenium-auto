@@ -27,6 +27,8 @@ WARNING /!\
 
 If you need to work with both plugins, you should install them in separate python virtual environments.
 
+Same warning applies for any other plugin that might use the ``--browser`` command-line option as well.
+
 
 Support for older pytest-html versions
 --------------------------------------
