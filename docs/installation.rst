@@ -29,7 +29,7 @@ WARNING /!\\
 If you need to work with both plugins, you should install them in separate python virtual environments.
 
 | Same warning applies for any other plugin that registers the same command-line options
-| used by pytest-selenium-auto (ex: ``--browser``, ``--headless``, ``--screenshots``, etc).
+| used by **pytest-selenium-auto** (ex: ``--browser``, ``--headless``, ``--screenshots``, etc).
 
 
 Support for older pytest-html versions
