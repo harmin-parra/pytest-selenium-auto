@@ -39,4 +39,4 @@ If ``pytest-html <= 3.2.0``
 
 .. code-block:: bash
 
-  $ pip install pytest-selenium-auto==1.2.0
+  $ pip install pytest-selenium-auto==1.2.1
