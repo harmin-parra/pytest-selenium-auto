@@ -40,5 +40,5 @@ selenium_auto = "pytest_selenium_auto.plugin"
 
 [project.urls]
 Homepage = "https://pypi.org/project/pytest-selenium-auto"
-Documentation = "https://pytest-selenium-auto.readthedocs.io/en/1.2.x/"
+Documentation = "https://pytest-selenium-auto.readthedocs.io/en/stable/"
 Source = "https://github.com/harmin-parra/pytest-selenium-auto"
