@@ -5,11 +5,11 @@ import pytest
 import re
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
-from selenium.webdriver.firefox.webdriver import WebDriver as WebDriver_Firefox
-from selenium.webdriver.chrome.webdriver import WebDriver as WebDriver_Chrome
+from selenium.webdriver.firefox.webdriver  import WebDriver as WebDriver_Firefox
+from selenium.webdriver.chrome.webdriver   import WebDriver as WebDriver_Chrome
 from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
-from selenium.webdriver.edge.webdriver import WebDriver as WebDriver_Edge
-from selenium.webdriver.safari.webdriver import WebDriver as WebDriver_Safari
+from selenium.webdriver.edge.webdriver     import WebDriver as WebDriver_Edge
+from selenium.webdriver.safari.webdriver   import WebDriver as WebDriver_Safari
 
 from . import (
     markers,
