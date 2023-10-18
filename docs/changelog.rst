@@ -14,10 +14,6 @@ Changelog
 * Replacement of deprecated code.
 * ``--show-attributes`` option has been renamed to ``--log-attributes``.
 
-**Bug fix**
-
-* Test description not displayed when some checks fail.
-
 
 1.2.1
 =====
