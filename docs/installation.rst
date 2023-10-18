@@ -20,8 +20,8 @@ Installing pytest-selenium-auto
   $ pip install pytest-selenium-auto
 
 
-WARNING /!\
------------
+WARNING /!\\
+------------
 
 | **pytest-selenium-auto** and **playwright** are incompatible
 | as both plugins use the ``--browser`` command-line option.
