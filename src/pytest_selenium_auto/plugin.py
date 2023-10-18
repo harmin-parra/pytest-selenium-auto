@@ -318,7 +318,7 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
         raise
 
     # Set driver metadata
-    wrap_driver(driver, images, sources, comments, screenshots, report_folder, log_attributes, log_page_source)
+    wrap_driver(driver, screenshots, images, sources, comments, report_folder, log_attributes, log_page_source)
 
     # Set capabilities
     set_driver_capabilities(driver, browser, config_data)

@@ -59,7 +59,7 @@ def browser_service(browser, config, driver_paths):
         
         config (dict): The webdriver configuration loaded from JSON/YAML file.
 
-        driver_paths (list[str]): The webdriver filepath INI option values.
+        driver_paths (dict[str,str]): The webdriver filepath INI option values.
         
     Returns:
         selenium.webdriver.<browser>.service.Service: The service instance.

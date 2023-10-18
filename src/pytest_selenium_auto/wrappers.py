@@ -4,11 +4,15 @@ from selenium.webdriver.support.select import Select
 from . import utils
 
 
-def wrap_driver(driver, images, sources, comments, screenshots, report_folder, log_attributes, log_page_source):
+def wrap_driver(driver, screenshots, images, sources, comments, report_folder, log_attributes, log_page_source):
     """
-    Adds metadata to a WebDriver.
+    Adds metadata to a webdriver.
     
     Args:
+        driver (WebDriver): The webdriver to wrap.
+
+        screenshots (str): The screenshot gathering strategy.
+
         images (list[str]): The list of screenshots filenames.
         
         sources (list[str]): The list of web page sources filenames.
@@ -32,10 +36,10 @@ def wrap_driver(driver, images, sources, comments, screenshots, report_folder, l
 
 def wrap_element(element, by, value, description=None):
     """
-    Adds metadata to a WebElement.
+    Adds metadata to a webelement.
     
     Args:
-        element (WebElement): The WebElement to modify.
+        element (WebElement): The webelement to wrap.
         
         by (By): The locator strategy.
         
