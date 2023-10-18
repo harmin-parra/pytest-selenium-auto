@@ -6,17 +6,20 @@ supported_browsers = ("firefox", "chrome", "chromium", "edge", "safari")
 
 screenshot_strategies = ("all", "failed", "last", "manual", "none")
 
+# Action keywords for select and checkbox webelements.
 action_keywords = {
-    '$select': ("Select", "Deselect"),
-    '$check': ("Check", "Uncheck"),
-    '$set': ("Set", "Unset"),
     '$add': ("Add", "Remove"),
+    '$check': ("Check", "Uncheck"),
+    "$include": ("Include", "Exclude"),
+    '$select': ("Select", "Deselect"),
+    '$set': ("Set", "Unset"),
 }
 
 value_keywords = [
-    '$text',
-    '$value',
-    '$name',
     '$id',
     '$index',
+    '$name',
+    '$text',
+    '$value',
+    '$visible_text',
 ]
