@@ -318,7 +318,7 @@ def _build_comment(driver, element, action, locator):
 
     description = getattr(element, "description", None)
 
-    value, description = _get_comment_value(element, description)
+    value, description = _get_comment_value(element, description, locator)
 
     # Is this an input text without description ?
     if description is None:
@@ -357,7 +357,7 @@ def _get_comment_action(element, description):
     return description
 
 
-def _get_comment_value(element, description):
+def _get_comment_value(element, description, locator):
     """
     Returns the value for the comment of a test step.
     Removes the value from the description.
@@ -374,20 +374,26 @@ def _get_comment_value(element, description):
         pass
 
     if description is not None:
+        # Is '$by' being used as value keyword ?
+        # Then, extract the value from webelement metadata.
+        expr = re.search(r"(\"\$by\"|'\$by'|\$by)", description)
+        if expr is not None:
+            description = description.replace(expr.group(0), '').strip()
+            value = locator[locator.index('=') + 2:]
+
         # Is a value keyword present in description ?
-        # Then, extract the corresponding webelement attribute.
+        # Then, extract the value from webelement attributes.
+        description = description.replace("$visible_text", "$text")
         for word in value_keywords:
             if word in description:
-                try:
+                expr = re.search(f"(\"\{word}\"|'\{word}'|\{word})", description)
+                if expr is not None:
                     value = element.get_attribute(word[1:])
-                    description = description.replace(word, value).strip()
-                except:
-                    pass
-                finally:
+                    description = description.replace(expr.group(0), '').strip()
                     break
 
-        # Is there is a string surrounded by quotation?
-        # Use it as value for the comment.
+        # Is there any other string surrounded by quotation?
+        # Then, use it as value for the comment.
         expr = re.search(r"(\".*\"|'.*')", description)
         if expr is not None:
             value = expr.group(0).replace('"', '').replace("'", '')
