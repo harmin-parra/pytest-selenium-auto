@@ -24,11 +24,11 @@ WARNING /!\\
 ------------
 
 | **pytest-selenium-auto** and **playwright** are incompatible
-| as both plugins use the ``--browser`` command-line option.
+| as both plugins register the ``--browser`` command-line option.
 
 If you need to work with both plugins, you should install them in separate python virtual environments.
 
-| Same warning applies for any other plugin that might use the same command-line options
+| Same warning applies for any other plugin that registers the same command-line options
 | used by pytest-selenium-auto (ex: ``--browser``, ``--headless``, ``--screenshots``, etc).
 
 
