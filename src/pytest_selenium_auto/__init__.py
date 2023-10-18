@@ -13,8 +13,10 @@ action_keywords = {
     "$include": ("Include", "Exclude"),
     '$select': ("Select", "Deselect"),
     '$set': ("Set", "Unset"),
+    '$with': ("With", "Without"),
 }
 
+# Value keywords.
 value_keywords = [
     '$id',
     '$index',
