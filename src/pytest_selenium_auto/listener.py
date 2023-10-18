@@ -386,7 +386,9 @@ def _get_comment_value(element, description, locator):
         description = description.replace("$visible_text", "$text")
         for word in value_keywords:
             if word in description:
-                expr = re.search(f"(\"\{word}\"|'\{word}'|\{word})", description)
+                regex = f"(\"{word}\"|'{word}'|{word})"
+                regex = regex.replace("$", "\\$")
+                expr = re.search(regex, description)
                 if expr is not None:
                     value = element.get_attribute(word[1:])
                     description = description.replace(expr.group(0), '').strip()
