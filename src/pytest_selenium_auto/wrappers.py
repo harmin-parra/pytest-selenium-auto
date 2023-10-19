@@ -75,10 +75,10 @@ class CustomEventFiringWebDriver(EventFiringWebDriver):
         driver = self.wrapped_driver
         if comment is None:
             comment = ""
-        if driver.screenshots in ('all', 'manual'):
+        if driver.screenshots in ("all", "manual"):
             index = utils.counter()
             driver.images.append(utils.save_screenshot(driver, driver.report_folder, index))
-            driver.comments.append({'comment': utils.escape_html(comment).replace('\n', '<br>')})
+            driver.comments.append({'comment': utils.escape_html(comment).replace('\n', "<br>")})
             if driver.log_page_source:
                 driver.sources.append(utils.save_page_source(driver, driver.report_folder, index))
             else:

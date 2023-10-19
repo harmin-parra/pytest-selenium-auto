@@ -174,7 +174,7 @@ def report_css(request):
 @pytest.fixture(scope='session')
 def description_tag(request):
     tag = request.config.getini("description_tag")
-    return tag if tag in ("h1", "h2", "h3", "p", "pre") else 'h2'
+    return tag if tag in ("h1", "h2", "h3", "p", "pre") else "h2"
 
 
 @pytest.fixture(scope='session')
@@ -378,18 +378,18 @@ def pytest_runtest_makereport(item, call):
         else:
             cls = getattr(module, match_cls[0][:-1])
             func = getattr(cls, item.originalname)
-        description = getattr(func, '__doc__')
+        description = getattr(func, "__doc__")
 
         # Is the test item using the 'browser' fixtures?
-        if not ('request' in item.funcargs and 'browser' in item.funcargs):
+        if not ("request" in item.funcargs and "browser" in item.funcargs):
             return
         feature_request = item.funcargs['request']
 
         # Get test fixture values
-        driver = feature_request.getfixturevalue('webdriver')
-        images = feature_request.getfixturevalue('images')
-        sources = feature_request.getfixturevalue('sources')
-        comments = feature_request.getfixturevalue('comments')
+        driver = feature_request.getfixturevalue("webdriver")
+        images = feature_request.getfixturevalue("images")
+        sources = feature_request.getfixturevalue("sources")
+        comments = feature_request.getfixturevalue("comments")
         description_tag = feature_request.getfixturevalue("description_tag")
         screenshots = driver.screenshots
         log_attributes = driver.log_attributes
@@ -402,12 +402,12 @@ def pytest_runtest_makereport(item, call):
 
         links = ""
         rows = ""
-        if screenshots == 'all' and not log_attributes:
+        if screenshots == "all" and not log_attributes:
             if utils.check_lists_length(report, item, images, sources):
                 for i in range(len(images)):
                     links += utils.decorate_anchors(images[i], sources[i])
-        elif screenshots == 'manual' \
-                or (screenshots == 'all' and log_attributes):
+        elif screenshots == "manual" \
+                or (screenshots == "all" and log_attributes):
             if utils.check_lists_length(report, item, images, sources, comments):
                 for i in range(len(images)):
                     rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
@@ -416,7 +416,7 @@ def pytest_runtest_makereport(item, call):
             links = utils.decorate_anchors(resources[0], resources[1])
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
-            if xfail or report.outcome in ('failed', 'skipped'):
+            if xfail or report.outcome in ("failed", "skipped"):
                 resources = utils.save_resources(driver, driver.report_folder)
                 if screenshots == "manual":
                     if xfail or report.outcome == "failed":

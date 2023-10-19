@@ -30,9 +30,9 @@ def append_driver_error(description, error=None, trace=None):
     """ Appends a Driver related error message to the log file. """
     content = description
     if error is not None:
-        content = content + '\n\n' + str(error)
+        content = content + "\n\n" + str(error)
     if trace is not None:
-        content = content + '\n\n' + trace
+        content = content + "\n\n" + trace
     print(content, file=sys.stderr)
     content += f"\n{separator}\n\n"
     _write(content)

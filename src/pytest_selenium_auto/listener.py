@@ -212,19 +212,19 @@ def _get_web_element_attributes(element, driver):
     if elem_tag is not None:
         label += elem_tag
     if elem_href is not None and len(elem_href) > 0:
-        label += f" href=\"{elem_href}\""
+        label += f' href="{elem_href}"'
     if elem_type is not None and len(elem_type) > 0:
-        label += f" type=\"{elem_type}\""
+        label += f' type="{elem_type}"'
     if elem_id is not None and len(elem_id) > 0:
-        label += f" id=\"{elem_id}\""
+        label += f' id={elem_id}'
     if elem_name is not None and len(elem_name) > 0:
-        label += f" name=\"{elem_name}\""
+        label += f' name="{elem_name}"'
     if elem_value is not None and type not in ("text", "textarea"):
-        label += f" value=\"{elem_value}\""
+        label += f' value="{elem_value}"'
     if elem_classes is not None and len(elem_classes) > 0:
-        label += f" class=\"{elem_classes}\""
+        label += f' class="{elem_classes}"'
     if elem_text is not None and len(elem_text) > 0:
-        label += f" text=\"{elem_text}\""
+        label += f' text="{elem_text}"'
     if elem_checked:
         label += " checked"
     label += "&gt;"
@@ -283,11 +283,8 @@ def _get_web_element_locator(element, driver):
             by = "By.XPATH"
         elif isinstance(element.locator_by, str):
             by = element.locator_by
-        if element.locator_value.find(' ') != -1:
-            label = f"{by} = \"{element.locator_value}\""
-        else:
-            label = f"{by} = {element.locator_value}"
-    return label
+
+    return f"{by} = {element.locator_value}"
 
 
 def _build_comment(driver, element, action, locator):

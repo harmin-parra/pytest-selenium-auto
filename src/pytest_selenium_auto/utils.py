@@ -229,7 +229,7 @@ def append_header(call, report, extras, pytest_html,
     """
     # Append description
     if description is not None:
-        description = escape_html(description).strip().replace('\n', '<br>')
+        description = escape_html(description).strip().replace('\n', "<br>")
         extras.append(pytest_html.extras.html(f"<{description_tag}>{description}</{description_tag}>"))
 
     # Catch explicit pytest.fail and pytest.skip calls
@@ -287,7 +287,7 @@ def append_header(call, report, extras, pytest_html,
 
 def escape_html(text):
     """ Escapes the '<' and '>' characters. """
-    return str(text).replace('<', '&lt;').replace('>', '&gt;')
+    return str(text).replace('<', "&lt;").replace('>', "&gt;")
 
 
 def get_table_row_tag(comment, image, source, clazz="selenium_log_comment"):
@@ -376,7 +376,7 @@ def decorate_label(label, clazz):
     Returns:
         The <span> element. 
     """
-    return f"<span class=\"{clazz}\">{label}</span>"
+    return f'<span class="{clazz}">{label}</span>'
 
 
 def decorate_anchors(image, source):

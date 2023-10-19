@@ -10,7 +10,7 @@ screenshot_strategies = ("all", "failed", "last", "manual", "none")
 action_keywords = {
     '$add': ("Add", "Remove"),
     '$check': ("Check", "Uncheck"),
-    "$include": ("Include", "Exclude"),
+    '$include': ("Include", "Exclude"),
     '$select': ("Select", "Deselect"),
     '$set': ("Set", "Unset"),
     '$with': ("With", "Without"),
