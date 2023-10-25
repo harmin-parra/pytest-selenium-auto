@@ -5,11 +5,11 @@ import pytest
 import re
 from importlib.metadata import version
 from pytest_metadata.plugin import metadata_key
-from selenium.webdriver.firefox.webdriver  import WebDriver as WebDriver_Firefox
-from selenium.webdriver.chrome.webdriver   import WebDriver as WebDriver_Chrome
+from selenium.webdriver.firefox.webdriver import WebDriver as WebDriver_Firefox
+from selenium.webdriver.chrome.webdriver import WebDriver as WebDriver_Chrome
 from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
-from selenium.webdriver.edge.webdriver     import WebDriver as WebDriver_Edge
-from selenium.webdriver.safari.webdriver   import WebDriver as WebDriver_Safari
+from selenium.webdriver.edge.webdriver import WebDriver as WebDriver_Edge
+from selenium.webdriver.safari.webdriver import WebDriver as WebDriver_Safari
 
 from . import (
     markers,
@@ -216,7 +216,7 @@ def driver_config(request):
 def pause(request):
     try:
         return float(utils.getini(request.config, "pause"))
-    except:
+    except ValueError:
         return 0
 
 
@@ -296,26 +296,20 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
 
     # Instantiate webdriver
     driver = None
-    try:
-        opt = browser_options(browser, config_data, headless)
-        srv = browser_service(browser, config_data, driver_paths)
-        if browser == "firefox":
-            driver = WebDriver_Firefox(options=opt, service=srv)
-        elif browser == "chrome":
-            driver = WebDriver_Chrome(options=opt, service=srv)
-        elif browser == "chromium":
-            driver = WebDriver_Chromium(browser_name="Chromium", vendor_prefix="Chromium", options=opt, service=srv)
-        elif browser == "edge":
-            driver = WebDriver_Edge(options=opt, service=srv)
-        elif browser == "safari":
-            driver = WebDriver_Safari(options=opt, service=srv)
-    except:
-        if driver is not None:
-            try:
-                driver.quit()
-            except:
-                pass
-        raise
+    opt = browser_options(browser, config_data, headless)
+    srv = browser_service(browser, config_data, driver_paths)
+    if browser == "firefox":
+        driver = WebDriver_Firefox(options=opt, service=srv)
+    elif browser == "chrome":
+        driver = WebDriver_Chrome(options=opt, service=srv)
+    elif browser == "chromium":
+        driver = WebDriver_Chromium(browser_name="Chromium", vendor_prefix="Chromium", options=opt, service=srv)
+    elif browser == "edge":
+        driver = WebDriver_Edge(options=opt, service=srv)
+    elif browser == "safari":
+        driver = WebDriver_Safari(options=opt, service=srv)
+    else:
+        raise ValueError(f"Invalid browser value: '{browser}'")
 
     # Set driver metadata
     wrap_driver(driver, screenshots, images, sources, comments, report_folder, log_attributes, log_page_source)
@@ -481,10 +475,7 @@ def pytest_configure(config):
             metadata['Headless'] = str(headless).lower()
             metadata['Screenshots'] = screenshots
             metadata['Pause'] = pause + " second(s)"
-            try:
-                metadata['Selenium'] = version("selenium")
-            except:
-                metadata['Selenium'] = "unknown"
+            metadata['Selenium'] = version("selenium")
             if driver_config is not None and os.path.isfile(driver_config):
                 if utils.load_json_yaml_file(driver_config) != {}:
                     metadata["Driver configuration"] = (
@@ -496,7 +487,7 @@ def pytest_configure(config):
                         f'<a href="{driver_config}">{driver_config}</a>'
                         f'<span style="color:red;"> (invalid)</span>'
                     )
-        except:
+        except Exception:
             pass
 
     # Add CSS file to --css request option for pytest-html

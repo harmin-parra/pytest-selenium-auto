@@ -16,25 +16,24 @@ from . import utils
 def get_options(browser, config):
     """ Loads browser options from JSON/YAML webdriver configuration. """
     options = None
-    try:
-        if browser == "firefox":
-            options = Options_Firefox()
-            if (
-                'browsers' in config and
-                browser in config['browsers'] and
-                'profile' in config['browsers'][browser]
-            ):
-                _set_profile(options, config['browsers'][browser]['profile'])
-        if browser == "chrome":
-            options = Options_Chrome()
-        if browser == "chromium":
-            options = Options_Chromium()
-        if browser == "edge":
-            options = Options_Edge()
-        if browser == "safari":
-            options = Options_Safari()
-    except:
-        raise
+    if browser == "firefox":
+        options = Options_Firefox()
+        if (
+            'browsers' in config and
+            browser in config['browsers'] and
+            'profile' in config['browsers'][browser]
+        ):
+            _set_profile(options, config['browsers'][browser]['profile'])
+    elif browser == "chrome":
+        options = Options_Chrome()
+    elif browser == "chromium":
+        options = Options_Chromium()
+    elif browser == "edge":
+        options = Options_Edge()
+    elif browser == "safari":
+        options = Options_Safari()
+    else:
+        raise ValueError(f"Invalid browser value: '{browser}'")
 
     if 'capabilities' in config:
         _set_general_options(options, config['capabilities'])
@@ -61,34 +60,36 @@ def get_service(browser, config):
             service_args=config.get('args', None),
             log_output=config.get('log_output', None),
         )
-    if browser == "chrome":
+    elif browser == "chrome":
         service = Service_Chrome(
             executable_path=config.get('driver_path'),
             port=config.get('port', 0),
             service_args=config.get('args', None),
             log_output=config.get('log_output', None),
         )
-    if browser == "chromium":
+    elif browser == "chromium":
         service = Service_Chromium(
             executable_path=config.get('driver_path'),
             port=config.get('port', 0),
             service_args=config.get('args', None),
             log_output=config.get('log_output', None),
         )
-    if browser == "edge":
+    elif browser == "edge":
         service = Service_Edge(
             executable_path=config.get('driver_path'),
             port=config.get('port', 0),
             service_args=config.get('args', None),
             log_output=config.get('log_output', None),
         )
-    if browser == "safari":
+    elif browser == "safari":
         service = Service_Safari(
             executable_path=config.get('driver_path'),
             port=config.get('port', 0),
             service_args=config.get('args', None),
             log_output=config.get('log_output', None),
         )
+    else:
+        raise ValueError(f"Invalid browser value: '{browser}'")
     return service
 
 

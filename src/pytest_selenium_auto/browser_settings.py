@@ -1,8 +1,8 @@
-from selenium.webdriver.chrome.service   import Service as Service_Chrome
+from selenium.webdriver.chrome.service import Service as Service_Chrome
 from selenium.webdriver.chromium.service import ChromiumService as Service_Chromium
-from selenium.webdriver.firefox.service  import Service as Service_Firefox
-from selenium.webdriver.edge.service     import Service as Service_Edge
-from selenium.webdriver.safari.service   import Service as Service_Safari
+from selenium.webdriver.firefox.service import Service as Service_Firefox
+from selenium.webdriver.edge.service import Service as Service_Edge
+from selenium.webdriver.safari.service import Service as Service_Safari
 from .configuration_loader import (
     get_options,
     get_service,
