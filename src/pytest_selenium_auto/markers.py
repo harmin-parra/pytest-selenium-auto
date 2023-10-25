@@ -43,7 +43,7 @@ def get_marker_pause(node):
     if value is not None:
         try:
             value = int(value.args[0])
-        except:
+        except ValueError:
             value = None
     return value
 
