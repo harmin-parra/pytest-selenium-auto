@@ -146,7 +146,7 @@ def _append_extras(driver, comment):
     Args:
         driver (WebDriver): The webdriver.
 
-        comment (dict): The comment to log.
+        comment (dict): The comment to log in JSON format.
             Examples:
                 {
                     "action": str,
@@ -242,7 +242,9 @@ def _get_web_element_locator(element, driver):
     if not (driver.screenshots == 'all' and driver.log_attributes):
         return None
 
-    label = None
+    if not hasattr(element, "locator_by") and not hasattr(element, "locator_value"):
+        return None
+
     index = element.get_attribute('index')
     by = getattr(element, "locator_by", None)
     value = getattr(element, "locator_value", None)
