@@ -145,18 +145,18 @@ def _set_proxy(options, config):
 
 @utils.try_catch_wrap_driver("Error setting browser's acceptInsecureCerts capability.")
 def _set_insecure_certificates(options, value):
-    """ Loads browser "insecure certificates" capability. """
+    """ Loads browser 'insecure certificates' capability. """
     options.set_capability("acceptInsecureCerts", value)
 
 
 @utils.try_catch_wrap_driver("Error setting browser's pageLoadStrategy capability.")
 def _set_page_load_strategy(options, value):
-    """ Loads browser "page load strategy" capability. """
+    """ Loads browser 'page load strategy' capability. """
     options.set_capability("pageLoadStrategy", value)
 
 
 def _set_headless(options, value):
-    """ Loads browser "headless" argument. """
+    """ Loads browser 'headless' argument. """
     if value is True:
         options.add_argument("--headless")
 
