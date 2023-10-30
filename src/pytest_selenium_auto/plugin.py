@@ -298,18 +298,24 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
     driver = None
     opt = browser_options(browser, config_data, headless)
     srv = browser_service(browser, config_data, driver_paths)
-    if browser == "firefox":
-        driver = WebDriver_Firefox(options=opt, service=srv)
-    elif browser == "chrome":
-        driver = WebDriver_Chrome(options=opt, service=srv)
-    elif browser == "chromium":
-        driver = WebDriver_Chromium(browser_name="Chromium", vendor_prefix="Chromium", options=opt, service=srv)
-    elif browser == "edge":
-        driver = WebDriver_Edge(options=opt, service=srv)
-    elif browser == "safari":
-        driver = WebDriver_Safari(options=opt, service=srv)
-    else:
-        raise ValueError(f"Invalid browser value: '{browser}'")
+    try:
+        if browser == "firefox":
+            driver = WebDriver_Firefox(options=opt, service=srv)
+        elif browser == "chrome":
+            driver = WebDriver_Chrome(options=opt, service=srv)
+        elif browser == "chromium":
+            driver = WebDriver_Chromium(browser_name="Chromium", vendor_prefix="Chromium", options=opt, service=srv)
+        elif browser == "edge":
+            driver = WebDriver_Edge(options=opt, service=srv)
+        elif browser == "safari":
+            driver = WebDriver_Safari(options=opt, service=srv)
+    except:
+        if driver is not None:
+            try:
+                driver.quit()
+            except:
+                pass
+        raise
 
     # Set driver metadata
     wrap_driver(driver, screenshots, images, sources, comments, report_folder, log_attributes, log_page_source)
@@ -318,8 +324,11 @@ def _driver(request, browser, report_folder, config_data, driver_config, driver_
     set_driver_capabilities(driver, browser, config_data)
 
     # Set window
-    if (maximize_window is True and 'maximize' not in marker_window) or \
-            ('maximize' in marker_window and marker_window['maximize'] is True):
+    if (
+        (maximize_window is True and 'maximize' not in marker_window)
+        or
+        ('maximize' in marker_window and marker_window['maximize'] is True)
+    ):
         driver.maximize_window()
     if 'minimize' in marker_window and marker_window['minimize'] is True:
         driver.minimize_window()
@@ -400,8 +409,10 @@ def pytest_runtest_makereport(item, call):
             if utils.check_lists_length(report, item, images, sources):
                 for i in range(len(images)):
                     links += utils.decorate_anchors(images[i], sources[i])
-        elif screenshots == "manual" \
-                or (screenshots == "all" and log_attributes):
+        elif (
+            screenshots == "manual"
+            or (screenshots == "all" and log_attributes)
+        ):
             if utils.check_lists_length(report, item, images, sources, comments):
                 for i in range(len(images)):
                     rows += utils.get_table_row_tag(comments[i], images[i], sources[i])

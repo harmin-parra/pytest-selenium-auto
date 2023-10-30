@@ -16,24 +16,25 @@ from . import utils
 def get_options(browser, config):
     """ Loads browser options from JSON/YAML webdriver configuration. """
     options = None
-    if browser == "firefox":
-        options = Options_Firefox()
-        if (
-            'browsers' in config and
-            browser in config['browsers'] and
-            'profile' in config['browsers'][browser]
-        ):
-            _set_profile(options, config['browsers'][browser]['profile'])
-    elif browser == "chrome":
-        options = Options_Chrome()
-    elif browser == "chromium":
-        options = Options_Chromium()
-    elif browser == "edge":
-        options = Options_Edge()
-    elif browser == "safari":
-        options = Options_Safari()
-    else:
-        raise ValueError(f"Invalid browser value: '{browser}'")
+    try:
+        if browser == "firefox":
+            options = Options_Firefox()
+            if (
+                'browsers' in config and
+                browser in config['browsers'] and
+                'profile' in config['browsers'][browser]
+            ):
+                _set_profile(options, config['browsers'][browser]['profile'])
+        if browser == "chrome":
+            options = Options_Chrome()
+        if browser == "chromium":
+            options = Options_Chromium()
+        if browser == "edge":
+            options = Options_Edge()
+        if browser == "safari":
+            options = Options_Safari()
+    except:
+        raise
 
     if 'capabilities' in config:
         _set_general_options(options, config['capabilities'])
