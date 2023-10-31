@@ -403,19 +403,20 @@ def pytest_runtest_makereport(item, call):
         if screenshots == "none":
             return
 
+        if not utils.check_lists_length(report, item, driver):
+            return
+
         links = ""
         rows = ""
         if screenshots == "all" and not log_attributes:
-            if utils.check_lists_length(report, item, images, sources):
-                for i in range(len(images)):
-                    links += utils.decorate_anchors(images[i], sources[i])
+            for i in range(len(images)):
+                links += utils.decorate_anchors(images[i], sources[i])
         elif (
             screenshots == "manual"
             or (screenshots == "all" and log_attributes)
         ):
-            if utils.check_lists_length(report, item, images, sources, comments):
-                for i in range(len(images)):
-                    rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
+            for i in range(len(images)):
+                rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
         elif screenshots == "last":
             resources = utils.save_resources(driver, driver.report_folder)
             links = utils.decorate_anchors(resources[0], resources[1])
@@ -510,22 +511,6 @@ def pytest_configure(config):
 
 
 '''
-@pytest.hookimpl(trylast=True)
-def pytest_sessionfinish(session, exitstatus):
-    yield
-    htmlpath = os.getcwd() + '/' + session.config.getoption("--html")
-    report_css = session.config.getoption("--css")
-    resources_path = pathlib.Path(__file__).parent.joinpath("resources")
-    style_css = pathlib.Path(resources_path, "style.css")
-    if style_css.exists():
-        f1 = style_css.open()
-        content_css = f1.read()
-        with open(htmlpath,"r+") as f2:
-            content_html = f2.read()
-            content_html = content_html.replace("</style>", content_css + "</style>")
-            f2.write(content_html)
-
-
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     for item in terminalreporter.stats.items():
         passed = []

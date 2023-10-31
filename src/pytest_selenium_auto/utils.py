@@ -67,13 +67,17 @@ def get_folder(filepath):
     return folder
 
 
-def check_lists_length(report, item, list1, *lists):
+def check_lists_length(report, item, driver):
     """ Used to verify if the images, comments and page sources lists have the same lenght. """
     message = ('Lists "images", "comments" and/or "sources" don\'t have the same length. '
                "Screenshots won't be logged for this test.")
-    size = len(list1)
-    for listx in lists:
-        if size != len(listx):
+    if driver.screenshots in ('last', 'failed', 'none'):
+        return True
+    if len(driver.images) != len(driver.sources):
+        log_error_message(report, item, message)
+        return False
+    if driver.log_attributes:
+        if len(driver.images) != len(driver.comments):
             log_error_message(report, item, message)
             return False
     return True
