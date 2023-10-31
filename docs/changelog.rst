@@ -3,12 +3,13 @@ Changelog
 =========
 
 
-1.3.1
-=====
+..
+  1.3.1
+  =====
 
-**Changes**
+  **Changes**
 
-* In order to optimize space, screenshots are displayed to the right of the log output when webelement attributes and webpage sources aren't included in the report.
+  * In order to optimize space, screenshots are displayed to the right of the log output when webelement attributes and webpage sources aren't included in the report.
 
 
 1.3.0
