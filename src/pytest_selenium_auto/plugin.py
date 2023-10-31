@@ -396,6 +396,7 @@ def pytest_runtest_makereport(item, call):
         description_tag = feature_request.getfixturevalue("description_tag")
         screenshots = driver.screenshots
         log_attributes = driver.log_attributes
+        #log_page_source = driver.log_page_source
 
         # Append test description and execution exception trace, if any.
         utils.append_header(call, report, extras, pytest_html, description, description_tag)
@@ -409,8 +410,12 @@ def pytest_runtest_makereport(item, call):
         links = ""
         rows = ""
         if screenshots == "all" and not log_attributes:
-            for i in range(len(images)):
-                links += utils.decorate_anchors(images[i], sources[i])
+            #if log_page_source:
+                for i in range(len(images)):
+                    links += utils.decorate_anchors(images[i], sources[i])
+            #else:
+            #    for img in images:
+            #        extras.append(pytest_html.extras.png(img))
         elif (
             screenshots == "manual"
             or (screenshots == "all" and log_attributes)
@@ -419,7 +424,10 @@ def pytest_runtest_makereport(item, call):
                 rows += utils.get_table_row_tag(comments[i], images[i], sources[i])
         elif screenshots == "last":
             resources = utils.save_resources(driver, driver.report_folder)
+            #if log_page_source:
             links = utils.decorate_anchors(resources[0], resources[1])
+            #else:
+            #    extras.append(pytest_html.extras.png(resources[0]))
         if screenshots in ("failed", "manual"):
             xfail = hasattr(report, 'wasxfail')
             if xfail or report.outcome in ("failed", "skipped"):
@@ -435,7 +443,10 @@ def pytest_runtest_makereport(item, call):
                                 clazz="selenium_log_description"
                             )
                 else:
-                    links = utils.decorate_anchors(resources[0], resources[1])
+                    #if log_page_source:
+                        links = utils.decorate_anchors(resources[0], resources[1])
+                    #else:
+                    #    extras.append(pytest_html.extras.png(resources[0]))
 
         # Add horizontal line between the header and the comments/screenshots
         if len(extras) > 0 and len(links) + len(rows) > 0:
