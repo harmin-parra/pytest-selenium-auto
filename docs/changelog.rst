@@ -3,13 +3,16 @@ Changelog
 =========
 
 
-..
-  1.3.1
-  =====
+1.3.1
+=====
 
-  **Changes**
+** Bug fix**
 
-  * In order to optimize space, screenshots are displayed to the right of the log output when webelement attributes and webpage sources aren't included in the report.
+* Plugin crash on Windows OS caused by UnicodeEncodeError when saving some webpage souces.
+
+**Changes**
+
+* Can save full-page screenshots for Chromium-based browsers.
 
 
 1.3.0
