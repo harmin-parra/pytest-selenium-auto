@@ -10,7 +10,7 @@ Changelog
 
 * Plugin crash on Windows OS caused by ``UnicodeEncodeError`` when saving some webpage souces.
 
-**Changes**
+**New feature**
 
 * Can save full-page screenshots for Chromium-based browsers. It is based on experimental *Chrome DevTools Protocol* code.
 
