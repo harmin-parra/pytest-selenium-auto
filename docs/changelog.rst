@@ -12,9 +12,7 @@ Changelog
 
 **Changes**
 
-* Can save full-page screenshots for Chromium-based browsers.
-
-It is based on experimental *Chrome DevTools Protocol* code.
+* Can save full-page screenshots for Chromium-based browsers. It is based on experimental *Chrome DevTools Protocol* code.
 
 
 1.3.0
