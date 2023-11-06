@@ -8,7 +8,7 @@ Changelog
 
 ** Bug fix**
 
-* Plugin crash on Windows OS caused by UnicodeEncodeError when saving some webpage souces.
+* Plugin crash on Windows OS caused by ``UnicodeEncodeError`` when saving some webpage souces.
 
 **Changes**
 
