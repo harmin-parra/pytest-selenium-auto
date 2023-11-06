@@ -6,7 +6,7 @@ Changelog
 1.3.1
 =====
 
-** Bug fix**
+**Bug fix**
 
 * Plugin crash on Windows OS caused by ``UnicodeEncodeError`` when saving some webpage souces.
 
