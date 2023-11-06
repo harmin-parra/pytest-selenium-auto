@@ -238,7 +238,7 @@ def driver_paths(request, driver_firefox, driver_chrome, driver_chromium, driver
 
 
 @pytest.fixture(scope='session')
-def check_options(request, browser, report_folder, report_css, driver_config):
+def check_options(request, browser, report_folder, driver_config):
     utils.check_browser_option(browser)
     utils.create_assets(report_folder, driver_config)
 
