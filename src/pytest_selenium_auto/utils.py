@@ -207,7 +207,7 @@ def save_page_source(driver, report_folder, index):
         source = driver.page_source
         # document_root = html.fromstring(source)
         # source = etree.tostring(document_root, encoding='unicode', pretty_print=True)
-        f = open(filename, 'w')
+        f = open(filename, 'w', encoding="utf-8")
         f.write(source)
         f.close()
     except Exception as e:
