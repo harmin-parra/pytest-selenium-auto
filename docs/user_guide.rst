@@ -162,7 +162,7 @@ Default value: ``h2``
 
 The time in seconds (as integer or float) to pause after each webdriver event.
 
-Default value: 0
+Default value: ``0``
 
 
 Screenshot gathering
