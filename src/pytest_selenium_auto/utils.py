@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import pathlib
@@ -8,6 +9,9 @@ import traceback
 import yaml
 # from lxml import etree, html
 from . import logger
+from selenium.webdriver.chrome.webdriver   import WebDriver as WebDriver_Chrome
+from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
+from selenium.webdriver.edge.webdriver     import WebDriver as WebDriver_Edge
 
 
 # Counter used for image and page source files naming
@@ -68,8 +72,8 @@ def get_folder(filepath):
 
 
 def check_lists_length(report, item, driver):
-    """ Used to verify if the images, comments and page sources lists have the same lenght. """
-    message = ('Lists "images", "comments" and/or "sources" don\'t have the same length. '
+    """ Used to verify if the images, comments and page sources lists have coherent lenghts. """
+    message = ('"images", "comments" and/or "sources" lists have incoherent lengths. '
                "Screenshots won't be logged for this test.")
     if driver.screenshots in ('last', 'failed', 'none'):
         return True
@@ -181,13 +185,44 @@ def save_screenshot(driver, report_folder, index):
         if hasattr(driver, "save_full_page_screenshot"):
             driver.save_full_page_screenshot(filename)
         else:
-            driver.save_screenshot(filename)
+            if type(driver) in (WebDriver_Chrome, WebDriver_Chromium, WebDriver_Edge):
+                try:
+                    save_full_page_chromium(driver, filename)
+                except:
+                    driver.save_screenshot(filename)
+            else:
+                driver.save_screenshot(filename)
     except Exception as e:
         trace = traceback.format_exc()
         link = f"screenshots{os.sep}error.png"
         print(f"{str(e)}\n\n{trace}", file=sys.stderr)
     finally:
         return link
+
+
+def save_full_page_chromium(driver, filename):
+    #get window size
+    page_rect = driver.execute_cdp_cmd("Page.getLayoutMetrics", {})
+    # parameters needed for full page screenshot
+    # note we are setting the width and height of the viewport to screenshot, same as the site's content size
+    screenshot_config = {
+        'captureBeyondViewport': True,
+        'fromSurface': True,
+        'format': "png",
+        'clip': {
+            'x': 0,
+            'y': 0,
+            'width': page_rect['contentSize']['width'],
+            'height': page_rect['contentSize']['height'],
+            'scale': 1,
+        },
+    }
+    # Dictionary with 1 key: data
+    base_64_png = driver.execute_cdp_cmd("Page.captureScreenshot", screenshot_config)
+    # Write image to file
+    f = open(filename, "wb")
+    f.write(base64.urlsafe_b64decode(base_64_png['data']))
+    f.close()
 
 
 def save_page_source(driver, report_folder, index):
