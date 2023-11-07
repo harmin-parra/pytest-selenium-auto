@@ -226,10 +226,10 @@ Sample ``pytest.ini`` file
 
 .. code-block:: ini
 
-  maximize_window=True
-  pause=0.5
+  maximize_window = True
+  pause = 0.5
   driver_firefox = /path/to/driver
-  driver_config=/path/to/conf.yml
+  driver_config = /path/to/conf.yml
 
 
 Sample code
