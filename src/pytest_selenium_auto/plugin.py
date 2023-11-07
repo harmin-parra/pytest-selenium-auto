@@ -402,6 +402,7 @@ def pytest_runtest_makereport(item, call):
         utils.append_header(call, report, extras, pytest_html, description, description_tag)
 
         if screenshots == "none":
+            report.extras = extras
             return
 
         if not utils.check_lists_length(report, item, driver):
