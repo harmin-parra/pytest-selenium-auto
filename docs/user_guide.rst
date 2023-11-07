@@ -16,13 +16,14 @@ Docstring of tests are also included in the report, as mean to provide a long de
 
 Therefore, you are highly encouraged to document your tests with docstrings.
 
+
 =====
 Usage
 =====
 
+
 Options
 =======
-
 
 Required options via command line
 ---------------------------------
@@ -32,7 +33,6 @@ Required options via command line
 The browser to use.
 
 Accepted values: ``firefox``, ``chrome``, ``chromium``, ``edge`` or ``safari``
-
 
 Optional options via command line
 ---------------------------------
@@ -53,7 +53,6 @@ Accepted values:
 
 * ``none``:   Screenshots are completely disabled.
 
-
 Default value: ``all``
 
 ----
@@ -62,6 +61,8 @@ Default value: ``all``
 
 Whether to run the browser in headless mode.
 
+Default value: ``False``
+
 ----
 
 * ``--log-attributes``
@@ -69,19 +70,24 @@ Whether to run the browser in headless mode.
 | Whether to log WebElement locators and attributes.
 | Only applicable when ``--screenshots=all``.
 
+Default value: ``False``
+
 ----
 
 * ``--log-page-source``
 
 Whether to log web page sources.
 
+Default value: ``False``
 
 ----
 
 * ``--log-verbose``
 
 Same as combining ``--log-attributes`` and ``--log-page-source`` options.
- 
+
+Default value: ``False``
+
 
 Optional options via pytest.ini file
 ------------------------------------
