@@ -202,7 +202,7 @@ The plugin provides a function scoped ``webdriver`` fixture.
 | **pytest-selenium-auto** needs to be executed in conjunction of **pytest-html** plugin.
 | Therefore, the ``--html`` option also needs to be provided.
 
-An external CSS file can be provided by using the **pytest-html** ``--css`` command-line option.
+An external CSS file needs to be provided by using the **pytest-html** ``--css`` command-line option.
 
 
 Command-line invocation
