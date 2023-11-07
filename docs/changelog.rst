@@ -12,7 +12,7 @@ Changelog
 
 **New feature**
 
-* Can save full-page screenshots for Chrome and Edge browsers. It is based on experimental *Chrome DevTools Protocol* code.
+* Can save full-page screenshots for **Chrome** and **Edge** browsers. It is based on experimental *Chrome DevTools Protocol* code.
 
 
 1.3.0
