@@ -406,6 +406,7 @@ def pytest_runtest_makereport(item, call):
             return
 
         if not utils.check_lists_length(report, item, driver):
+            report.extras = extras
             return
 
         links = ""
