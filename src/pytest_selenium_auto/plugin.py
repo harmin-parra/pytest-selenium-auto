@@ -365,8 +365,8 @@ def pytest_runtest_makereport(item, call):
     report = outcome.get_result()
     extras = getattr(report, 'extras', [])
 
-    # Let's deal with exit status
-    # update_test_status_counter(call, report)
+    if not ("request" in item.funcargs and "browser" in item.funcargs):
+        return
 
     # Let's deal with the HTML report
     if report.when == 'call':
@@ -402,15 +402,14 @@ def pytest_runtest_makereport(item, call):
         utils.append_header(call, report, extras, pytest_html, description, description_tag)
 
         if screenshots == "none":
-            report.extras = extras
             return
 
         if not utils.check_lists_length(report, item, driver):
-            report.extras = extras
             return
 
-        links = ""
-        rows = ""
+        # Generate HTML code for the extras to be added in the report
+        links = ""  # Used when logging without comments
+        rows = ""   # Used when logging with comments
         if screenshots == "all" and not log_attributes:
             #if log_page_source:
                 for i in range(len(images)):
@@ -465,6 +464,7 @@ def pytest_runtest_makereport(item, call):
             )
             extras.append(pytest_html.extras.html(rows))
         report.extras = extras
+
         # Check if there was a screenshot gathering failure
         if screenshots != 'none':
             for image in images:
