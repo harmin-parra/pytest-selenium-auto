@@ -370,25 +370,8 @@ def pytest_runtest_makereport(item, call):
 
     # Let's deal with the HTML report
     if report.when == 'call':
-        # Get function/method description
-        pkg = item.location[0].replace(os.sep, '.')[:-3]
-        index = pkg.rfind('.')
-        module = importlib.import_module(package=pkg[:index], name=pkg[index + 1:])
-        # Is the called test a function ?
-        match_cls = re.search(r"^[^\[]*\.", item.location[2])
-        if match_cls is None:
-            func = getattr(module, item.originalname)
-        else:
-            cls = getattr(module, match_cls[0][:-1])
-            func = getattr(cls, item.originalname)
-        description = getattr(func, "__doc__")
-
-        # Is the test item using the 'browser' fixtures?
-        if not ("request" in item.funcargs and "browser" in item.funcargs):
-            return
-        feature_request = item.funcargs['request']
-
         # Get test fixture values
+        feature_request = item.funcargs['request']
         driver = feature_request.getfixturevalue("webdriver")
         images = feature_request.getfixturevalue("images")
         sources = feature_request.getfixturevalue("sources")
@@ -399,6 +382,7 @@ def pytest_runtest_makereport(item, call):
         #log_page_source = driver.log_page_source
 
         # Append test description and execution exception trace, if any.
+        description = item.function.__doc__ if hasattr(item, 'function') else None
         utils.append_header(call, report, extras, pytest_html, description, description_tag)
 
         if screenshots == "none":
