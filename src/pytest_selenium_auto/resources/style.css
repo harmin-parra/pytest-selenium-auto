@@ -1,3 +1,7 @@
+.logwrapper {
+    max-height: 100px;
+}
+
 .selenium_separator {
     height:2px;
     background-color: gray;
