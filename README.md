@@ -20,4 +20,4 @@ If you like this software, consider contributing to the project through [buy me 
 
 <hr>
 
-![](docs/example1.png)
+![](docs/example2.png)
