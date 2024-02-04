@@ -16,6 +16,6 @@ If you like this software, consider contributing to the project through [buy me 
 
 ## Sample reports ##
 
-![](docs/axample1.png)
+![](docs/example1.png)
 
-![](docs/axample1.png)
+![](docs/example1.png)
