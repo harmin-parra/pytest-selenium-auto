@@ -13,3 +13,9 @@ Pytest plugin to automatically capture screenshots upon selenium webdriver event
 <br/>
 
 If you like this software, consider contributing to the project through [buy me a coffee](https://www.buymeacoffee.com/harmin)
+
+## Sample reports ##
+
+![](docs/axample1.png)
+
+![](docs/axample1.png)
