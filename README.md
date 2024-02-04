@@ -18,6 +18,6 @@ If you like this software, consider contributing to the project through [buy me 
 
 ![](docs/example1.png)
 
-<hr>
+<hr style="height=0px;">
 
 ![](docs/example1.png)
