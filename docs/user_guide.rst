@@ -352,7 +352,7 @@ Sample YAML configuration files
   browsers:
       firefox:
           options:
-              binary: /path/to/browser
+              binary_location: /path/to/browser
           service:
               driver_path: /path/to/driver
               log_output: /path/to/log
@@ -411,7 +411,7 @@ Sample YAML configuration files
   browsers:
       firefox:
           options:
-              binary: /path/to/browser
+              binary_location: /path/to/browser
               arguments:
                  -  arg1
                  -  arg2
@@ -501,7 +501,7 @@ Sample JSON configuration files
       "browsers": {    
           "firefox": {
               "options": {
-                  "binary": "/path/to/browser"
+                  "binary_location": "/path/to/browser"
               },
               "service":{
                   "driver_path": "/path/to/driver",
@@ -582,7 +582,7 @@ Sample JSON configuration files
       "browsers": {
           "firefox": {
               "options": {
-                  "binary": "/path/to/browser",
+                  "binary_location": "/path/to/browser",
                   "arguments": [
                       "arg1",
                       "arg2"
